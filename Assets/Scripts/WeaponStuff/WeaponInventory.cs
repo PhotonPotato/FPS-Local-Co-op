@@ -1,0 +1,91 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class WeaponInventory : MonoBehaviour
+{
+
+    public List<WeaponBehavior> weapons = new List<WeaponBehavior>();
+
+    public WeaponController Controller;
+
+    public List<WeaponBehavior> startingWeapons;
+
+    public Transform AmmoSliderDisplayGroup;
+
+    public GameObject AmmoSliderPrefab;
+
+    // Add a new weapon to the inventory
+    public void AddWeapon(WeaponBehavior newWeapon)
+    {
+        //Create a new visualization of the weapon
+        Instantiate(AmmoSliderPrefab, AmmoSliderDisplayGroup);
+
+        weapons.Add(newWeapon);
+    }
+
+    // Remove a weapon from the inventory
+    public void RemoveWeapon(WeaponBehavior weaponToRemove)
+    {
+        //Destroy the visualization of the object as well
+        int index = weapons.IndexOf(weaponToRemove);
+        Destroy(AmmoSliderDisplayGroup.GetChild(index));
+
+        weapons.Remove(weaponToRemove);
+        Destroy(weaponToRemove.gameObject);
+    }
+
+    // Check if the inventory contains a specific weapon
+    public bool HasWeapon(WeaponBehavior weaponToCheck)
+    {
+        return weapons.Contains(weaponToCheck);
+    }
+
+    void AddStartingWeapons()
+    {
+        int i = 0;
+        foreach (WeaponBehavior weapon in startingWeapons)
+        {
+            //Work around way to make sure that it works with weapons that are in the prefab folder
+            GameObject weaponSpawn = Instantiate(weapon.gameObject);
+
+            WeaponBehavior tempWeapon = weaponSpawn.GetComponent<WeaponBehavior>();
+
+            AddWeapon(tempWeapon);
+            Controller.SetCurrentWeaponIndex(i);
+            Controller.EquipWeapon(tempWeapon);
+            i++;
+        }
+    }
+
+    // Example usage
+    void Awake()
+    {
+        Controller = GetComponent<WeaponController>();
+
+        AddStartingWeapons();
+
+        // Create some weapons
+        /*GameObject swordModel = Resources.Load<GameObject>("SwordModel");
+        Weapon sword = new Weapon("Sword", swordModel, 10);
+
+        GameObject gunModel = Resources.Load<GameObject>("GunModel");
+        Weapon gun = new Weapon("Gun", gunModel, 20, 50f);*/
+
+        // Add weapons to the inventor
+
+        // Example of checking if the inventory contains a specific weapon
+        /*if (HasWeapon(sword))
+        {
+            Debug.Log("Inventory contains Sword!");
+        }
+
+        // Example of removing a weapon from the inventory
+        RemoveWeapon(gun);
+
+        // Example of checking if the inventory contains a specific weapon after removal
+        if (!HasWeapon(gun))
+        {
+            Debug.Log("Inventory does not contain Gun anymore!");
+        }*/
+    }
+}

@@ -1,0 +1,182 @@
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.InputSystem;
+
+public class WeaponController : MonoBehaviour
+{
+    public Transform handPosition;
+    public Transform offhand;
+
+    public WeaponInventory inventory;
+    public PlayerCharacterController Controller;
+    private InputSystemFirstPersonControls inputActions;
+
+    private PlayerInput m_PlayerInput;
+    private InputAction m_ChangeWeaponInput;
+    private InputAction m_FireWeaponPrimaryInput;
+    private InputAction m_ReloadInput;
+
+    private int currentWeaponIndex = 0;
+    private GameObject currentWeaponGameObject;
+
+    public WeaponBehavior currentWeaponBehavior;
+
+    public Transform camPos;
+    public LayerMask bulletLayers;
+
+    public float minTimeBetweenWeaponChange = .1f;
+    private float timeOfLastWeaponChange = Mathf.NegativeInfinity;
+
+    private void Awake()
+    {
+        m_PlayerInput = GetComponent<PlayerInput>();
+        m_ChangeWeaponInput = m_PlayerInput.actions["Change Weapon"];
+        m_FireWeaponPrimaryInput = m_PlayerInput.actions["Fire Primary"];
+        m_ReloadInput = m_PlayerInput.actions["Reload"];
+
+        Controller = GetComponent<PlayerCharacterController>();
+        inputActions = Controller.inputActions;
+
+        if (inventory.weapons.Count > 0)
+        {
+            EquipWeapon(inventory.weapons[currentWeaponIndex]);
+        }
+
+        camPos = Controller.cam.gameObject.transform;
+    }
+
+    private void Update()
+    {
+        // Scroll through the inventory using the mouse scroll wheel
+        float scrollWheelInput = m_ChangeWeaponInput.ReadValue<float>();
+
+        inputActions.FPSController.ChangeWeapon.Reset();
+
+        if (scrollWheelInput != 0f && Time.time - timeOfLastWeaponChange >= minTimeBetweenWeaponChange)
+        {
+            ChangeWeapon(Mathf.RoundToInt(scrollWheelInput));
+        }
+
+
+        //Read fire input
+        if (m_FireWeaponPrimaryInput.ReadValue<float>() == 1)
+        {
+            currentWeaponBehavior.HandleFireCall();
+        }
+
+        //Read reload logic
+        if (m_ReloadInput.ReadValue<float>() == 1)
+        {
+            currentWeaponBehavior.HandleReloadCall();
+        }
+
+        UpdateWeaponAmmoUI();
+    }
+
+    private void ChangeWeapon(int direction)
+    {
+        currentWeaponIndex += direction;
+        if (currentWeaponIndex < 0)
+        {
+            currentWeaponIndex = inventory.weapons.Count - 1;
+        }
+        else if (currentWeaponIndex >= inventory.weapons.Count)
+        {
+            currentWeaponIndex = 0;
+        }
+
+        //Update the timer so that weapons don't jsut fly by
+        timeOfLastWeaponChange = Time.time;
+
+        //Actually handle the weapon change inventory
+        EquipWeapon(inventory.weapons[currentWeaponIndex]);
+    }
+
+    public void EquipWeapon(WeaponBehavior weapon)
+    {
+        // Destroy the current weapon GameObject if exists
+        if (currentWeaponGameObject != null)
+        {
+            //Destroy(currentWeaponGameObject);
+
+            //Hide the unused weapons
+            currentWeaponGameObject.transform.SetParent(offhand);
+        }
+
+        // Instantiate the new weapon GameObject
+        //currentWeaponGameObject = Instantiate(weapon.model, handPosition.position, handPosition.rotation);
+
+        currentWeaponGameObject = inventory.weapons[currentWeaponIndex].gameObject;
+
+        currentWeaponGameObject.transform.parent = handPosition;
+
+        // Ensure the weapon is positioned correctly in the hand
+        currentWeaponGameObject.transform.localPosition = Vector3.zero;
+        currentWeaponGameObject.transform.localRotation = Quaternion.identity;
+
+        //Set the new behavior
+        currentWeaponBehavior = weapon;
+
+        currentWeaponBehavior.operatingController = this;
+    }
+
+    public bool SetCurrentWeaponIndex(int index)
+    {
+        currentWeaponIndex = index;
+
+        return true;
+    }
+
+    private void UpdateWeaponAmmoUI()
+    {
+        //Run through and update each slider for each weapon
+        Slider slider = inventory.AmmoSliderDisplayGroup.GetChild(currentWeaponIndex).GetComponentInChildren<Slider>();
+
+        if (slider != null)
+        {
+            if (currentWeaponBehavior.reloading)
+            {
+                //Make the "ammo" slider into a display of the reload time
+                slider.maxValue = currentWeaponBehavior.reloadTime;
+
+                slider.value = currentWeaponBehavior.reloadTimer;
+            }
+            else
+            {
+                //Just use it as a normal ammo slider
+                slider.maxValue = currentWeaponBehavior.magazineSize;
+
+                slider.value = currentWeaponBehavior.GetCurrentAmmo();
+            }
+        }
+
+        /*
+        int i = 0;
+        foreach (WeaponBehavior weapon in inventory.weapons)
+        {
+            if (i >= inventory.AmmoSliderDisplayGroup.childCount) return;
+
+            Slider slider = inventory.AmmoSliderDisplayGroup.GetChild(i).GetComponentInChildren<Slider>();
+
+            if (slider != null)
+            {
+                if (currentWeaponBehavior.reloading)
+                {
+                    //Make the "ammo" slider into a display of the reload time
+                    slider.maxValue = currentWeaponBehavior.reloadTime;
+
+                    slider.value = currentWeaponBehavior.reloadTimer;
+                }
+                else
+                {
+                    //Just use it as a normal ammo slider
+                    slider.maxValue = currentWeaponBehavior.magazineSize;
+
+                    slider.value = currentWeaponBehavior.GetCurrentAmmo();
+                }
+            }
+
+            i++;
+        }*/
+    }
+}
