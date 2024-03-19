@@ -297,8 +297,7 @@ MonoBehaviour:
   model: {fileID: 4071620348346186588}
   damage: 10
   range: 300
-  bulletPrefab: {fileID: 3659995153115176983, guid: 3c6b27d949cdda749892906e1f1d1b27,
-    type: 3}
+  bulletPoolIndex: 1
   gunMuzzle: {fileID: 7882604177200018720}
   fireRate: 0.1
   magazineSize: 40

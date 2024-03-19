@@ -47,7 +47,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 100
   damage: 10
-  impactEffect: {fileID: 0}
+  gravityAcceleration: 0
+  impactEffect: {fileID: 7635230255058315795, guid: 7593818fba43c7f4c8372299ce5e893f,
+    type: 3}
 --- !u!1 &5564024855854763701
 GameObject:
   m_ObjectHideFlags: 0

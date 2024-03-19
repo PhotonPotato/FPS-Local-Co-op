@@ -735,6 +735,7 @@ MonoBehaviour:
   bulletLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+  minTimeBetweenWeaponChange: 0.3
 --- !u!114 &3048227199498725233
 MonoBehaviour:
   m_ObjectHideFlags: 0

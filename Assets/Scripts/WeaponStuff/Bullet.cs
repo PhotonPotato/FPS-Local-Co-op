@@ -12,6 +12,9 @@ public class Bullet : MonoBehaviour
 
     private LayerMask hitLayers;
     private Vector3 direction;
+    private Vector3 spawnPos;
+
+    private float spawnTime;
 
     public void Initialize(int damage, LayerMask layers, Vector3 direction)
     {
@@ -19,11 +22,16 @@ public class Bullet : MonoBehaviour
 
         hitLayers = layers;
         this.direction = direction;
-        Destroy(gameObject, 3f); // Destroy the bullet after 3 seconds if it hasn't hit anything
+        spawnTime = Time.time; // Destroy the bullet after 3 seconds if it hasn't hit anything
+
+        spawnPos = transform.position;
     }
 
     private void Update()
     {
+        //Check for destroy bullet
+        if (Time.time - spawnTime >= 3f) gameObject.SetActive(false);
+
         //Check if theres something inbetween
         Vector3 StartOfFramePos = transform.position;
 
@@ -58,10 +66,46 @@ public class Bullet : MonoBehaviour
             // Spawn impact effect
             if (impactEffect != null)
             {
-                Instantiate(impactEffect, transform.position, transform.rotation);
+                GameObject obj = BulletObjectPoolManager.SharedInstance.GetPooledObject(2);
+
+                if (obj != null)
+                {
+                    obj.SetActive(true);
+                    obj.transform.position = Vector3.MoveTowards(transform.position, spawnPos, .3f);
+                    obj.GetComponent<ParticleSystem>().Play();
+                }
             }
 
-            Destroy(this.gameObject); // Destroy the bullet on impact
+            gameObject.SetActive(false); // Destroy the bullet on impact (put it back into the pool)
         }
+    }
+
+    private void AltTriggerEnter(RaycastHit other)
+    {
+        if (hitLayers == (hitLayers | (1 << other.collider.gameObject.layer)))
+        {
+            //Try to find if the object is damagable
+            if (other.collider.TryGetComponent(out Health health))
+            {
+                health.DealDamage(damage);
+            }
+
+            //Health health = other.GetComponent<Health>();
+            //if (health != null)
+            //{
+            //health.TakeDamage(damage);
+            //}
+
+            // Spawn impact effect
+            if (impactEffect != null)
+            {
+                GameObject a = Instantiate(impactEffect.gameObject, transform.position, Quaternion.identity).gameObject;
+                Debug.Log("Normal " + other.normal);
+                a.GetComponent<ParticleSystem>().Play();
+            }
+
+            gameObject.SetActive(false); // Destroy the bullet on impact (put it back into the pool)
+        }
+
     }
 }

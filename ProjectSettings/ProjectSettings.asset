@@ -89,7 +89,7 @@ PlayerSettings:
   deferSystemGesturesMode: 0
   hideHomeButton: 0
   submitAnalytics: 1
-  usePlayerLog: 1
+  usePlayerLog: 0
   dedicatedServerOptimizations: 1
   bakeCollisionMeshes: 0
   forceSingleInstance: 0
@@ -152,8 +152,8 @@ PlayerSettings:
   isWsaHolographicRemotingEnabled: 0
   enableFrameTimingStats: 0
   enableOpenGLProfilerGPURecorders: 1
-  allowHDRDisplaySupport: 0
-  useHDRDisplay: 0
+  allowHDRDisplaySupport: 1
+  useHDRDisplay: 1
   hdrBitDepth: 0
   m_ColorGamuts: 00000000
   targetPixelDensity: 30
@@ -518,7 +518,9 @@ PlayerSettings:
       m_SubKind: 
   m_BuildTargetBatching: []
   m_BuildTargetShaderSettings: []
-  m_BuildTargetGraphicsJobs: []
+  m_BuildTargetGraphicsJobs:
+  - m_BuildTarget: MacStandaloneSupport
+    m_GraphicsJobs: 1
   m_BuildTargetGraphicsJobMode: []
   m_BuildTargetGraphicsAPIs:
   - m_BuildTarget: iOSSupport

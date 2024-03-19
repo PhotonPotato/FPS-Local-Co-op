@@ -125,7 +125,8 @@ MonoBehaviour:
   speed: 100
   damage: 10
   gravityAcceleration: 1
-  impactEffect: {fileID: 0}
+  impactEffect: {fileID: 7635230255058315795, guid: 7593818fba43c7f4c8372299ce5e893f,
+    type: 3}
 --- !u!1 &3877996558212673314
 GameObject:
   m_ObjectHideFlags: 0

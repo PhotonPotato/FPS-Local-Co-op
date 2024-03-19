@@ -8,7 +8,7 @@ public class WeaponBehavior : MonoBehaviour
     public int damage;
     public float range;
 
-    public GameObject bulletPrefab;
+    public int bulletPoolIndex;
     public Transform gunMuzzle;
     public float fireRate = 0.1f;
     public int magazineSize = 30;
@@ -92,13 +92,30 @@ public class WeaponBehavior : MonoBehaviour
         currentAmmo--;
 
         Debug.Log("FIRE");
-        
-        GameObject bullet = Instantiate(bulletPrefab, gunMuzzle.position, gunMuzzle.rotation);
+
+        GameObject bullet = BulletObjectPoolManager.SharedInstance.GetPooledObject(bulletPoolIndex);
+
+        if (bullet == null)
+        {
+            Debug.Log("No Objects Left In Pool");
+            return;
+        }
+
+        bullet.transform.SetPositionAndRotation(gunMuzzle.position, gunMuzzle.rotation);
+        bullet.SetActive(true);
+
         Bullet bulletScript = bullet.GetComponent<Bullet>();
 
         if (bulletScript != null)
         {
             bulletScript.Initialize(damage, operatingController.bulletLayers, GetBulletFireVector());
+        }
+
+        TrailRenderer rend = bullet.GetComponentInChildren<TrailRenderer>();
+        if (rend != null)
+        {
+            rend.Clear();
+            rend.emitting = true;
         }
     }
 
