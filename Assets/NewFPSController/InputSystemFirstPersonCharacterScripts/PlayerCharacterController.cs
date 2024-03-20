@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XInput;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerCharacterController : MonoBehaviour
@@ -21,6 +22,9 @@ public class PlayerCharacterController : MonoBehaviour
     private InputAction m_SprintInput;
     private InputAction m_JumpInput;
     private InputAction m_CrouchInput;
+
+    public bool usingGamepad = false;
+    private XInputController m_Gamepad;
 
     public float groundDrag = .8f;
     public float aerialDrag = .9f;
@@ -73,6 +77,15 @@ public class PlayerCharacterController : MonoBehaviour
         m_SprintInput = m_PlayerInput.actions["Sprint"];
         m_JumpInput = m_PlayerInput.actions["Jump"];
         m_CrouchInput = m_PlayerInput.actions["Crouch"];
+
+        //Check the input type
+        if (m_PlayerInput.devices[0] is XInputController)
+        {
+            usingGamepad = true;
+            m_Gamepad = m_PlayerInput.devices[0] as XInputController;
+
+            GetComponent<WeaponController>().m_Controller = m_Gamepad;
+        }
     }
 
     private void Start()
@@ -301,8 +314,6 @@ public class PlayerCharacterController : MonoBehaviour
         {
             output = false;
         }
-
-        Debug.Log("Jump raw " + jumpRaw + " was pressed " + jumpWasPressed);
 
         jumpWasPressed = jumpRaw;
 

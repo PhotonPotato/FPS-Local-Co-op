@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using System.Collections;
+using UnityEngine.InputSystem.XInput;
+using Unity.VisualScripting;
 
 public class WeaponController : MonoBehaviour
 {
@@ -26,6 +29,14 @@ public class WeaponController : MonoBehaviour
 
     public float minTimeBetweenWeaponChange = .1f;
     private float timeOfLastWeaponChange = Mathf.NegativeInfinity;
+
+    public Light m_MuzzleFlash;
+
+    public Coroutine muzzleFlashCoroutine;
+
+    //Haptics
+    public XInputController m_Controller;
+    private float timeOfLastRumble = Mathf.NegativeInfinity;
 
     private void Awake()
     {
@@ -61,7 +72,16 @@ public class WeaponController : MonoBehaviour
         //Read fire input
         if (m_FireWeaponPrimaryInput.ReadValue<float>() == 1)
         {
-            currentWeaponBehavior.HandleFireCall();
+            if (currentWeaponBehavior.HandleFireCall())
+            {
+                //Fire was initiated
+                m_MuzzleFlash.enabled = true;
+
+                if (muzzleFlashCoroutine == null) muzzleFlashCoroutine = StartCoroutine(InitiateMuzzleFlash(1f, .05f, Time.time));
+
+                //Send out a pulse
+                InitiateFireRumblePulse();
+            }
         }
 
         //Read reload logic
@@ -71,6 +91,10 @@ public class WeaponController : MonoBehaviour
         }
 
         UpdateWeaponAmmoUI();
+
+        if (m_Controller != null) HandleControllerRumble();
+
+        if (muzzleFlashCoroutine == null) m_MuzzleFlash.enabled = false;
     }
 
     private void ChangeWeapon(int direction)
@@ -149,34 +173,38 @@ public class WeaponController : MonoBehaviour
                 slider.value = currentWeaponBehavior.GetCurrentAmmo();
             }
         }
+    }
 
-        /*
-        int i = 0;
-        foreach (WeaponBehavior weapon in inventory.weapons)
+    private void InitiateFireRumblePulse()
+    {
+        timeOfLastRumble = Time.time;
+    }
+
+    private void HandleControllerRumble()
+    {
+        if (Time.time - timeOfLastRumble > currentWeaponBehavior.rumbleFireDuration)
         {
-            if (i >= inventory.AmmoSliderDisplayGroup.childCount) return;
+            m_Controller.SetMotorSpeeds(0f, 0f);
+        }
+        else
+        {
+            m_Controller.SetMotorSpeeds(currentWeaponBehavior.rumbleIntensity / 4, currentWeaponBehavior.rumbleIntensity);
+        }
+    }
 
-            Slider slider = inventory.AmmoSliderDisplayGroup.GetChild(i).GetComponentInChildren<Slider>();
+    public IEnumerator InitiateMuzzleFlash(float intensity, float duration, float timeStampStart)
+    {
+        float period = (Mathf.PI * 2) / duration;
 
-            if (slider != null)
-            {
-                if (currentWeaponBehavior.reloading)
-                {
-                    //Make the "ammo" slider into a display of the reload time
-                    slider.maxValue = currentWeaponBehavior.reloadTime;
+        while (Time.time - timeStampStart <= duration)
+        {
+            float currentIntensity = intensity * Mathf.Sin(period * Time.time - timeStampStart);
 
-                    slider.value = currentWeaponBehavior.reloadTimer;
-                }
-                else
-                {
-                    //Just use it as a normal ammo slider
-                    slider.maxValue = currentWeaponBehavior.magazineSize;
+            m_MuzzleFlash.intensity = currentIntensity;
 
-                    slider.value = currentWeaponBehavior.GetCurrentAmmo();
-                }
-            }
+            yield return null;
+        }
 
-            i++;
-        }*/
+        muzzleFlashCoroutine = null;
     }
 }

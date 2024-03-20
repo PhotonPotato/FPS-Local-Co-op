@@ -22,6 +22,9 @@ public class WeaponBehavior : MonoBehaviour
     public bool reloading = false;
     public float reloadTimer = 0; //Only updates when script is active!
 
+    public float rumbleFireDuration = .8f;
+    public float rumbleIntensity = 1;
+
     [System.NonSerialized] public WeaponController operatingController;
     public GameObject Makrer;
 
@@ -90,8 +93,6 @@ public class WeaponBehavior : MonoBehaviour
     {
         nextFireTime = Time.time + fireRate;
         currentAmmo--;
-
-        Debug.Log("FIRE");
 
         GameObject bullet = BulletObjectPoolManager.SharedInstance.GetPooledObject(bulletPoolIndex);
 

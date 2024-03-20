@@ -308,6 +308,8 @@ MonoBehaviour:
   fireDissabled: 0
   reloading: 0
   reloadTimer: 0
+  rumbleFireDuration: 0.08
+  rumbleIntensity: 1
   Makrer: {fileID: 0}
 --- !u!1 &4071620348346186588
 GameObject:
