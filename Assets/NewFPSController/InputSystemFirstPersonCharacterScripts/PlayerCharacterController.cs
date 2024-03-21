@@ -43,6 +43,9 @@ public class PlayerCharacterController : MonoBehaviour
     public float zoomFOV = 35.0f;
     public float zoomSpeed = 9f;
     private float targetFOV;
+
+    public bool isADS { get; private set; }
+
     private float baseFOV;
     private float sprintFov;
     public float additionalFOVFromSprinting = 9f;
@@ -233,10 +236,12 @@ public class PlayerCharacterController : MonoBehaviour
         if (m_PlayerInput.actions["Zoom"].ReadValue<float>() > 0)
         {
             targetFOV = zoomFOV;
+            isADS = true;
         }
         else
         {
             targetFOV = baseFOV;
+            isADS = false;
         }
 
         if (isSprinting) targetFOV = sprintFov;

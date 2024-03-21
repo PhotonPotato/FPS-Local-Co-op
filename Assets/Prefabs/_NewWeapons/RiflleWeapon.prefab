@@ -310,6 +310,10 @@ MonoBehaviour:
   reloadTimer: 0
   rumbleFireDuration: 0.08
   rumbleIntensity: 1
+  kickbackAmount: 0.01
+  kickbackTime: 0.05
+  bulletSpreadHip: 0.1
+  bulletSpreadADS: 0.02
   Makrer: {fileID: 0}
 --- !u!1 &4071620348346186588
 GameObject:

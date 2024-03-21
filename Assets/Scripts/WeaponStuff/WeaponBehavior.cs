@@ -25,6 +25,12 @@ public class WeaponBehavior : MonoBehaviour
     public float rumbleFireDuration = .8f;
     public float rumbleIntensity = 1;
 
+    public float kickbackAmount = .01f;
+    public float kickbackTime = .05f;
+
+    public float bulletSpreadHip = .5f;
+    public float bulletSpreadADS = .5f;
+
     [System.NonSerialized] public WeaponController operatingController;
     public GameObject Makrer;
 
@@ -67,7 +73,16 @@ public class WeaponBehavior : MonoBehaviour
         return gunMuzzle.forward;
     }
 
-    public bool HandleFireCall()
+    public Vector3 GetRandomSpreadVector(bool isADS)
+    {
+        Vector3 output = Vector3.one;
+
+        output *= (Mathf.PerlinNoise(Random.value * 1000 + 100, Random.value * 1000) - .5f) * (isADS ? bulletSpreadADS : bulletSpreadHip);
+
+        return output;
+    }
+
+    public bool HandleFireCall(bool isADS = false)
     {
         //Make sure its not dissabled
         if (fireDissabled || reloading) return false;
@@ -82,14 +97,14 @@ public class WeaponBehavior : MonoBehaviour
                 return false;
             }
 
-            Fire();
+            Fire(isADS);
             return true;
         }
 
         return false;
     }
 
-    private void Fire()
+    private void Fire(bool isADS)
     {
         nextFireTime = Time.time + fireRate;
         currentAmmo--;
@@ -109,7 +124,7 @@ public class WeaponBehavior : MonoBehaviour
 
         if (bulletScript != null)
         {
-            bulletScript.Initialize(damage, operatingController.bulletLayers, GetBulletFireVector());
+            bulletScript.Initialize(damage, operatingController.bulletLayers, GetBulletFireVector() + GetRandomSpreadVector(isADS));
         }
 
         TrailRenderer rend = bullet.GetComponentInChildren<TrailRenderer>();

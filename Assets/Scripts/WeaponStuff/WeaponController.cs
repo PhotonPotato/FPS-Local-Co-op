@@ -11,8 +11,9 @@ public class WeaponController : MonoBehaviour
     public Transform offhand;
 
     public WeaponInventory inventory;
-    public PlayerCharacterController Controller;
+    public PlayerCharacterController m_PlayerController;
     private InputSystemFirstPersonControls inputActions;
+    private WeaponBobbing m_WeaponBobbingBehavior;
 
     private PlayerInput m_PlayerInput;
     private InputAction m_ChangeWeaponInput;
@@ -45,15 +46,17 @@ public class WeaponController : MonoBehaviour
         m_FireWeaponPrimaryInput = m_PlayerInput.actions["Fire Primary"];
         m_ReloadInput = m_PlayerInput.actions["Reload"];
 
-        Controller = GetComponent<PlayerCharacterController>();
-        inputActions = Controller.inputActions;
+        m_PlayerController = GetComponent<PlayerCharacterController>();
+        inputActions = m_PlayerController.inputActions;
+
+        m_WeaponBobbingBehavior = GetComponent<WeaponBobbing>();
 
         if (inventory.weapons.Count > 0)
         {
             EquipWeapon(inventory.weapons[currentWeaponIndex]);
         }
 
-        camPos = Controller.cam.gameObject.transform;
+        camPos = m_PlayerController.cam.gameObject.transform;
     }
 
     private void Update()
@@ -72,7 +75,7 @@ public class WeaponController : MonoBehaviour
         //Read fire input
         if (m_FireWeaponPrimaryInput.ReadValue<float>() == 1)
         {
-            if (currentWeaponBehavior.HandleFireCall())
+            if (currentWeaponBehavior.HandleFireCall(m_PlayerController.isADS))
             {
                 //Fire was initiated
                 m_MuzzleFlash.enabled = true;
@@ -81,6 +84,8 @@ public class WeaponController : MonoBehaviour
 
                 //Send out a pulse
                 InitiateFireRumblePulse();
+
+                m_WeaponBobbingBehavior.OnWeaponFire(currentWeaponBehavior.kickbackAmount, currentWeaponBehavior.kickbackTime);
             }
         }
 

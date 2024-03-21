@@ -1,0 +1,87 @@
+using System.Collections;
+using UnityEngine;
+
+public class WeaponBobbing : MonoBehaviour
+{
+    public Transform weaponTransform;
+    public Transform weaponModelTransform;
+    public PlayerCharacterController m_CharacterController;
+
+    public float frequency = 1.0f;
+    public float bobbingAmount = 0.1f;
+    public float returnSpeed = 2.0f; // Adjust this to control the speed of returning to the original position
+    public float bobbingBasedOnMovementMagnitude = .2f;
+
+    [Tooltip("Deadzone for movement before weapon bobs")]
+    public float magnitudeThreshhold;
+
+    private float timeElapsed = 0.0f;
+    private Vector3 originalPosition;
+
+    private Coroutine kickbackCoroutine;
+
+    void Start()
+    {
+        // Store the original position of the weapon
+        originalPosition = weaponTransform.localPosition;
+        m_CharacterController = GetComponent<PlayerCharacterController>();
+    }
+
+    void Update()
+    {
+        // Get input (you can replace this with your own input logic)
+        float inputMagnitude = m_CharacterController.GetPlayerMovement().magnitude;
+        bool inputActive = inputMagnitude >= magnitudeThreshhold;
+
+        // Update time elapsed
+        if (inputActive)
+        {
+            timeElapsed += Time.deltaTime * frequency * (bobbingBasedOnMovementMagnitude * inputMagnitude);
+        }
+        else
+        {
+            // If no input, smoothly return to the original position
+            if (weaponTransform.localPosition != originalPosition)
+            {
+                weaponTransform.localPosition = Vector3.Lerp(weaponTransform.localPosition, originalPosition, returnSpeed * Time.deltaTime);
+            }
+            timeElapsed = 0.0f;
+            return;
+        }
+
+        // Calculate weapon bobbing offset using a sine wave
+        float bobbingOffset = Mathf.Sin(timeElapsed) * bobbingAmount;
+
+        // Apply bobbing offset to weapon transform
+        Vector3 newPosition = originalPosition;
+        newPosition.y += bobbingOffset;
+        weaponTransform.localPosition = newPosition;
+    }
+
+    public void OnWeaponFire(float kickbackAmount, float kickbackTime)
+    {
+        if (kickbackCoroutine != null)
+        {
+            StopCoroutine(kickbackCoroutine);
+        }
+        kickbackCoroutine = StartCoroutine(KickbackCoroutine(kickbackAmount, kickbackTime));
+    }
+
+    IEnumerator KickbackCoroutine(float amount, float kickbackTime)
+    {
+        float elapsedTime = 0.0f;
+        Vector3 initialPosition = weaponModelTransform.localPosition;
+        Vector3 kickbackPosition = initialPosition - weaponModelTransform.up * amount;
+
+        while (elapsedTime < kickbackTime)
+        {
+            weaponModelTransform.localPosition = Vector3.Lerp(initialPosition, kickbackPosition, elapsedTime / kickbackTime);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Ensure the weapon returns to its original position
+        weaponModelTransform.localPosition = initialPosition;
+    }
+}
+

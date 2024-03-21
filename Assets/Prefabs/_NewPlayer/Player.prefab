@@ -755,6 +755,7 @@ GameObject:
   - component: {fileID: 1561168998816784894}
   - component: {fileID: 3048227199498725233}
   - component: {fileID: 293814313745675176}
+  - component: {fileID: 7935559054667974736}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -849,7 +850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a07c7d44a8ea4e428db4d273756debc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handPosition: {fileID: 3718772709690794249}
+  handPosition: {fileID: 7298457701046738965}
   offhand: {fileID: 4338079396873744785}
   inventory: {fileID: 3048227199498725233}
   Controller: {fileID: 0}
@@ -860,7 +861,6 @@ MonoBehaviour:
     m_Bits: 4294967295
   minTimeBetweenWeaponChange: 0.3
   m_MuzzleFlash: {fileID: 5487817734118486081}
-  fireRumbleDuration: 0.08
 --- !u!114 &3048227199498725233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -957,6 +957,27 @@ MonoBehaviour:
   m_DefaultActionMap: FPSController
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 374013982271141122}
+--- !u!114 &7935559054667974736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6356893488234814729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99afef185b1b9ba47a42e3c780d301c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponTransform: {fileID: 3718772709690794249}
+  weaponModelTransform: {fileID: 7298457701046738965}
+  m_CharacterController: {fileID: 0}
+  frequency: 15
+  bobbingAmount: 0.01
+  returnSpeed: 2
+  magnitudeThreshhold: 0.05
+  kickbackTime: 0.05
+  kickbackAmount: 0.05
 --- !u!1 &7396859487725558464
 GameObject:
   m_ObjectHideFlags: 0
@@ -967,7 +988,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7298457701046738965}
   m_Layer: 0
-  m_Name: Weapon Hold Offset
+  m_Name: Weapon Kickback Offset
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
