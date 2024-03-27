@@ -853,7 +853,7 @@ MonoBehaviour:
   handPosition: {fileID: 7298457701046738965}
   offhand: {fileID: 4338079396873744785}
   inventory: {fileID: 3048227199498725233}
-  Controller: {fileID: 0}
+  m_PlayerController: {fileID: 0}
   currentWeaponBehavior: {fileID: 0}
   camPos: {fileID: 0}
   bulletLayers:
@@ -975,9 +975,8 @@ MonoBehaviour:
   frequency: 15
   bobbingAmount: 0.01
   returnSpeed: 2
+  bobbingBasedOnMovementMagnitude: 1
   magnitudeThreshhold: 0.05
-  kickbackTime: 0.05
-  kickbackAmount: 0.05
 --- !u!1 &7396859487725558464
 GameObject:
   m_ObjectHideFlags: 0
