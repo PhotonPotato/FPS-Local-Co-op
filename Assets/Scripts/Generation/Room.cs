@@ -6,6 +6,7 @@ public class Room
 {
     public int x;
     public int y;
+    public int layer;
     public int scale;
 
     public RoomStatus status;
@@ -13,8 +14,13 @@ public class Room
     public GameObject roomObj;
     public Vector2 objDir;
 
-    public Room(int newX, int newY, int newScale)
+    public Vector4 roomConnections; //Just gonna b used as a boolean for North East South West
+    public bool staircaseTop = false; //If this room is the top of a staircase (so it shouldn't be spawned)
+
+    public Room(int layer, int newX, int newY, int newScale)
     {
+        this.layer = layer;
+
         x = newX;
         y = newY;
         scale = newScale;
@@ -29,5 +35,16 @@ public enum RoomStatus
 {
     EmptyRoom,
     Room,
-    Corridor
+    Corridor,
+    StaircaseRoom
+}
+
+public enum RoomType
+{
+    None,
+    Cross,
+    Elbow,
+    Straight,
+    Threeway,
+    Single
 }

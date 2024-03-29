@@ -4,55 +4,108 @@ using UnityEngine;
 
 public class Generator : MonoBehaviour
 {
+    public struct StaircaseSpawnCoords
+    {
+        public Vector2Int pos;
+        public int layer;
+    }
+    public struct RoomOrientationData
+    {
+        public int rotation;
+        public RoomType type;
+    }
+
+    [Header("Initialization Settings")]
     //Board length.
     public int boardLength = 4;
     public int boardScale = 1;
 
+    [Tooltip("Begin generation from a random point on the board")]
+    public bool useRandomOriginPos = true;
+
+
+    [Header("Generation Settings")]
     public int branchLengthMax = 10;
     public int branchLengthMin = 6;
 
     [Tooltip("Probability that a branch will occur frm each room. Has a 1 in (this value) chance.")]
-    public int brachOffProbability = 4;
+    public int branchOffProbability = 4;
+    private int currentBranchOffProbability;
     [Tooltip("Probability that a branch will occur frm each room. Has a 1 in (this value) chance.")]
     public int mergeProbability = 10;
 
-    public GameObject levelParent;
+    [Tooltip("The probability of branching decreases for each new branch.")]
+    public bool diminishingBranchingProbability = false;
+    [Tooltip("Effectively how much the probability will decrease per new branch.")]
+    public int branchProbabilityDiminishAmount = 1;
+
+    public bool limitNumberBranches = false;
+    [Tooltip("Maximum number of times generation can branch (only active if the limit is true)")]
+    public int maximumNumBranches = 5;
+
+    [Tooltip("Force the generator to generate # of floors other than the first")]
+    public int forceNumberExtraFloors = 1;
+
+    [Tooltip("1 in this number probability to generate a staircase and new floor at the end of each branch")]
+    public int generateFloorProbability = 2;
+    public int maximumNumFloors = 2;
+
+
+    [Header("Refs")]
     public bool generateUnderParent;
-
-    public float timer = 30;
-
-    private Room[,] board;
-
-    //Possible directions.
-    List<Vector2> possibleDirs;
-
-    private Vector2 startPlace;
-    private Vector2 nullDirReference;
-
-    private List<Vector2Int> orderedSpawns;
+    public GameObject[] levelParent;
 
     public GameObject RoomPrefab;
     public GameObject HallwayPrefab;
 
+    public GameObject[] SingleRooms;
+    public GameObject[] ElbowRooms;
+    public GameObject[] CrossRooms;
+    public GameObject[] StraightRooms;
+    public GameObject[] ThreeWayRooms;
+
+
+    [Header("Trackers")]
+    public float timer = 30;
+
+    public int numberBranches = 0;
+    public int numberStaircases = 0;
+
+    private List<Room[,]> boards;
+
+    public List<List<GameObject>> allObjects;
+
+    //Possible directions.
+    List<Vector2Int> possibleDirs;
+
+    private Vector2Int startPlace;
+    private Vector2Int nullDirReference;
+
+    private List<Vector2Int> orderedSpawns;
+
+    public List<StaircaseSpawnCoords> staircaseSpawnPoints;
+
     private void Start()
     {
         //keep the null direction reference.
-        nullDirReference = new Vector2(0, 0);
+        nullDirReference = new Vector2Int(0, 0);
 
         orderedSpawns = new List<Vector2Int>();
 
-        possibleDirs = new List<Vector2>
+        possibleDirs = new List<Vector2Int>
         {
             //Add the possible directions: Up, Down, Right, Left (Except by 2 b/c there are cooridoors in between.
-            new Vector2(2, 0),
-            new Vector2(-2, 0),
-            new Vector2(0, 2),
-            new Vector2(0, -2)
+            new Vector2Int(0, 2),  //North
+            new Vector2Int(2, 0),  //East
+            new Vector2Int(0, -2),  //South
+            new Vector2Int(-2, 0) //West
         };
 
-        InitGeneration();
+        //InitBoard();
+        //GenerateNewStartPoint();
+        //InitGeneration(0, startPlace);
 
-        GenerateObjects();
+        //GenerateObjects();
     }
 
     private void Update()
@@ -63,98 +116,183 @@ public class Generator : MonoBehaviour
         }
         else
         {
-            InitGeneration();
-            timer = 10;
+            timer = 100;
+
+            numberBranches = 0;
+            numberStaircases = 0;
+
+            InitBoard();
+            GenerateNewStartPoint();
+            InitGeneration(0, startPlace, false);
+            MergeBranches(0);
+
+            Debug.Log("end first gen");
+
+            foreach (StaircaseSpawnCoords coord in staircaseSpawnPoints)
+            {
+                Debug.Log("New layer from pt");
+                InitGeneration(coord.layer, coord.pos, false, true);
+            }
+
+            //MergeBranches(1);
+
+            staircaseSpawnPoints.Clear();
+
+            Debug.Log("end board gen, onto object gen");
+
+            PrepRoomGeneration();
+
+            Debug.Log("End of loop");
         }
     }
 
-    public void InitGeneration()
+    public void InitBoard()
     {
-        List<Vector2> usedDirs = new List<Vector2>(); ;
+        boards = new List<Room[,]>();
+        staircaseSpawnPoints = new List<StaircaseSpawnCoords>();
 
-        //Set the board up.
-        board = new Room[boardLength * 2 - 1, boardLength * 2 - 1];
+        CreateBoardLayer();
+    }
+
+    public void CreateBoardLayer()
+    {
+        int layer = boards.Count; //Index of new layer
+
+        boards.Add(new Room[boardLength * 2 - 1, boardLength * 2 - 1]);
 
         for (int i = 0; i < boardLength * 2 - 1; i++)
         {
             for (int j = 0; j < boardLength * 2 - 1; j++)
             {
-                board[i, j] = new Room(i, j, boardScale);
-                board[i, j].status = 0;
+                boards[layer][i, j] = new Room(layer, i, j, boardScale);
+                boards[layer][i, j].status = 0;
             }
         }
+    }
 
-        //Set a start place.
-        startPlace = new Vector2(Random.Range(1, boardLength) * 2 - 1, Random.Range(1, boardLength) * 2 - 1);
+    public void InitGeneration(int layer, Vector2Int startPlace, bool generateStaircases = true, bool startingNewFloor = false)
+    {
+        List<Vector2Int> usedDirs = new List<Vector2Int>(); ;
 
-        board[(int)startPlace.x, (int)startPlace.y].status = RoomStatus.Room;
+        //Set the board up.
 
-        List<Vector2> usedBranchDirs = new List<Vector2>();
+        currentBranchOffProbability = branchOffProbability; //Reset the branch off probability
+
+        //Setting start room at end due to it possibly being reset
+
+        List <Vector2Int> usedBranchDirs = new List<Vector2Int>();
         usedBranchDirs.Clear();
 
         //Generate Base Sctructure.
-        GenerateBranchFrom(startPlace, usedDirs, usedBranchDirs, branchLengthMax, branchLengthMin);
+        GenerateBranchFromPoint(layer, startPlace, usedDirs, usedBranchDirs, branchLengthMax, branchLengthMin, 4, generateStaircases);
 
+        //
+        //
         //Now generate branches off of some of the already made rooms.
         usedBranchDirs.Clear();
         usedDirs.Clear();
 
-        foreach (Room room in board)
+        foreach (Room room in boards[layer])
         {
-            if (room.status == RoomStatus.Room && Random.Range(0, brachOffProbability + 1) == 0)
+            if (room.status == RoomStatus.Room && Random.Range(0, currentBranchOffProbability + 1) == 0)
             {
-                GenerateBranchFrom(new Vector2(room.x, room.y), usedDirs, usedBranchDirs, 6, 3);
+                //New Branch formed from this pos
+                GenerateBranchFromPoint(layer, new Vector2Int(room.x, room.y), usedDirs, usedBranchDirs, 3, 2, 2, generateStaircases);
+
+                //Check for diminishing branches and update counters
+                numberBranches++;
+
+                if (diminishingBranchingProbability) currentBranchOffProbability += branchProbabilityDiminishAmount; //Make it less probably to make new branches in the future
+
+                if (limitNumberBranches && numberBranches >= maximumNumBranches) break; //If theres already the max branches, quit out of the loop
             }
         }
 
-        MergeBranches();
+
+        boards[layer][startPlace.x, startPlace.y].status = startingNewFloor ? RoomStatus.StaircaseRoom : RoomStatus.Room;
+        Debug.Log(startingNewFloor);
+        if (startingNewFloor)
+        {
+            boards[layer][startPlace.x, startPlace.y].staircaseTop = true;
+            boards[layer - 1][startPlace.x, startPlace.y].status = RoomStatus.StaircaseRoom;
+
+        }
     }
 
-    void GenerateBranchFrom(Vector2 start, List<Vector2> usedDirs, List<Vector2> usedBranchDirs, int maxLen, int minLen)
+    void GenerateBranchFromPoint(int layer, Vector2Int start, List<Vector2Int> usedDirs, List<Vector2Int> usedBranchDirs, int maxLen, int minLen, int branches = 4, bool generateStaircases = true)
     {
-        Vector2 curPos;
-        Vector2 lastDir;
+        Vector2Int curPos;
+        Vector2Int lastDir;
 
         //Generates branches.
-        for (int l = 4, i = 0; i < l; i++)
+        for (int i = 0; i < branches; i++)
         {
             curPos = start;
             //Store the random dir.
-            lastDir = GeneratePath(curPos, usedBranchDirs);
+            lastDir = GeneratePath(layer, curPos, usedBranchDirs);
             curPos += lastDir;
 
             //Generate room.
-            board[(int)curPos.x, (int)curPos.y].status = RoomStatus.Room;
+            boards[layer][curPos.x, curPos.y].status = RoomStatus.Room;
             //Generate coridor.
             if (lastDir != nullDirReference)
             {
-                board[(int)(curPos.x - (lastDir.x / 2)), (int)(curPos.y - (lastDir.y / 2))].status = RoomStatus.Corridor;
-                board[(int)(curPos.x - (lastDir.x / 2)), (int)(curPos.y - (lastDir.y / 2))].objDir = lastDir;
+                boards[layer][curPos.x - (lastDir.x / 2), curPos.y - (lastDir.y / 2)].status = RoomStatus.Corridor;
+                boards[layer][curPos.x - (lastDir.x / 2), curPos.y - (lastDir.y / 2)].objDir = lastDir;
             }
 
             //Generates how long the branches are.
             for (int k = Random.Range(minLen, maxLen), j = 0; j < k; j++)
             {
-                lastDir = GeneratePath(curPos, usedDirs);
+                lastDir = GeneratePath(layer, curPos, usedDirs);
                 curPos += lastDir;
 
                 //Create the room.
-                board[(int)curPos.x, (int)curPos.y].status = RoomStatus.Room;
+                boards[layer][curPos.x, curPos.y].status = RoomStatus.Room;
 
                 //Add to oreder list.
-                orderedSpawns.Add(new Vector2Int((int)curPos.x, (int)curPos.y));
+                orderedSpawns.Add(new Vector2Int(curPos.x, curPos.y));
 
                 //Create the corridor.
                 if (lastDir != nullDirReference)
                 {
                     //Set the cell in between to a hallway.
-                    board[(int)(curPos.x - (lastDir.x / 2)), (int)(curPos.y - (lastDir.y / 2))].status = RoomStatus.Corridor;
+                    boards[layer][curPos.x - (lastDir.x / 2), curPos.y - (lastDir.y / 2)].status = RoomStatus.Corridor;
 
                     //Set that hallway's direction
-                    board[(int)(curPos.x - (lastDir.x / 2)), (int)(curPos.y - (lastDir.y / 2))].objDir = lastDir;
+                    boards[layer][curPos.x - (lastDir.x / 2), curPos.y - (lastDir.y / 2)].objDir = lastDir;
 
                     //Add the next in order.
-                    orderedSpawns.Add(new Vector2Int((int)curPos.x, (int)curPos.y));
+                    orderedSpawns.Add(new Vector2Int(curPos.x, curPos.y));
+                }
+
+                //Check for stairwell creation (after corridoors are generated bc this shit bouta get recursive)
+                if (generateStaircases && j == k - 1)
+                {
+                    if (Random.Range(0, generateFloorProbability) == 0)
+                    {
+                        //Then make this a staircase area
+                        boards[layer][curPos.x, curPos.y].status = RoomStatus.StaircaseRoom;
+                        boards[layer][curPos.x, curPos.y].staircaseTop = false;
+
+                        if (boards.Count <= layer + 1)
+                        {
+                            CreateBoardLayer();
+                        }
+
+                        StaircaseSpawnCoords temp = new()
+                        {
+                            pos = curPos,
+                            layer = layer + 1
+                        };
+
+                        staircaseSpawnPoints.Add(temp);
+
+                        Debug.Log($"new layer at {curPos} with a layer {layer} and branch {i}");
+
+                        //InitGeneration(layer + 1, curPos, true);
+                        //GenerateBranchFromPoint(layer + 1, curPos, new List<Vector2Int>(), new List<Vector2Int>(), branchLengthMax - 1, branchLengthMin - 1, 3);
+                    }
                 }
 
                 usedDirs.Clear();
@@ -163,11 +301,11 @@ public class Generator : MonoBehaviour
         }
     }
 
-    public Vector2 GeneratePath(Vector2 start, List<Vector2> dirList)
+    public Vector2Int GeneratePath(int layer, Vector2Int start, List<Vector2Int> dirList)
     {
-        Vector2 pos = start;
+        Vector2Int pos = start;
 
-        Vector2 currentDir = new Vector2();
+        Vector2Int currentDir = new Vector2Int();
 
         while (true)
         {
@@ -176,7 +314,7 @@ public class Generator : MonoBehaviour
 
             if (currentDir == nullDirReference) break;
 
-            if (!BoardSpaceDoesntExistOrIsOccupied(pos + currentDir))
+            if (!BoardSpaceDoesntExistOrIsOccupied(layer, pos + currentDir))
             {
                 break;
             }
@@ -185,17 +323,17 @@ public class Generator : MonoBehaviour
         return currentDir;
     }
 
-    bool BoardSpaceDoesntExistOrIsOccupied(Vector2 pos)
+    bool BoardSpaceDoesntExistOrIsOccupied(int layer, Vector2Int pos)
     {
         //Check if it is out of bounds.
         if (!BoardSpaceExists(pos)) return true;
 
-        if (BoardSpaceOccupied(pos)) return true;
+        if (BoardSpaceOccupied(layer, pos)) return true;
 
         return false;
     }
 
-    private bool BoardSpaceExists(Vector2 pos)
+    private bool BoardSpaceExists(Vector2Int pos)
     {
         //Check if it is out of bounds.
         if (pos.x < 0 || pos.x > boardLength * 2 - 2) return false;
@@ -205,17 +343,17 @@ public class Generator : MonoBehaviour
         return true;
     }
 
-    private bool BoardSpaceOccupied(Vector2 pos)
+    private bool BoardSpaceOccupied(int layer, Vector2Int pos)
     {
         ///Check if the status of the desired board space is taken
-        if (board[(int)pos.x, (int)pos.y].status == RoomStatus.Room) return true;
+        if (boards[layer][pos.x, pos.y].status == RoomStatus.Room || boards[layer][pos.x, pos.y].status == RoomStatus.StaircaseRoom) return true;
 
         return false;
     }
 
-    Vector2 LookForDir(Vector2 currentDir, List<Vector2> usedDirs)
+    Vector2Int LookForDir(Vector2Int currentDir, List<Vector2Int> usedDirs)
     {
-        Vector2[] checkedDirs = new Vector2[possibleDirs.Count];
+        Vector2Int[] checkedDirs = new Vector2Int[possibleDirs.Count];
 
         //Set the array to some imposible values.
         for (int i = 0; i < checkedDirs.Length; i++)
@@ -255,21 +393,21 @@ public class Generator : MonoBehaviour
         return currentDir;
     }
 
-    void MergeBranches()
+    void MergeBranches(int layer)
     {
-        foreach (Room room in board)
+        foreach (Room room in boards[layer])
         {
             if (room.status != RoomStatus.Room && Random.Range(0, mergeProbability) != Mathf.RoundToInt(mergeProbability / 2)) continue;
 
             //HEY FUTURE TY CAN U MAKE THESE VECTOR2INTS PLS THX
 
-            Vector2 mergeDir;
-            Vector2 pos;
+            Vector2Int mergeDir;
+            Vector2Int pos;
 
             List<Vector2> usedDirs = new List<Vector2>();
             usedDirs.Clear();
 
-            pos = new Vector2(room.x, room.y);
+            pos = new Vector2Int(room.x, room.y);
 
             while (true)
             {
@@ -286,16 +424,16 @@ public class Generator : MonoBehaviour
                 //Check the availabilit of this new merge pos
                 if (BoardSpaceExists(pos + mergeDir))
                 {
-                    if (BoardSpaceOccupied(pos + mergeDir))
+                    if (BoardSpaceOccupied(layer, pos + mergeDir))
                     {
                         //If the CORRIDOR between the rooms is empty, fill it
-                        if (board[(int)(pos.x + mergeDir.x / 2), (int)(pos.y + mergeDir.y / 2)].status == RoomStatus.EmptyRoom)
+                        if (boards[layer][pos.x + mergeDir.x / 2, pos.y + mergeDir.y / 2].status == RoomStatus.EmptyRoom)
                         {
                             if(Random.Range(0, mergeProbability) == Mathf.RoundToInt(mergeProbability / 2))
                             {
-                                board[Mathf.RoundToInt(pos.x + mergeDir.x / 2), Mathf.RoundToInt(pos.y + mergeDir.y / 2)].status = RoomStatus.Corridor;
-                                board[Mathf.RoundToInt(pos.x + mergeDir.x / 2), Mathf.RoundToInt(pos.y + mergeDir.y / 2)].objDir = mergeDir;
-                                board[Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y)].status = RoomStatus.Room;
+                                boards[layer][Mathf.RoundToInt(pos.x + mergeDir.x / 2), Mathf.RoundToInt(pos.y + mergeDir.y / 2)].status = RoomStatus.Corridor;
+                                boards[layer][Mathf.RoundToInt(pos.x + mergeDir.x / 2), Mathf.RoundToInt(pos.y + mergeDir.y / 2)].objDir = mergeDir;
+                                boards[layer][Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y)].status = RoomStatus.Room;
                             }
                         }
                         break;
@@ -318,86 +456,316 @@ public class Generator : MonoBehaviour
         }
     }
 
+    public void GenerateNewStartPoint()
+    {
+        //Set a start place. (Either random [right hand operand] or in the center of teh board [left hand operand]
+        startPlace = useRandomOriginPos ? new Vector2Int(Random.Range(1, boardLength) * 2 - 1, Random.Range(1, boardLength) * 2 - 1) : new Vector2Int(boardLength / 2, boardLength / 2);
+    }
+
     public void GenerateObjects()
     {
-        if (board == null)
+        if (boards == null)
         {
             return;
         }
 
         //Draw little spheres at the room places (just for testing).
-        foreach (Room room in board)
+        foreach (Room[,] layer in boards)
         {
-            switch (room.status)
+            foreach (Room room in layer)
             {
-                case RoomStatus.Room:
-                    Vector3 objPos;
+                switch (room.status)
+                {
+                    case RoomStatus.Room:
+                        Vector3 objPos;
 
-                    objPos.x = room.x * boardScale;
-                    objPos.y = 0;
-                    objPos.z = room.y * boardScale;
+                        objPos.x = room.x * boardScale;
+                        objPos.y = 0;
+                        objPos.z = room.y * boardScale;
 
-                    GameObject instObj = Instantiate(RoomPrefab, objPos, Quaternion.identity);
-                    if (generateUnderParent) instObj.transform.SetParent(levelParent.transform);
-                    break;
+                        GameObject instObj = Instantiate(RoomPrefab, objPos, Quaternion.identity);
+                        if (generateUnderParent) instObj.transform.SetParent(levelParent[0].transform);
+                        break;
 
-                case RoomStatus.Corridor:
-                    Vector3 objPos2;
+                    case RoomStatus.Corridor:
+                        Vector3 objPos2;
 
-                    objPos2.x = room.x * boardScale;
-                    objPos2.y = 0;
-                    objPos2.z = room.y * boardScale;
+                        objPos2.x = room.x * boardScale;
+                        objPos2.y = 0;
+                        objPos2.z = room.y * boardScale;
 
-                    //Determine the object direction.
-                    float instYRot = 0;
+                        //Determine the object direction.
+                        float instYRot = 0;
 
-                    //Check for a vertical hallway.
-                    print(Mathf.Abs(room.objDir.y));
+                        //Check for a vertical hallway.
+                        print(Mathf.Abs(room.objDir.y));
 
-                    if (room.objDir.y != 0)
-                    {
-                        instYRot = 90;
-                    }
+                        if (room.objDir.y != 0)
+                        {
+                            instYRot = 90;
+                        }
 
-                    GameObject instObj2 = Instantiate(HallwayPrefab, objPos2, Quaternion.Euler(0, instYRot, 0));
-                    if (generateUnderParent) instObj2.transform.SetParent(levelParent.transform);
-                    break;
+                        GameObject instObj2 = Instantiate(HallwayPrefab, objPos2, Quaternion.Euler(0, instYRot, 0));
+                        if (generateUnderParent) instObj2.transform.SetParent(levelParent[0].transform);
+                        break;
+                }
+
             }
         }
     }
 
     private void OnDrawGizmos()
     {
-        if (board == null)
+        if (boards == null)
         {
             return;
         }
 
         //Draw little spheres at the room places (just for testing).
-        foreach (Room room in board)
+        foreach (Room[,] layer in boards)
         {
-            switch (room.status)
+            foreach (Room room in layer)
             {
-                case RoomStatus.Room:
-                    Vector3 gizmoPos;
+                switch (room.status)
+                {
+                    case RoomStatus.Room:
+                        Vector3 gizmoPos;
 
-                    gizmoPos.x = room.x * boardScale;
-                    gizmoPos.y = 0;
-                    gizmoPos.z = room.y * boardScale;
+                        gizmoPos.x = room.x * boardScale;
+                        gizmoPos.y = room.layer * 3;
+                        gizmoPos.z = room.y * boardScale;
 
-                    Gizmos.DrawSphere(gizmoPos, .5f);
-                    break;
+                        Gizmos.color = Color.white;
+                        Gizmos.DrawSphere(gizmoPos, .5f);
+                        break;
 
-                case RoomStatus.Corridor:
-                    Vector3 gizmoPos2;
+                    case RoomStatus.Corridor:
+                        Vector3 gizmoPos2;
 
-                    gizmoPos2.x = room.x * boardScale;
-                    gizmoPos2.y = 0;
-                    gizmoPos2.z = room.y * boardScale;
+                        gizmoPos2.x = room.x * boardScale;
+                        gizmoPos2.y = room.layer * 3;
+                        gizmoPos2.z = room.y * boardScale;
 
-                    Gizmos.DrawCube(gizmoPos2, new Vector3(.5f, .5f, .5f));
-                    break;
+                        Gizmos.color = Color.white;
+                        Gizmos.DrawCube(gizmoPos2, new Vector3(.5f, .5f, .5f));
+                        break;
+
+                    case RoomStatus.StaircaseRoom:
+                        Vector3 gizmoPos3;
+
+                        gizmoPos3.x = room.x * boardScale;
+                        gizmoPos3.y = room.layer * 3;
+                        gizmoPos3.z = room.y * boardScale;
+
+                        Gizmos.color = Color.red;
+                        Gizmos.DrawSphere(gizmoPos3, .5f);
+                        break;
+                }
+            }
+
+        }
+    }
+
+    public void PrepRoomGeneration()
+    {
+        allObjects = new List<List<GameObject>>();
+
+        //Layer by layer
+        for (int i = 0; i < boards.Count; i++)
+        {
+            //Init this layer
+            allObjects.Add(new List<GameObject>());
+
+            //Room by room
+            foreach (Room room in boards[i])
+            {
+                if (room.status == RoomStatus.EmptyRoom || room.status == RoomStatus.Corridor) continue; //Skip these non-rooms
+
+                if (true)//room.status == RoomStatus.Room) //Then do default gen
+                {
+                    RoomOrientationData roomData = IdentifyRoomOrientation(i, new Vector2Int(room.x, room.y));
+
+                    GameObject obj;
+
+                    switch (roomData.type)
+                    {
+                        case RoomType.Single:
+                            obj = Instantiate(SingleRooms[Random.Range(0, SingleRooms.Length)], levelParent[i].transform);
+                            break;
+
+                        case RoomType.Elbow:
+                            obj = Instantiate(ElbowRooms[Random.Range(0, ElbowRooms.Length)], levelParent[i].transform);
+                            break;
+
+                        case RoomType.Straight:
+                            obj = Instantiate(StraightRooms[Random.Range(0, StraightRooms.Length)], levelParent[i].transform);
+                            break;
+
+                        case RoomType.Threeway:
+                            obj = Instantiate(ThreeWayRooms[Random.Range(0, ThreeWayRooms.Length)], levelParent[i].transform);
+                            break;
+
+                        case RoomType.Cross:
+                            obj = Instantiate(CrossRooms[Random.Range(0, CrossRooms.Length)], levelParent[i].transform);
+                            break;
+
+                        default: //Throwaway just to make the compiler happy (bc cannot add unassigned "obj")
+                            obj = new GameObject();
+                            break;
+
+                    }
+
+                    obj.transform.SetPositionAndRotation(new Vector3(room.x * boardScale, i * .75f * boardScale, room.y * boardScale), Quaternion.Euler(0, roomData.rotation, 0));
+                    obj.SetActive(true);
+
+                    allObjects[i].Add(obj);
+                }
+                else //Then its a staircase rooom, and do staircase gen
+                {
+
+                }
             }
         }
+    }
+
+    public RoomOrientationData IdentifyRoomOrientation(int layer, Vector2Int location)
+    {
+        List<Vector2Int> connectionDirections = new List<Vector2Int>();
+        RoomOrientationData tmpData = new RoomOrientationData();
+        tmpData.type = RoomType.None;
+
+        for (int i = 0; i < 4; i++)
+        {
+            Vector2Int scanPos = location + possibleDirs[i];
+
+            if (BoardSpaceExists(scanPos) && BoardSpaceOccupied(layer, scanPos))
+            {
+                //Make SURE theres a corridoor there, its not just generating between 2 side-by-side rooms without a connection
+                if (boards[layer][location.x + (possibleDirs[i].x / 2), location.y + (possibleDirs[i].y / 2)].status != RoomStatus.Corridor) continue;
+
+                switch (tmpData.type)
+                {
+                    case RoomType.None:
+                        tmpData.type = RoomType.Single;
+                        break;
+
+                    case RoomType.Single:
+                        //If the new connection is across from the existing single
+                        if (connectionDirections[0] == possibleDirs[i] * -1)
+                        {
+                            tmpData.type = RoomType.Straight;
+                            break;
+                        }
+
+                        //Then it must be an elbow
+                        tmpData.type = RoomType.Elbow;
+                        break;
+
+                    case RoomType.Elbow:
+                        tmpData.type = RoomType.Threeway;
+                        break;
+
+                    case RoomType.Straight:
+                        tmpData.type = RoomType.Threeway;
+                        break;
+
+                    case RoomType.Threeway:
+                        tmpData.type = RoomType.Cross;
+                        break;
+                }
+
+                //There b a room there, so add this direction
+                connectionDirections.Add(possibleDirs[i]);
+            }
+        }
+
+        //Handle rotation (turns these "connectionDirections" into actual degrees of rotation for the base 5 room types)
+        switch (tmpData.type)
+        {
+            case RoomType.Single:
+                //The order of possible directions shows a clockwise order of directions, each being 90 degrees
+                //Therefore multiplying the index with 90 deg will return the degrees rotation of that peice, with north being 0°
+                tmpData.rotation = possibleDirs.IndexOf(connectionDirections[0]) * 90;
+                break;
+
+            case RoomType.Elbow:
+                //Now for the elbow rotation. A default elbow enters from south and east
+                if (connectionDirections.Contains(possibleDirs[2])) //Check if south
+                {
+                    if (connectionDirections.Contains(possibleDirs[1])) //Check if East (default orientation then)
+                    {
+                        tmpData.rotation = 0; //Defaulr rot
+                    }
+                    else //Has to be west then
+                    {
+                        tmpData.rotation = 90; //Becuase the elbow must be south and west, a 90° rotation because its clockwise
+                    }
+                }
+                else //if (connectionDirections.Contains(possibleDirs[0])) //Contains North
+                {
+                    if (connectionDirections.Contains(possibleDirs[1])) //Check if East
+                    {
+                        tmpData.rotation = 270; // 3/4 of a full clockwise rotation
+                    }
+                    else
+                    {
+                        tmpData.rotation = 180; //Becuase the elbow must be north and west, a mirror of the default
+                    }
+                }
+
+                break;
+
+            case RoomType.Straight:
+                //2 possible rotations
+                if (connectionDirections.Contains(possibleDirs[0])) //If it runs North to south
+                {
+                    tmpData.rotation = (Random.Range(0, 2) == 0) ? 0 : 180; //Randomize the rotation for top to bottom
+                }
+                else
+                {
+                    tmpData.rotation = (Random.Range(0, 2) == 0) ? 90 : 270;
+                }
+                break;
+
+            case RoomType.Threeway:
+                //The default will be a straight north to south and an east connection too
+                //The nub is how I refer to the non-straight connection.
+
+                if (connectionDirections.Contains(possibleDirs[0])) //North
+                {
+                    if (connectionDirections.Contains(possibleDirs[2]))
+                    {
+                        //Then the straight is north-south, just need to check which side has the nub
+                        if (connectionDirections.Contains(possibleDirs[1])) //East
+                        {
+                            //This is the default rotaion of a 3-way
+                            tmpData.rotation = 0;
+                        }
+                        else
+                        {
+                            //This is a mirror of the default rot (180°)
+                            tmpData.rotation = 180;
+                        }
+                    }
+                    else
+                    {
+                        //Then the nub of the 3-way is up top (North)
+                        tmpData.rotation = 270; // 3/4 clockwise rotation from default
+                    }
+                }
+                else
+                {
+                    //Then the nub on the 3-way must be south
+                    tmpData.rotation = 90; //Clockwise
+                }
+
+                break;
+
+            case RoomType.Cross:
+                tmpData.rotation = 4 * Random.Range(0, 5); //Crosses can be in any rotation of 90° and still line up
+                break;
+        }
+
+        return tmpData;
     }
 }
