@@ -55,7 +55,7 @@ public class WeaponBehavior : MonoBehaviour
         Ray ray = new Ray(operatingController.camPos.position, operatingController.camPos.forward);
 
         //Raycast from the camera forward and then find the position that the player is aiming at
-        if (Physics.Raycast(ray, out RaycastHit hit, 100, operatingController.bulletLayers))
+        if (Physics.Raycast(ray, out RaycastHit hit, 100, operatingController.bulletLayers, QueryTriggerInteraction.Ignore))
         {
             //Makrer.transform.position = hit.point;
 

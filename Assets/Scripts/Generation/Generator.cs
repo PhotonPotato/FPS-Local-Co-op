@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Generator : MonoBehaviour
 {
@@ -67,6 +69,8 @@ public class Generator : MonoBehaviour
     public GameObject[] ThreeWayRooms;
 
     public GameObject[] Corridoors;
+
+    public NavMeshSurface surface;
 
 
     [Header("Trackers")]
@@ -152,6 +156,10 @@ public class Generator : MonoBehaviour
             Debug.Log("end board gen, onto object gen");
 
             PrepRoomGeneration();
+
+            ShowAllRooms(true);
+            surface?.BuildNavMesh();
+            ShowAllRooms(false);
 
             Debug.Log("End of loop");
             //ShowRoomsCloseToPlayers();
@@ -939,5 +947,18 @@ public class Generator : MonoBehaviour
             return -(Mathf.Abs(numToRound) - remainder);
         else
             return numToRound + multiple - remainder;
+    }
+
+    private void ShowAllRooms(bool show)
+    {
+        //Iterate layer by layer
+        for (int i = 0; i < boards.Count; i++)
+        {
+            //Room by room
+            foreach (Room room in boards[i])
+            {
+                room.roomObj?.SetActive(show);
+            }
+        }
     }
 }
