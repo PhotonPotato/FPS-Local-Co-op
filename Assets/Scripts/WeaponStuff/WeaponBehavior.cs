@@ -143,8 +143,6 @@ public class WeaponBehavior : MonoBehaviour
 
         reloadTimer = reloadTime; //Set up timer (will update until less than 0)
 
-        Debug.Log("REEE LOOAD");
-
         return true;
     }
 

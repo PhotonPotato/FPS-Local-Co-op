@@ -88,4 +88,17 @@ public class WeaponInventory : MonoBehaviour
             Debug.Log("Inventory does not contain Gun anymore!");
         }*/
     }
+
+    public void OnWeaponPickup(GameObject pickupParent)
+    {
+        //Get and equip the weapon
+        WeaponBehavior pickupWeapon = pickupParent.GetComponentInChildren<WeaponBehavior>();
+
+        AddWeapon(pickupWeapon);
+        Controller.SetCurrentWeaponIndex(weapons.Count - 1);
+        Controller.EquipWeapon(pickupWeapon);
+
+        //Get rid of the pickup container
+        Destroy(pickupParent);
+    }
 }

@@ -258,6 +258,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2230147056904391662}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &982281272287857297
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 968335697229980990}
+  - component: {fileID: 3136667625559146869}
+  m_Layer: 0
+  m_Name: Global Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &968335697229980990
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982281272287857297}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6942472455356802602}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3136667625559146869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982281272287857297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 10fc4df2da32a41aaa32d77bc913491c, type: 2}
 --- !u!1 &1888577336613015037
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,9 +387,9 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 0
+  m_HDR: 1
   m_AllowMSAA: 0
-  m_AllowDynamicResolution: 0
+  m_AllowDynamicResolution: 1
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -756,6 +805,8 @@ GameObject:
   - component: {fileID: 3048227199498725233}
   - component: {fileID: 293814313745675176}
   - component: {fileID: 7935559054667974736}
+  - component: {fileID: 800252238175148443}
+  - component: {fileID: -6145761296054486744}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -776,6 +827,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 968335697229980990}
   - {fileID: 2230147056904391662}
   - {fileID: 273705711528495413}
   - {fileID: 2732011576911605272}
@@ -878,7 +930,6 @@ MonoBehaviour:
   startingWeapons:
   - {fileID: 4264418267795332632, guid: 6f90160ee9de34175a62b93edcac59b9, type: 3}
   - {fileID: 4264418267795332632, guid: bd3376ab3728f4adfa7a6e7b7626a1ed, type: 3}
-  - {fileID: 3768213887522048054, guid: 6a7e6c360576378469cd98b0378314cf, type: 3}
   AmmoSliderDisplayGroup: {fileID: 3232275836936149652}
   AmmoSliderPrefab: {fileID: 7452295319992345278, guid: 212bafab9b1a1416d829327057f48595,
     type: 3}
@@ -977,6 +1028,50 @@ MonoBehaviour:
   returnSpeed: 2
   bobbingBasedOnMovementMagnitude: 1
   magnitudeThreshhold: 0.05
+--- !u!114 &800252238175148443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6356893488234814729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 176af0c19aa564b78add264fdf84a739, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionQueryLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  interactionDistance: 3
+  interactionSpherecastRadius: 1
+--- !u!54 &-6145761296054486744
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6356893488234814729}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &7396859487725558464
 GameObject:
   m_ObjectHideFlags: 0

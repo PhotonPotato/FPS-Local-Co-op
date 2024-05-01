@@ -125,6 +125,15 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""df32748e-309f-449a-a01b-51e2c967f290"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -600,6 +609,28 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""action"": ""Fire Secondary"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f35978fd-5779-4ecc-a90f-51e1e3b4a41b"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""FPSControllerInputs"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""57c9ab2d-a3ba-4dfb-a1b7-41ed13600de8"",
+                    ""path"": ""<XInputController>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Xbox"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -652,6 +683,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
         m_FPSController_ChangeWeapon = m_FPSController.FindAction("Change Weapon", throwIfNotFound: true);
         m_FPSController_FirePrimary = m_FPSController.FindAction("Fire Primary", throwIfNotFound: true);
         m_FPSController_FireSecondary = m_FPSController.FindAction("Fire Secondary", throwIfNotFound: true);
+        m_FPSController_Interact = m_FPSController.FindAction("Interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -724,6 +756,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
     private readonly InputAction m_FPSController_ChangeWeapon;
     private readonly InputAction m_FPSController_FirePrimary;
     private readonly InputAction m_FPSController_FireSecondary;
+    private readonly InputAction m_FPSController_Interact;
     public struct FPSControllerActions
     {
         private @InputSystemFirstPersonControls m_Wrapper;
@@ -739,6 +772,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
         public InputAction @ChangeWeapon => m_Wrapper.m_FPSController_ChangeWeapon;
         public InputAction @FirePrimary => m_Wrapper.m_FPSController_FirePrimary;
         public InputAction @FireSecondary => m_Wrapper.m_FPSController_FireSecondary;
+        public InputAction @Interact => m_Wrapper.m_FPSController_Interact;
         public InputActionMap Get() { return m_Wrapper.m_FPSController; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -781,6 +815,9 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
             @FireSecondary.started += instance.OnFireSecondary;
             @FireSecondary.performed += instance.OnFireSecondary;
             @FireSecondary.canceled += instance.OnFireSecondary;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         private void UnregisterCallbacks(IFPSControllerActions instance)
@@ -818,6 +855,9 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
             @FireSecondary.started -= instance.OnFireSecondary;
             @FireSecondary.performed -= instance.OnFireSecondary;
             @FireSecondary.canceled -= instance.OnFireSecondary;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         public void RemoveCallbacks(IFPSControllerActions instance)
@@ -866,5 +906,6 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
         void OnChangeWeapon(InputAction.CallbackContext context);
         void OnFirePrimary(InputAction.CallbackContext context);
         void OnFireSecondary(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
 }

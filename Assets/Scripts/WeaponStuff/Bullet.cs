@@ -14,7 +14,7 @@ public class Bullet : MonoBehaviour
     private Vector3 direction;
     private Vector3 spawnPos;
 
-    private float spawnTime;
+    private float timeOfSpawn;
 
     public void Initialize(int damage, LayerMask layers, Vector3 direction)
     {
@@ -22,7 +22,7 @@ public class Bullet : MonoBehaviour
 
         hitLayers = layers;
         this.direction = direction;
-        spawnTime = Time.time; // Destroy the bullet after 3 seconds if it hasn't hit anything
+        timeOfSpawn = Time.time; // Destroy the bullet after 3 seconds if it hasn't hit anything
 
         spawnPos = transform.position;
     }
@@ -30,7 +30,7 @@ public class Bullet : MonoBehaviour
     private void Update()
     {
         //Check for destroy bullet
-        if (Time.time - spawnTime >= 3f) gameObject.SetActive(false);
+        if (Time.time - timeOfSpawn >= 3f) gameObject.SetActive(false);
 
         //Check if theres something inbetween
         Vector3 StartOfFramePos = transform.position;
@@ -40,7 +40,7 @@ public class Bullet : MonoBehaviour
 
         transform.position += direction * speed * Time.deltaTime;
 
-        if (Physics.Linecast(StartOfFramePos, transform.position, out RaycastHit hit, hitLayers))
+        if (Physics.Linecast(StartOfFramePos, transform.position, out RaycastHit hit, hitLayers, QueryTriggerInteraction.Ignore))
         {
             OnTriggerEnter(hit.collider);
         }

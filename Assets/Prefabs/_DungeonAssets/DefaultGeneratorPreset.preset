@@ -1,0 +1,181 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!181963792 &2655988077585873504
+Preset:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: DefaultGeneratorPreset
+  m_TargetType:
+    m_NativeTypeID: 114
+    m_ManagedTypePPtr: {fileID: 11500000, guid: ee5056106a1c0e947a990921d3a35278,
+      type: 3}
+    m_ManagedTypeFallback: 
+  m_Properties:
+  - target: {fileID: 0}
+    propertyPath: m_Enabled
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorHideFlags
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorClassIdentifier
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: boardLength
+    value: 10
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: boardScale
+    value: 15
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: useRandomOriginPos
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: branchLengthMax
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: branchLengthMin
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: branchOffProbability
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: mergeProbability
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: diminishingBranchingProbability
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: branchProbabilityDiminishAmount
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: limitNumberBranches
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: maximumNumBranches
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: forceNumberExtraFloors
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: generateFloorProbability
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: maximumNumFloors
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: generateUnderParent
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: levelParent.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: 'levelParent.Array.data[0]'
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: 'levelParent.Array.data[1]'
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: RoomPrefab
+    value: 
+    objectReference: {fileID: 4066357173449312059, guid: 59a6b96ad177d4f5c98860b3eff9e0c6,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: HallwayPrefab
+    value: 
+    objectReference: {fileID: 3167397886252851949, guid: 68af42a11091f488f99c5c70e300851f,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: SingleRooms.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: 'SingleRooms.Array.data[0]'
+    value: 
+    objectReference: {fileID: 3564358686577209024, guid: 430c215b9dc2f48d28a9727506ae9318,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: ElbowRooms.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: 'ElbowRooms.Array.data[0]'
+    value: 
+    objectReference: {fileID: 1509535896096153423, guid: 512ffe964d8c84ce99fc3dbb2b7789d4,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: CrossRooms.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: 'CrossRooms.Array.data[0]'
+    value: 
+    objectReference: {fileID: 353305586456379534, guid: 30a6d3ccd656c4b25be20a93aee34e52,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: StraightRooms.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: 'StraightRooms.Array.data[0]'
+    value: 
+    objectReference: {fileID: 2719407291458946598, guid: e6e79f923b5704d118b5bf717c9cd929,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: ThreeWayRooms.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: 'ThreeWayRooms.Array.data[0]'
+    value: 
+    objectReference: {fileID: 5119354502865961997, guid: cebacc82731ff4117bd0fd835ce329cc,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: Corridoors.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: 'Corridoors.Array.data[0]'
+    value: 
+    objectReference: {fileID: 6064871800735388944, guid: f0733e60f3e1e4a689f6f8b171cca9ce,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: timer
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: numberBranches
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: numberStaircases
+    value: 0
+    objectReference: {fileID: 0}
+  m_ExcludedProperties: []
+  m_CoupledType:
+    m_NativeTypeID: 0
+    m_ManagedTypePPtr: {fileID: 0}
+    m_ManagedTypeFallback: 
+  m_CoupledProperties: []

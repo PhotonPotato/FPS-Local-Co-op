@@ -15,6 +15,8 @@ public class Generator : MonoBehaviour
         public RoomType type;
     }
 
+    public static Generator generator;
+
     [Header("Initialization Settings")]
     //Board length.
     public int boardLength = 4;
@@ -64,6 +66,8 @@ public class Generator : MonoBehaviour
     public GameObject[] StraightRooms;
     public GameObject[] ThreeWayRooms;
 
+    public GameObject[] Corridoors;
+
 
     [Header("Trackers")]
     public float timer = 30;
@@ -85,8 +89,15 @@ public class Generator : MonoBehaviour
 
     public List<StaircaseSpawnCoords> staircaseSpawnPoints;
 
+    [Header("Performance Optimization")]
+
+    public List<Transform> activePlayers;
+    public List<GameObject> currentActiveObjects;
+
     private void Start()
     {
+        if (generator == null) generator = this;
+
         //keep the null direction reference.
         nullDirReference = new Vector2Int(0, 0);
 
@@ -116,7 +127,7 @@ public class Generator : MonoBehaviour
         }
         else
         {
-            timer = 100;
+            timer = 1000;
 
             numberBranches = 0;
             numberStaircases = 0;
@@ -143,6 +154,13 @@ public class Generator : MonoBehaviour
             PrepRoomGeneration();
 
             Debug.Log("End of loop");
+            //ShowRoomsCloseToPlayers();
+        }
+
+        if (Time.frameCount % 30 == 0) //Run every 30th frame
+        {
+            //Debug.Log("optimizing");
+            //ShowRoomsCloseToPlayers();
         }
     }
 
@@ -196,6 +214,7 @@ public class Generator : MonoBehaviour
         {
             if (room.status == RoomStatus.Room && Random.Range(0, currentBranchOffProbability + 1) == 0)
             {
+                if (limitNumberBranches && numberBranches >= maximumNumBranches) break;
                 //New Branch formed from this pos
                 GenerateBranchFromPoint(layer, new Vector2Int(room.x, room.y), usedDirs, usedBranchDirs, 3, 2, 2, generateStaircases);
 
@@ -398,7 +417,7 @@ public class Generator : MonoBehaviour
         foreach (Room room in boards[layer])
         {
             if (room.status != RoomStatus.Room && Random.Range(0, mergeProbability) != Mathf.RoundToInt(mergeProbability / 2)) continue;
-
+            
             //HEY FUTURE TY CAN U MAKE THESE VECTOR2INTS PLS THX
 
             Vector2Int mergeDir;
@@ -459,7 +478,15 @@ public class Generator : MonoBehaviour
     public void GenerateNewStartPoint()
     {
         //Set a start place. (Either random [right hand operand] or in the center of teh board [left hand operand]
+        //Make it -2 b/c the board len gth is allat -1 and we need another extra -1 to leave room for the clamping below
+        //Otherwise the start point could be out of bounds.
         startPlace = useRandomOriginPos ? new Vector2Int(Random.Range(1, boardLength) * 2 - 1, Random.Range(1, boardLength) * 2 - 1) : new Vector2Int(boardLength / 2, boardLength / 2);
+
+        //The following pretty much forces the start point to be even
+        if (startPlace.x % 2 != 0) startPlace.x++;
+        if (startPlace.y % 2 != 0) startPlace.y++;
+
+        Debug.Log($"Start pos {startPlace}");
     }
 
     public void GenerateObjects()
@@ -579,13 +606,13 @@ public class Generator : MonoBehaviour
             //Room by room
             foreach (Room room in boards[i])
             {
-                if (room.status == RoomStatus.EmptyRoom || room.status == RoomStatus.Corridor) continue; //Skip these non-rooms
+                if (room.status == RoomStatus.EmptyRoom) continue; //Skip these non-rooms
 
-                if (true)//room.status == RoomStatus.Room) //Then do default gen
+                GameObject obj;
+
+                if (room.status == RoomStatus.Room) //Then do default gen
                 {
                     RoomOrientationData roomData = IdentifyRoomOrientation(i, new Vector2Int(room.x, room.y));
-
-                    GameObject obj;
 
                     switch (roomData.type)
                     {
@@ -616,14 +643,24 @@ public class Generator : MonoBehaviour
                     }
 
                     obj.transform.SetPositionAndRotation(new Vector3(room.x * boardScale, i * .75f * boardScale, room.y * boardScale), Quaternion.Euler(0, roomData.rotation, 0));
-                    obj.SetActive(true);
 
-                    allObjects[i].Add(obj);
                 }
-                else //Then its a staircase rooom, and do staircase gen
+                else if (room.status == RoomStatus.StaircaseRoom)//Then its a staircase rooom, and do staircase gen
                 {
-
+                    obj = new GameObject();
                 }
+                else //Then it must be a corridoor
+                {
+                    obj = Instantiate(Corridoors[Random.Range(0, Corridoors.Length)], levelParent[i].transform);
+
+                    obj.transform.SetPositionAndRotation(new Vector3(room.x * boardScale, i * .75f * boardScale, room.y * boardScale), Quaternion.Euler(0, room.objDir.y == 0 ? 90 : 0, 0));
+                }
+
+                obj.SetActive(false);
+
+                boards[i][room.x, room.y].roomObj = obj;
+
+                allObjects[i].Add(obj);
             }
         }
     }
@@ -762,10 +799,145 @@ public class Generator : MonoBehaviour
                 break;
 
             case RoomType.Cross:
-                tmpData.rotation = 4 * Random.Range(0, 5); //Crosses can be in any rotation of 90° and still line up
+                tmpData.rotation = 90 * Random.Range(0, 5); //Crosses can be in any rotation of 90° and still line up
                 break;
         }
 
         return tmpData;
+    }
+
+    public void ShowRoomsCloseToPlayers()
+    {
+        for (int i = 0; i < activePlayers.Count; i++)
+        {
+            StartCoroutine(ShowRoomsCloseToPlayer(i));
+        }
+    }
+
+    public IEnumerator ShowRoomsCloseToPlayer(int playerIndex)
+    {
+        //Clear all rooms
+        List<GameObject> newActiveObjects = new List<GameObject>();
+
+        //activeObjects.Clear();
+
+        //The following is per player
+        //foreach (Transform player in activePlayers)
+        Transform player = activePlayers[playerIndex];
+
+        {
+            //Identify the layer
+            int layer = player.position.y > 8f ? 1 : 0;
+
+
+            Vector2Int playerCoord = PlayerPositionToBoardCoordinate(player.position);
+
+            Debug.Log(playerCoord);
+            Debug.Log(boards[layer][playerCoord.x, playerCoord.y].roomObj);
+            newActiveObjects.Add(boards[layer][playerCoord.x, playerCoord.y].roomObj);
+
+            for (int i = 0; i < 4; i++) //Do all directions
+            {
+                Vector2Int currentCoord = playerCoord + possibleDirs[i];
+
+                Debug.Log(currentCoord);
+
+                if (!BoardSpaceExists(currentCoord) || !BoardSpaceOccupied(layer, currentCoord)) continue;
+
+                //Add the corridoor and room
+                newActiveObjects.Add(boards[layer][currentCoord.x, currentCoord.y].roomObj);
+                newActiveObjects.Add(boards[layer][playerCoord.x + (possibleDirs[i].x / 2), playerCoord.y + (possibleDirs[i].y / 2)].roomObj); //Add the cooridoor
+            }
+        }
+
+        List<GameObject> activeObjectsBeforeWeed = newActiveObjects.GetRange(0, newActiveObjects.Count);
+
+        for (int i = 0; i < currentActiveObjects.Count; i++)
+        {
+            if (newActiveObjects.Contains(currentActiveObjects[i]))
+            {
+                //Remove object from temp list (to prevent seting it to active twice)
+                newActiveObjects.Remove(currentActiveObjects[i]);
+            }
+            else
+            {
+                //Hide objects that arent in the current list of active
+                currentActiveObjects[i]?.SetActive(false);
+            }
+        }
+
+        //Show all other objects that arent already visible
+        foreach (GameObject obj in newActiveObjects)
+        {
+            if (obj != null) obj.SetActive(true);
+        }
+
+        currentActiveObjects = activeObjectsBeforeWeed.GetRange(0, activeObjectsBeforeWeed.Count);
+
+        Debug.Log($"active rooms = {currentActiveObjects.Count}");
+
+        yield return null;
+
+    }
+
+    public Vector2Int PlayerPositionToBoardCoordinate(Vector3 playerPos)
+    {
+        Vector2Int coord = Vector2Int.RoundToInt(new Vector2(playerPos.x, playerPos.z) / boardScale);
+        
+        if (coord.x % 2 != 0) //Needs to be odd to be a room
+        {
+            if (playerPos.x / boardScale % 2 > 1)
+            {
+                coord.x++;
+            }
+            else
+            {
+                coord.x--;
+            }
+
+            Debug.Log("x: " + coord.x);
+        }
+
+        if (coord.y % 2 != 0) //Needs to be odd to be a room
+        {
+            if (playerPos.z / boardScale % 2 > 1)
+            {
+                coord.y++;
+            }
+            else
+            {
+                coord.y--;
+            }
+
+            Debug.Log("Y " + coord.y);
+        }
+
+        if (BoardSpaceExists(coord))
+        {
+            return coord;
+        }
+        else
+        {
+            //Maybe clamp to within the board
+            coord.x = Mathf.Clamp(coord.x, 0, boardLength * 2 - 2);
+            coord.y = Mathf.Clamp(coord.y, 0, boardLength * 2 - 2);
+
+            return coord;
+        }
+    }
+
+    int roundUp(int numToRound, int multiple)
+    {
+        if (multiple == 0)
+            return numToRound;
+
+        int remainder = Mathf.Abs(numToRound) % multiple;
+        if (remainder == 0)
+            return numToRound;
+
+        if (numToRound < 0)
+            return -(Mathf.Abs(numToRound) - remainder);
+        else
+            return numToRound + multiple - remainder;
     }
 }
