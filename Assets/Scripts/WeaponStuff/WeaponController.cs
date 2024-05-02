@@ -146,6 +146,9 @@ public class WeaponController : MonoBehaviour
         //Set the new behavior
         currentWeaponBehavior = weapon;
 
+        //Update the sender ID of the weapon
+        currentWeaponBehavior.SetSenderID(Generator.generator.activePlayers.IndexOf(this.transform));
+
         currentWeaponBehavior.operatingController = this;
     }
 

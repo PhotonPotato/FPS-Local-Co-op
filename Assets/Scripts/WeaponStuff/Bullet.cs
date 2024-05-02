@@ -16,7 +16,9 @@ public class Bullet : MonoBehaviour
 
     private float timeOfSpawn;
 
-    public void Initialize(int damage, LayerMask layers, Vector3 direction)
+    private int senderID = -1; //Player index of sender
+
+    public void Initialize(int damage, LayerMask layers, Vector3 direction, int senderID = -1)
     {
         this.damage = damage;
 
@@ -25,6 +27,8 @@ public class Bullet : MonoBehaviour
         timeOfSpawn = Time.time; // Destroy the bullet after 3 seconds if it hasn't hit anything
 
         spawnPos = transform.position;
+
+        this.senderID = senderID; //Stores the player index of the personwho fired
     }
 
     private void Update()
@@ -54,7 +58,7 @@ public class Bullet : MonoBehaviour
             //Try to find if the object is damagable
             if (other.TryGetComponent<Health>(out Health health))
             {
-                health.DealDamage(damage);
+                health.DealDamage(damage, senderID);
             }
 
             //Health health = other.GetComponent<Health>();

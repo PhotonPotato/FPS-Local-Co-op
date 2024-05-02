@@ -4,9 +4,10 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Pickup
   - Chest
   - CorridoorTrigger
+  - WeaponPickup
+  - ItemPickup
   layers:
   - Default
   - TransparentFX

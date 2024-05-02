@@ -34,6 +34,8 @@ public class WeaponBehavior : MonoBehaviour
     [System.NonSerialized] public WeaponController operatingController;
     public GameObject Makrer;
 
+    private int senderID = -1; //Stores player index of owner
+
     private void Start()
     {
         currentAmmo = magazineSize;
@@ -124,7 +126,7 @@ public class WeaponBehavior : MonoBehaviour
 
         if (bulletScript != null)
         {
-            bulletScript.Initialize(damage, operatingController.bulletLayers, GetBulletFireVector() + GetRandomSpreadVector(isADS));
+            bulletScript.Initialize(damage, operatingController.bulletLayers, GetBulletFireVector() + GetRandomSpreadVector(isADS), senderID);
         }
 
         TrailRenderer rend = bullet.GetComponentInChildren<TrailRenderer>();
@@ -164,6 +166,8 @@ public class WeaponBehavior : MonoBehaviour
     {
         return currentAmmo;
     }
+
+    public void SetSenderID(int id) => senderID = id;
 }
 
 public enum WeaponType

@@ -35,7 +35,7 @@ public class PlayerManager : MonoBehaviour
         //Check for the interact input
         if (interactAction.ReadValue<float>() == 1)
         {
-            Debug.Log("Interact " + HandleInteractionKeyPressed());
+            HandleInteractionKeyPressed();//Debug.Log("Interact " + HandleInteractionKeyPressed());
         }
     }
 
@@ -49,7 +49,7 @@ public class PlayerManager : MonoBehaviour
             //Initiate the pickup
             switch (ineractionQueryHit.collider.tag)
             {
-                case "Pickup":
+                case "WeaponPickup":
                     m_Inventory.OnWeaponPickup(ineractionQueryHit.collider.gameObject);
                     break;
 
@@ -68,9 +68,12 @@ public class PlayerManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("faggot fagoot fagoot");
+
         //Check for corridoor triggers
         switch (other.tag)
         {
+
             //If its a corridoor trigger, send an optimization message
             case "CorridoorTrigger":
                 StartCoroutine(Generator.generator.ShowRoomsCloseToPlayer(playerIndex));
