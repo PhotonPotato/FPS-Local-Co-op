@@ -440,12 +440,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &2617993860481290420
 GameObject:
   m_ObjectHideFlags: 0
@@ -799,11 +799,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6942472455356802602}
+  - component: {fileID: 293814313745675176}
   - component: {fileID: 5593395966546474448}
   - component: {fileID: 4506287609657062905}
   - component: {fileID: 1561168998816784894}
   - component: {fileID: 3048227199498725233}
-  - component: {fileID: 293814313745675176}
   - component: {fileID: 7935559054667974736}
   - component: {fileID: 800252238175148443}
   m_Layer: 9
@@ -833,105 +833,6 @@ Transform:
   - {fileID: 8795569825852913228}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!143 &5593395966546474448
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6356893488234814729}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Height: 2
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.7
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4506287609657062905
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6356893488234814729}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3579d4e303b7b4f43b6b45fa9d61beef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cam: {fileID: 374013982271141122}
-  movementSpeed: 20
-  lookSensitivity: 10
-  usingGamepad: 0
-  groundDrag: 0.8
-  aerialDrag: 0.9
-  CharacterVelocity: {x: 0, y: 0, z: 0}
-  gravity: 20
-  zoomFOV: 35
-  zoomSpeed: 9
-  additionalFOVFromSprinting: 14
-  crouchHeight: 0
-  MaxSpeedOnGround: 10
-  MaxSpeedInAir: 10
-  MaxSpeedCrouchedRatio: 0.5
-  AccelerationSpeedInAir: 25
-  MovementSharpnessOnGround: 15
-  JumpForce: 9
-  SprintSpeedModifier: 1.5
---- !u!114 &1561168998816784894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6356893488234814729}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a07c7d44a8ea4e428db4d273756debc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handPosition: {fileID: 7298457701046738965}
-  offhand: {fileID: 4338079396873744785}
-  inventory: {fileID: 3048227199498725233}
-  m_PlayerController: {fileID: 0}
-  currentWeaponBehavior: {fileID: 0}
-  camPos: {fileID: 0}
-  bulletLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  minTimeBetweenWeaponChange: 0.3
-  m_MuzzleFlash: {fileID: 5487817734118486081}
---- !u!114 &3048227199498725233
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6356893488234814729}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 015983757f47b4b79934094b67e54ea7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weapons: []
-  Controller: {fileID: 1561168998816784894}
-  startingWeapons:
-  - {fileID: 4264418267795332632, guid: 6f90160ee9de34175a62b93edcac59b9, type: 3}
-  - {fileID: 4264418267795332632, guid: bd3376ab3728f4adfa7a6e7b7626a1ed, type: 3}
-  AmmoSliderDisplayGroup: {fileID: 3232275836936149652}
-  AmmoSliderPrefab: {fileID: 7452295319992345278, guid: 212bafab9b1a1416d829327057f48595,
-    type: 3}
 --- !u!114 &293814313745675176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1007,6 +908,108 @@ MonoBehaviour:
   m_DefaultActionMap: FPSController
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 374013982271141122}
+--- !u!143 &5593395966546474448
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6356893488234814729}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.7
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4506287609657062905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6356893488234814729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3579d4e303b7b4f43b6b45fa9d61beef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 374013982271141122}
+  movementSpeed: 20
+  lookSensitivity: 10
+  usingGamepad: 0
+  groundDrag: 0.8
+  aerialDrag: 0.9
+  CharacterVelocity: {x: 0, y: 0, z: 0}
+  gravity: 20
+  isGrounded: 0
+  isCrouching: 0
+  isSprinting: 0
+  zoomFOV: 35
+  zoomSpeed: 9
+  additionalFOVFromSprinting: 14
+  crouchHeight: 0
+  MaxSpeedOnGround: 10
+  MaxSpeedInAir: 10
+  MaxSpeedCrouchedRatio: 0.5
+  AccelerationSpeedInAir: 25
+  MovementSharpnessOnGround: 15
+  JumpForce: 9
+  SprintSpeedModifier: 1.5
+--- !u!114 &1561168998816784894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6356893488234814729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a07c7d44a8ea4e428db4d273756debc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handPosition: {fileID: 7298457701046738965}
+  offhand: {fileID: 4338079396873744785}
+  inventory: {fileID: 3048227199498725233}
+  m_PlayerController: {fileID: 0}
+  currentWeaponBehavior: {fileID: 0}
+  camPos: {fileID: 0}
+  bulletLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  minTimeBetweenWeaponChange: 0.3
+  m_MuzzleFlash: {fileID: 5487817734118486081}
+--- !u!114 &3048227199498725233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6356893488234814729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015983757f47b4b79934094b67e54ea7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weapons: []
+  Controller: {fileID: 1561168998816784894}
+  startingWeapons:
+  - {fileID: 4264418267795332632, guid: 6f90160ee9de34175a62b93edcac59b9, type: 3}
+  - {fileID: 4264418267795332632, guid: bd3376ab3728f4adfa7a6e7b7626a1ed, type: 3}
+  AmmoSliderDisplayGroup: {fileID: 3232275836936149652}
+  AmmoSliderPrefab: {fileID: 7452295319992345278, guid: 212bafab9b1a1416d829327057f48595,
+    type: 3}
 --- !u!114 &7935559054667974736
 MonoBehaviour:
   m_ObjectHideFlags: 0

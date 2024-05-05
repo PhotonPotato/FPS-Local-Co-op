@@ -133,7 +133,7 @@ public class PlayerCharacterController : MonoBehaviour
     {
         HasPressedJumpThisFrame = false;
 
-        isGrounded = controller.isGrounded;
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f, LayerMask.GetMask("Ground")) || controller.isGrounded;
 
         isSprinting = GetPlayerSprintInput();
 
@@ -291,6 +291,9 @@ public class PlayerCharacterController : MonoBehaviour
     public Vector3 GetPlayerMovement()
     {
         Vector2 rawInput = m_MoveInput.ReadValue<Vector2>();
+
+        //I think the laggy movement sometimes comes from input system sucking ass here
+        //Debug.Log(rawInput.ToString()); 
 
         return new Vector3(rawInput.x, 0f, rawInput.y);
     }

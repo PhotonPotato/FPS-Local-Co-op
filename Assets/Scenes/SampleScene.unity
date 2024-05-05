@@ -638,12 +638,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!81 &558858877
 AudioListener:
   m_ObjectHideFlags: 0
@@ -1237,6 +1237,7 @@ GameObject:
   - component: {fileID: 1413379657}
   - component: {fileID: 1413379656}
   - component: {fileID: 1413379655}
+  - component: {fileID: 1413379661}
   m_Layer: 0
   m_Name: Slime
   m_TagString: Untagged
@@ -1258,54 +1259,80 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Health: {fileID: 0}
   m_target: {fileID: 0}
-  active: 0
-  dead: 0
-  speedMult: 1
+  deathExplosion: {fileID: 0}
+  obj: {fileID: 1105496105}
   speedVsHealth:
     serializedVersion: 2
     m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  active: 0
+  dead: 0
+  distanceToActivateEnemy: 3
+  bodyHeight: 0.09
+  hopHeight: 0.3
+  maxHopDistance: 5
+  timeToHopOneUnit: 0.2
+  timeBetweenHops: 0.8
+  speedMult: 1
   speedOverJump:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: -0
-      outSlope: -0
+      inSlope: 2.5816152
+      outSlope: 2.5816152
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.09178387
+      outWeight: 0.0901714
     - serializedVersion: 3
-      time: 0.5
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
+      time: 0.5007324
+      value: 0.5
+      inSlope: 0.6464631
+      outSlope: 0.6464631
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
+      inWeight: 0.08054742
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
+      value: 1
+      inSlope: 1.8130734
+      outSlope: 1.8130734
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.06365657
+      inWeight: 0.059302296
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  timeToHopOneUnit: 0.4
-  timeToHop: 0
-  maxHopDistance: 3
-  distanceToActivateEnemy: 0
-  deathExplosion: {fileID: 0}
-  obj: {fileID: 1105496105}
+  movementLerpRemap:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2.2958555
+      outSlope: 2.2958555
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.03447554
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.31369844
+      outSlope: 0.31369844
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.037009597
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!195 &1413379656
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1316,16 +1343,16 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.11
+  m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0.37
+  m_StoppingDistance: 3.4
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1
-  m_BaseOffset: 0.5
+  m_BaseOffset: 0.4
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!65 &1413379657
@@ -1417,6 +1444,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1413379661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413379654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab8bf76e829b9480994298b383d8de54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 120
+  maxHealth: 120
+  invincible: 0
+  canDie: 1
+  broadcastDeathMessage: 1
 --- !u!4 &1513271703 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2827346594852236796, guid: a0f94c89b63e64266bd4fdbb5a5ee9d9,
