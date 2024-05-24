@@ -6,6 +6,8 @@ public class Bullet : MonoBehaviour
     public float speed = 10f;
     public int damage = 10;
 
+    private DamageType damageType;
+
     public float gravityAcceleration = 0f;
 
     public ParticleSystem impactEffect;
@@ -18,7 +20,7 @@ public class Bullet : MonoBehaviour
 
     private int senderID = -1; //Player index of sender
 
-    public void Initialize(int damage, LayerMask layers, Vector3 direction, int senderID = -1)
+    public void Initialize(int damage, LayerMask layers, Vector3 direction, int senderID = -1, DamageType damageType = DamageType.RegularBullet)
     {
         this.damage = damage;
 
@@ -29,6 +31,7 @@ public class Bullet : MonoBehaviour
         spawnPos = transform.position;
 
         this.senderID = senderID; //Stores the player index of the personwho fired
+        this.damageType = damageType;
     }
 
     private void Update()
@@ -58,7 +61,7 @@ public class Bullet : MonoBehaviour
             //Try to find if the object is damagable
             if (other.TryGetComponent<Health>(out Health health))
             {
-                health.DealDamage(damage, senderID);
+                health.DealDamage(damage, senderID, damageType);
             }
 
             //Health health = other.GetComponent<Health>();
@@ -112,4 +115,12 @@ public class Bullet : MonoBehaviour
         }
 
     }
+}
+
+public enum DamageType
+{
+    Melee,
+    RegularBullet,
+    Explosive,
+    Arrow
 }

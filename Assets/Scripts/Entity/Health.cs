@@ -6,18 +6,34 @@ public class Health : MonoBehaviour
     [SerializeField] private int health;
     [SerializeField] private int maxHealth;
 
+    [Tooltip("This is -1 if its not attached to a player")]
+    public int thisPlayerID { get; private set; } = -1;
+
     public bool invincible = false;
 
     public bool canDie = true;
-    public bool broadcastDeathMessage = false;
+
+    [SerializeField] private bool broadcastDamageMessage = false;
+    [SerializeField] private bool broadcastDeathMessage = false;
 
     public int lastHitBy { get; private set; } = -1;
 
-    public bool DealDamage(int amount, int senderID = -1)
+    public virtual bool DealDamage(int amount, int senderID = -1, DamageType damageType = DamageType.Melee)
     {
         if (invincible) return false;
 
+        //Check if its self damage
+        if (thisPlayerID != -1)
+        {
+            //If friendlyfire even enabled
+            //if (!GameConstants.FriendlyFire) return false;
+
+            if (senderID == thisPlayerID) return false;
+        }
+
         health -= amount;
+
+        if (broadcastDamageMessage) this.gameObject.BroadcastMessage("OnThisTakeDamage", damageType, SendMessageOptions.DontRequireReceiver);
 
         if (canDie && health <= 0)
         {
@@ -37,4 +53,6 @@ public class Health : MonoBehaviour
 
     public int GetHealth() => health;
     public int GetMaxHealth() => maxHealth;
+
+    public void SetPlayerID(int id) { thisPlayerID = id; }
 }

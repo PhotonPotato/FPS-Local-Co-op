@@ -1,14 +1,17 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
 public class PlayerManager : MonoBehaviour
 {
     // Add health bs here
 
-    //[Header("Refs")]
+    [Header("Refs")]
     WeaponInventory m_Inventory;
     PlayerInput m_Input;
     WeaponController m_WeaponController;
+    Health m_Health;
+    public Slider m_HealthBar;
 
     InputAction interactAction;
 
@@ -27,7 +30,11 @@ public class PlayerManager : MonoBehaviour
 
         m_WeaponController = GetComponent<WeaponController>();
 
+        m_Health = GetComponent<Health>();
+
         interactAction = m_Input.actions["Interact"];
+
+        m_HealthBar.maxValue = m_Health.GetMaxHealth();
     }
 
     public void Update()
@@ -37,6 +44,11 @@ public class PlayerManager : MonoBehaviour
         {
             HandleInteractionKeyPressed();//Debug.Log("Interact " + HandleInteractionKeyPressed());
         }
+
+
+        m_HealthBar.value = m_Health.GetHealth();
+
+        if (m_Health.GetHealth() <= 0) Destroy(this.gameObject);
     }
 
     public bool HandleInteractionKeyPressed() //Handles raycasting for pickups
@@ -68,8 +80,6 @@ public class PlayerManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("faggot fagoot fagoot");
-
         //Check for corridoor triggers
         switch (other.tag)
         {

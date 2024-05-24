@@ -27,6 +27,8 @@ public class PlayerSpawnManager : MonoBehaviour
 
         StartCoroutine(Generator.generator.ShowRoomsCloseToPlayer(numPlayers)); // Throw in a room update as well
 
+        playerInput.GetComponent<Health>().SetPlayerID(numPlayers);
+
         numPlayers++;
     }
 
