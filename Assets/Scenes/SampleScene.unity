@@ -754,7 +754,7 @@ MonoBehaviour:
   m_NotificationBehavior: 0
   m_MaxPlayerCount: 4
   m_AllowJoining: 1
-  m_JoinBehavior: 0
+  m_JoinBehavior: 1
   m_PlayerJoinedEvent:
     m_PersistentCalls:
       m_Calls:
@@ -9417,7 +9417,6 @@ MonoBehaviour:
   numberBranches: 0
   numberStaircases: 0
   activePlayers: []
-  currentActiveObjects: []
 --- !u!4 &1770700237
 Transform:
   m_ObjectHideFlags: 0

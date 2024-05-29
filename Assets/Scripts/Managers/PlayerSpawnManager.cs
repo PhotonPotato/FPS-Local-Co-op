@@ -24,6 +24,7 @@ public class PlayerSpawnManager : MonoBehaviour
         playerInput.GetComponent<PlayerManager>().playerIndex = numPlayers;
 
         Generator.generator.activePlayers.Add(playerInput.transform);
+        Generator.generator.AllCurrentActiveObjects.Add(new System.Collections.Generic.List<GameObject>());
 
         StartCoroutine(Generator.generator.ShowRoomsCloseToPlayer(numPlayers)); // Throw in a room update as well
 

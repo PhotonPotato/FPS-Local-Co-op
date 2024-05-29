@@ -58,17 +58,11 @@ public class Bullet : MonoBehaviour
         // Check if the bullet has hit an object on the hitLayers
         if (hitLayers == (hitLayers | (1 << other.gameObject.layer)))
         {
-            //Try to find if the object is damagable
+            //Try to find if the object is damagable (remember the health must be in the same object as the collider, not a parent)
             if (other.TryGetComponent<Health>(out Health health))
             {
                 health.DealDamage(damage, senderID, damageType);
             }
-
-            //Health health = other.GetComponent<Health>();
-            //if (health != null)
-            //{
-                //health.TakeDamage(damage);
-            //}
 
             // Spawn impact effect
             if (impactEffect != null)

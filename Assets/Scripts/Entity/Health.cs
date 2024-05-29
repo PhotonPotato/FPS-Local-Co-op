@@ -29,6 +29,8 @@ public class Health : MonoBehaviour
             //if (!GameConstants.FriendlyFire) return false;
 
             if (senderID == thisPlayerID) return false;
+
+            Debug.Log("hit");
         }
 
         health -= amount;

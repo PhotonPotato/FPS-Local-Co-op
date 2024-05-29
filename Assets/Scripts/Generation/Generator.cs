@@ -96,7 +96,7 @@ public class Generator : MonoBehaviour
     [Header("Performance Optimization")]
 
     public List<Transform> activePlayers;
-    public List<GameObject> currentActiveObjects;
+    public List<List<GameObject>> AllCurrentActiveObjects;
 
     private void Start()
     {
@@ -121,6 +121,8 @@ public class Generator : MonoBehaviour
         //InitGeneration(0, startPlace);
 
         //GenerateObjects();
+
+        AllCurrentActiveObjects = new List<List<GameObject>>();
     }
 
     private void Update()
@@ -827,11 +829,15 @@ public class Generator : MonoBehaviour
         //Clear all rooms
         List<GameObject> newActiveObjects = new List<GameObject>();
 
+        if (AllCurrentActiveObjects[playerIndex] == null) AllCurrentActiveObjects[playerIndex] = new List<GameObject>();
+
         //activeObjects.Clear();
 
         //The following is per player
         //foreach (Transform player in activePlayers)
         Transform player = activePlayers[playerIndex];
+
+        Debug.Log(player);
 
         {
             //Identify the layer
@@ -860,17 +866,29 @@ public class Generator : MonoBehaviour
 
         List<GameObject> activeObjectsBeforeWeed = newActiveObjects.GetRange(0, newActiveObjects.Count);
 
-        for (int i = 0; i < currentActiveObjects.Count; i++)
+        for (int i = 0; i < AllCurrentActiveObjects[playerIndex].Count; i++)
         {
-            if (newActiveObjects.Contains(currentActiveObjects[i]))
+            if (newActiveObjects.Contains(AllCurrentActiveObjects[playerIndex][i]))
             {
                 //Remove object from temp list (to prevent seting it to active twice)
-                newActiveObjects.Remove(currentActiveObjects[i]);
+                newActiveObjects.Remove(AllCurrentActiveObjects[playerIndex][i]);
             }
             else
             {
+                bool objectIsInOtherPlayerVicinity = false;
+
+                //Look for this object in other players lists
+                for (int j = 0; j < AllCurrentActiveObjects.Count; j++)
+                {
+                    if (j == playerIndex) continue;
+
+                    if (AllCurrentActiveObjects[j].Contains(AllCurrentActiveObjects[playerIndex][i]))
+                    {
+                        objectIsInOtherPlayerVicinity = true;
+                    }
+                }
                 //Hide objects that arent in the current list of active
-                currentActiveObjects[i]?.SetActive(false);
+                if (!objectIsInOtherPlayerVicinity) AllCurrentActiveObjects[playerIndex][i]?.SetActive(false);
             }
         }
 
@@ -880,9 +898,7 @@ public class Generator : MonoBehaviour
             if (obj != null) obj.SetActive(true);
         }
 
-        currentActiveObjects = activeObjectsBeforeWeed.GetRange(0, activeObjectsBeforeWeed.Count);
-
-        Debug.Log($"active rooms = {currentActiveObjects.Count}");
+        AllCurrentActiveObjects[playerIndex] = activeObjectsBeforeWeed.GetRange(0, activeObjectsBeforeWeed.Count);
 
         yield return null;
 
@@ -902,8 +918,6 @@ public class Generator : MonoBehaviour
             {
                 coord.x--;
             }
-
-            Debug.Log("x: " + coord.x);
         }
 
         if (coord.y % 2 != 0) //Needs to be odd to be a room
@@ -916,8 +930,6 @@ public class Generator : MonoBehaviour
             {
                 coord.y--;
             }
-
-            Debug.Log("Y " + coord.y);
         }
 
         if (BoardSpaceExists(coord))
