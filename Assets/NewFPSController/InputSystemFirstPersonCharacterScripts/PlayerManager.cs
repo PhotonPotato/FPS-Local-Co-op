@@ -7,7 +7,8 @@ public class PlayerManager : MonoBehaviour
     // Add health bs here
 
     [Header("Refs")]
-    WeaponInventory m_Inventory;
+    WeaponInventory m_WeaponInventory;
+    PlayerInventoryManager m_LootInventorymanager;
     PlayerInput m_Input;
     WeaponController m_WeaponController;
     Health m_Health;
@@ -20,12 +21,17 @@ public class PlayerManager : MonoBehaviour
 
     public float interactionDistance = 3f;
     public float interactionSpherecastRadius = 1f;
+    float timeOfLastInteraction = Mathf.NegativeInfinity;
+    [Tooltip("Limits how fast one can interact consecutively")]
+    public float minTimeBetweenInteractions = .1f;
 
     [System.NonSerialized] public int playerIndex;
 
     public void Start()
     {
-        m_Inventory = GetComponent<WeaponInventory>();
+        m_WeaponInventory = GetComponent<WeaponInventory>();
+        m_LootInventorymanager = GetComponent<PlayerInventoryManager>();
+
         m_Input = GetComponent<PlayerInput>();
 
         m_WeaponController = GetComponent<WeaponController>();
@@ -53,24 +59,38 @@ public class PlayerManager : MonoBehaviour
 
     public bool HandleInteractionKeyPressed() //Handles raycasting for pickups
     {
-        RaycastHit ineractionQueryHit;
+        //Make sure that it has been long enough between interactions
+        if (Time.time - timeOfLastInteraction < minTimeBetweenInteractions) return false;
+
+        RaycastHit interactionQueryHit;
 
         //Spherecast to ground in front of player
-        if (Physics.SphereCast(m_WeaponController.camPos.position, interactionSpherecastRadius, m_WeaponController.camPos.forward, out ineractionQueryHit, interactionDistance, interactionQueryLayers, QueryTriggerInteraction.Collide))
+        if (Physics.SphereCast(m_WeaponController.camPos.position, interactionSpherecastRadius, m_WeaponController.camPos.forward, out interactionQueryHit, interactionDistance, interactionQueryLayers, QueryTriggerInteraction.Collide))
         {
             //Initiate the pickup
-            switch (ineractionQueryHit.collider.tag)
+            switch (interactionQueryHit.collider.tag)
             {
                 case "WeaponPickup":
-                    m_Inventory.OnWeaponPickup(ineractionQueryHit.collider.gameObject);
+                    m_WeaponInventory.OnWeaponPickup(interactionQueryHit.collider.gameObject);
                     break;
 
                 case "Chest":
                     //Access and run "on open" type shi
-                    ineractionQueryHit.collider.gameObject.GetComponent<ChestBehavior>().OnChestOpen();
+                    interactionQueryHit.collider.gameObject.GetComponent<ChestBehavior>().OnChestOpen();
+                    break;
+
+                case "ItemPickup":
+                    //Get the actual item
+                    Debug.Log("item detected, picking up");
+
+                    LootItem item = interactionQueryHit.transform.GetComponent<LootItem>();
+
+                    m_LootInventorymanager.AddItem(item);
                     break;
 
             }
+
+            timeOfLastInteraction = Time.time;
 
             return true;
         }

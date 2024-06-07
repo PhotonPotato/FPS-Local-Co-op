@@ -38,6 +38,8 @@ public class BulletObjectPoolManager : MonoBehaviour
     {
         SharedInstance = this;
 
+        Debug.Log($"shaerd manager: {BulletObjectPoolManager.SharedInstance}");
+
         if (ObjectPools.Count == 0) return;
 
         Pool pool;

@@ -123,21 +123,9 @@ public class Generator : MonoBehaviour
         //GenerateObjects();
 
         AllCurrentActiveObjects = new List<List<GameObject>>();
-    }
 
-    private void Update()
-    {
-        if (timer > 0)
+        //This marks the start of the Generation
         {
-            timer -= Time.deltaTime;
-        }
-        else
-        {
-            timer = 1000;
-
-            numberBranches = 0;
-            numberStaircases = 0;
-
             InitBoard();
             GenerateNewStartPoint();
             InitGeneration(0, startPlace, false);
@@ -164,14 +152,12 @@ public class Generator : MonoBehaviour
             ShowAllRooms(false);
 
             Debug.Log("End of loop");
-            //ShowRoomsCloseToPlayers();
         }
+    }
 
-        if (Time.frameCount % 30 == 0) //Run every 30th frame
-        {
-            //Debug.Log("optimizing");
-            //ShowRoomsCloseToPlayers();
-        }
+    private void Update()
+    {
+        
     }
 
     public void InitBoard()
@@ -816,7 +802,7 @@ public class Generator : MonoBehaviour
         return tmpData;
     }
 
-    public void ShowRoomsCloseToPlayers()
+    public void ShowRoomsCloseToAllPlayerss()
     {
         for (int i = 0; i < activePlayers.Count; i++)
         {
@@ -901,7 +887,6 @@ public class Generator : MonoBehaviour
         AllCurrentActiveObjects[playerIndex] = activeObjectsBeforeWeed.GetRange(0, activeObjectsBeforeWeed.Count);
 
         yield return null;
-
     }
 
     public Vector2Int PlayerPositionToBoardCoordinate(Vector3 playerPos)

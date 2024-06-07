@@ -31,7 +31,7 @@ public class WeaponBehavior : MonoBehaviour
     public float bulletSpreadHip = .5f;
     public float bulletSpreadADS = .5f;
 
-    [System.NonSerialized] public WeaponController operatingController;
+    public WeaponController operatingController;
     public GameObject Makrer;
 
     private int senderID = -1; //Stores player index of owner
@@ -111,6 +111,9 @@ public class WeaponBehavior : MonoBehaviour
         nextFireTime = Time.time + fireRate;
         currentAmmo--;
 
+        //Just a catch for the null ref error that happens when the game scene is joined
+        if (BulletObjectPoolManager.SharedInstance == null) return;
+
         GameObject bullet = BulletObjectPoolManager.SharedInstance.GetPooledObject(bulletPoolIndex);
 
         if (bullet == null)
@@ -126,6 +129,7 @@ public class WeaponBehavior : MonoBehaviour
 
         if (bulletScript != null)
         {
+            Debug.Log($"operating controller: {operatingController}");
             bulletScript.Initialize(damage, operatingController.bulletLayers, GetBulletFireVector() + GetRandomSpreadVector(isADS), senderID);
         }
 
