@@ -50,7 +50,7 @@ MonoBehaviour:
   itemName: Honey Jar
   itemSellPrice: 75
   itemModel: {fileID: 6910957385878031326}
-  displayImage: {fileID: 21300002, guid: 215687feeab0b7445b4a1cd86c82c2e1, type: 3}
+  displayTexture: {fileID: 2800000, guid: e8ed9166be2a7493ba01f70576e0fb98, type: 3}
 --- !u!135 &7161755499410915927
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -81,7 +81,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1537885579108750862}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Models
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,7 +135,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 98e513d49a08748e7afa49dbbba1765b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.43
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 98e513d49a08748e7afa49dbbba1765b,
         type: 3}
@@ -182,10 +182,20 @@ PrefabInstance:
       propertyPath: m_Lightmapping
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: -7767597886930267675, guid: 98e513d49a08748e7afa49dbbba1765b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: -5076484507258936684, guid: 98e513d49a08748e7afa49dbbba1765b,
         type: 3}
       propertyPath: m_Lightmapping
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -3941164549346772188, guid: 98e513d49a08748e7afa49dbbba1765b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -2601552257854514524, guid: 98e513d49a08748e7afa49dbbba1765b,
         type: 3}
@@ -196,6 +206,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: HoneyJar
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 98e513d49a08748e7afa49dbbba1765b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 944108628662674858, guid: 98e513d49a08748e7afa49dbbba1765b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4717243876031326624, guid: 98e513d49a08748e7afa49dbbba1765b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7638104345217537351, guid: 98e513d49a08748e7afa49dbbba1765b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

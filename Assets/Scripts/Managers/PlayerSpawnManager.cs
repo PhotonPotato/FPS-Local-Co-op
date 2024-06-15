@@ -36,6 +36,9 @@ public class PlayerSpawnManager : MonoBehaviour
 
         //playerInput.uiInputModule = FindAnyObjectByType<InputSystemUIInputModule>();
 
+        //This works to catch any null refs for active players
+        if (activePlayers == null) activePlayers = new List<Transform>();
+
         activePlayers.Add(playerInput.transform);
 
         //The following is from when players joined directly into the scene:
@@ -56,6 +59,7 @@ public class PlayerSpawnManager : MonoBehaviour
         else
         {
             playerInput.GetComponent<PlayerCharacterController>().enabled = false;
+            playerInput.GetComponent<PlayerInventoryManager>().enabled = false;
             playerInput.GetComponent<WeaponController>().enabled = false;
             playerInput.GetComponent<PlayerManager>().enabled = false;
             playerInput.GetComponentInChildren<Camera>().enabled = false;

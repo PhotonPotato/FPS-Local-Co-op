@@ -23,6 +23,8 @@ public class PlayerCharacterController : MonoBehaviour
     private InputAction m_JumpInput;
     private InputAction m_CrouchInput;
 
+    private PlayerInventoryManager m_PlayerInventoryManager;
+
     public bool usingGamepad = false;
     private XInputController m_Gamepad;
 
@@ -81,6 +83,8 @@ public class PlayerCharacterController : MonoBehaviour
         m_JumpInput = m_PlayerInput.actions["Jump"];
         m_CrouchInput = m_PlayerInput.actions["Crouch"];
 
+        m_PlayerInventoryManager = GetComponent<PlayerInventoryManager>();
+
         //Check the input type
         if (m_PlayerInput.devices[0] is XInputController)
         {
@@ -96,8 +100,6 @@ public class PlayerCharacterController : MonoBehaviour
         Debug.Log("Startup");
         controller = GetComponent<CharacterController>();
         initHeight = controller.height;
-        Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
         SetBaseFOV(cam.fieldOfView);
         SetSprintFov(baseFOV);
     }
@@ -109,10 +111,22 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void Update()
     {
-        DoMovement();
-        DoLooking();
-        DoZoom();
-        DoCrouch();
+        //DEBUG>> FOR PC SO YOU CAN SEE THE MOUSE
+        if (m_PlayerInventoryManager.inventoryPanelOpen || m_PlayerInventoryManager.sellPanelOpen)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else //Let the player move then
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            DoMovement();
+            DoLooking();
+            DoZoom();
+            DoCrouch();
+        }
     }
 
     private void DoLooking()

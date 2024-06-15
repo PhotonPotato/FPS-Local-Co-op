@@ -50,7 +50,7 @@ MonoBehaviour:
   itemName: Template
   itemSellPrice: 0
   itemModel: {fileID: 5887197740969342643}
-  displayImage: {fileID: 21300002, guid: 215687feeab0b7445b4a1cd86c82c2e1, type: 3}
+  displayTexture: {fileID: 0}
 --- !u!135 &5582697194836862636
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -83,7 +83,7 @@ GameObject:
   - component: {fileID: 6395280492786361163}
   - component: {fileID: 3946025887508881894}
   - component: {fileID: 2280850426031227812}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Models
   m_TagString: Untagged
   m_Icon: {fileID: 0}

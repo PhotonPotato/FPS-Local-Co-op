@@ -54,7 +54,7 @@
                     "name": "Pause Menu",
                     "type": "Button",
                     "id": "a5ad4849-694e-45e5-818f-a2eb7914c14d",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "Press",
                     "initialStateCheck": false
@@ -108,9 +108,18 @@
                     "name": "Interact",
                     "type": "Button",
                     "id": "df32748e-309f-449a-a01b-51e2c967f290",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenInventory",
+                    "type": "Button",
+                    "id": "5d31e660-3791-4e47-ac94-d815332716b0",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 }
             ],
@@ -618,6 +627,28 @@
                     "processors": "",
                     "groups": "Xbox",
                     "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "92a8c5e5-3d7a-44a1-8675-7b6cea7f1254",
+                    "path": "<Keyboard>/t",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": ";FPSControllerInputs",
+                    "action": "OpenInventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bff0e493-59d8-4594-b0f9-4f2a6775ec8e",
+                    "path": "<XInputController>/{Submit}",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "OpenInventory",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

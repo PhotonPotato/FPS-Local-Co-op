@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3727006999544098033}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Models
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -82,7 +82,7 @@ MonoBehaviour:
   itemName: Gears
   itemSellPrice: 25
   itemModel: {fileID: 746427639201839939}
-  displayImage: {fileID: 21300002, guid: 215687feeab0b7445b4a1cd86c82c2e1, type: 3}
+  displayTexture: {fileID: 2800000, guid: 5a04a93cf959542c9a780c25c0310108, type: 3}
 --- !u!135 &2389147668821940151
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -177,10 +177,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -2422315340263230684, guid: a20ccff37194e494ca8d83241cc48a7c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a20ccff37194e494ca8d83241cc48a7c,
         type: 3}
       propertyPath: m_Name
       value: Gears
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a20ccff37194e494ca8d83241cc48a7c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8144394004440419581, guid: a20ccff37194e494ca8d83241cc48a7c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

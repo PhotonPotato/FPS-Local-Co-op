@@ -8,15 +8,15 @@ public class LootItem : MonoBehaviour
     /// </summary>
     ///
 
-    public int itemID = -1;
-    public string itemName;
-    public float itemSellPrice;
+    [SerializeField] private int itemID = -1;
+    [SerializeField] private string itemName;
+    [SerializeField] private float itemSellPrice;
 
     public GameObject itemModel;
 
-    public Sprite displayImage;
+    public Texture2D displayTexture;
 
-    public int GetItemID => itemID;
-    public string GetItemName => itemName;
-    public float GetItemSellPrice => itemSellPrice;
+    public int GetItemID() => itemID;
+    public string GetItemName() => itemName;
+    public float GetItemSellPrice() => itemSellPrice;
 }

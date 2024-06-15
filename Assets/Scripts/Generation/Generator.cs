@@ -19,6 +19,9 @@ public class Generator : MonoBehaviour
 
     public static Generator generator;
 
+    //REMOVE FOR RELEASE
+    public bool DEBUGMODEACTIVE = false;
+
     [Header("Initialization Settings")]
     //Board length.
     public int boardLength = 4;
@@ -26,7 +29,7 @@ public class Generator : MonoBehaviour
 
     [Tooltip("Begin generation from a random point on the board")]
     public bool useRandomOriginPos = true;
-
+    
 
     [Header("Generation Settings")]
     public int branchLengthMax = 10;
@@ -153,6 +156,18 @@ public class Generator : MonoBehaviour
 
             Debug.Log("End of loop");
         }
+
+        //REMOVE
+        //REMOVE
+        //REMOVE
+        //REMOVE THIS CODE FOR RELEASE PLEASE
+        #region Debug
+        if (DEBUGMODEACTIVE)
+        {
+            AllCurrentActiveObjects.Add(new List<GameObject>());
+            ShowRoomsCloseToAllPlayerss();
+        } 
+        #endregion
     }
 
     private void Update()
@@ -823,8 +838,6 @@ public class Generator : MonoBehaviour
         //foreach (Transform player in activePlayers)
         Transform player = activePlayers[playerIndex];
 
-        Debug.Log(player);
-
         {
             //Identify the layer
             int layer = player.position.y > 8f ? 1 : 0;
@@ -832,15 +845,11 @@ public class Generator : MonoBehaviour
 
             Vector2Int playerCoord = PlayerPositionToBoardCoordinate(player.position);
 
-            Debug.Log(playerCoord);
-            Debug.Log(boards[layer][playerCoord.x, playerCoord.y].roomObj);
             newActiveObjects.Add(boards[layer][playerCoord.x, playerCoord.y].roomObj);
 
             for (int i = 0; i < 4; i++) //Do all directions
             {
                 Vector2Int currentCoord = playerCoord + possibleDirs[i];
-
-                Debug.Log(currentCoord);
 
                 if (!BoardSpaceExists(currentCoord) || !BoardSpaceOccupied(layer, currentCoord)) continue;
 

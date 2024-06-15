@@ -8,6 +8,8 @@ TagManager:
   - CorridoorTrigger
   - WeaponPickup
   - ItemPickup
+  - SellStation
+  - BuyStation
   layers:
   - Default
   - TransparentFX

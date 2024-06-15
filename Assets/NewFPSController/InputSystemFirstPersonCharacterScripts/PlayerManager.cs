@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -10,11 +11,13 @@ public class PlayerManager : MonoBehaviour
     WeaponInventory m_WeaponInventory;
     PlayerInventoryManager m_LootInventorymanager;
     PlayerInput m_Input;
-    WeaponController m_WeaponController;
+    public WeaponController m_WeaponController;
     Health m_Health;
     public Slider m_HealthBar;
 
     InputAction interactAction;
+
+    public TMP_Text accountBalanceText;
 
     [Header("Settings")]
     public LayerMask interactionQueryLayers;
@@ -26,6 +29,9 @@ public class PlayerManager : MonoBehaviour
     public float minTimeBetweenInteractions = .1f;
 
     [System.NonSerialized] public int playerIndex;
+
+    [Header("Trackers")]
+    public float playerAccountBalance {get; private set;}  = 0f;
 
     public void Start()
     {
@@ -51,6 +57,8 @@ public class PlayerManager : MonoBehaviour
             HandleInteractionKeyPressed();//Debug.Log("Interact " + HandleInteractionKeyPressed());
         }
 
+        //Only update the account balance text if the inventory is open
+        if (m_LootInventorymanager.inventoryPanelOpen) accountBalanceText.text = $"Account Balance: ${playerAccountBalance}";
 
         m_HealthBar.value = m_Health.GetHealth();
 
@@ -88,6 +96,13 @@ public class PlayerManager : MonoBehaviour
                     m_LootInventorymanager.AddItem(item);
                     break;
 
+                case "SellStation":
+                    Debug.Log("Sell Station Interacted With");
+
+                    //Just call the function that opens the sell panel
+                    GetComponent<PlayerInventoryManager>().OnOpenItemSellPanel();
+                    break;
+
             }
 
             timeOfLastInteraction = Time.time;
@@ -110,4 +125,6 @@ public class PlayerManager : MonoBehaviour
                 break;
         }
     }
+
+    public void AddToAccountBalance(float amount) => playerAccountBalance += amount;
 }

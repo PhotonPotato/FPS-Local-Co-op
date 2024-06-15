@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4995982657056918019}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Models
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -82,7 +82,7 @@ MonoBehaviour:
   itemName: Bucket
   itemSellPrice: 15
   itemModel: {fileID: 3475599608064633880}
-  displayImage: {fileID: 21300002, guid: 215687feeab0b7445b4a1cd86c82c2e1, type: 3}
+  displayTexture: {fileID: 2800000, guid: e12e30192243044a4ab7b87c68f8bb45, type: 3}
 --- !u!135 &6433695568351435691
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -181,6 +181,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Plastic_Bucket
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 205c9ae461e62462791b7f44e6039f24,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

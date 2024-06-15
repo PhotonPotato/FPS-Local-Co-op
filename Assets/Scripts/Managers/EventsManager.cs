@@ -68,7 +68,7 @@ public class EventsManager : MonoBehaviour
     {
         var parameters = new LoadSceneParameters(LoadSceneMode.Additive);
 
-        ActiveGameScene = SceneManager.LoadScene("SampleScene", parameters);
+        ActiveGameScene = SceneManager.LoadScene("GameScene", parameters);
 
         Destroy(FindObjectsByType<EventSystem>(FindObjectsSortMode.None)[0].gameObject);
 
@@ -94,6 +94,8 @@ public class EventsManager : MonoBehaviour
 
             //Makes the player movement active again
             player.GetComponent<PlayerCharacterController>().enabled = true;
+            player.GetComponent<PlayerInventoryManager>().enabled = true;
+
             player.GetComponent<WeaponController>().enabled = true;
             player.GetComponent<PlayerManager>().enabled = true;
             player.GetComponentInChildren<Camera>().enabled = true;

@@ -77,7 +77,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""name"": ""Pause Menu"",
                     ""type"": ""Button"",
                     ""id"": ""a5ad4849-694e-45e5-818f-a2eb7914c14d"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
@@ -131,9 +131,18 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""df32748e-309f-449a-a01b-51e2c967f290"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""5d31e660-3791-4e47-ac94-d815332716b0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
                     ""initialStateCheck"": false
                 }
             ],
@@ -643,6 +652,28 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""92a8c5e5-3d7a-44a1-8675-7b6cea7f1254"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": "";FPSControllerInputs"",
+                    ""action"": ""OpenInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bff0e493-59d8-4594-b0f9-4f2a6775ec8e"",
+                    ""path"": ""<XInputController>/{Submit}"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": "";Xbox"",
+                    ""action"": ""OpenInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -696,6 +727,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
         m_FPSController_FirePrimary = m_FPSController.FindAction("Fire Primary", throwIfNotFound: true);
         m_FPSController_FireSecondary = m_FPSController.FindAction("Fire Secondary", throwIfNotFound: true);
         m_FPSController_Interact = m_FPSController.FindAction("Interact", throwIfNotFound: true);
+        m_FPSController_OpenInventory = m_FPSController.FindAction("OpenInventory", throwIfNotFound: true);
     }
 
     ~@InputSystemFirstPersonControls()
@@ -774,6 +806,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
     private readonly InputAction m_FPSController_FirePrimary;
     private readonly InputAction m_FPSController_FireSecondary;
     private readonly InputAction m_FPSController_Interact;
+    private readonly InputAction m_FPSController_OpenInventory;
     public struct FPSControllerActions
     {
         private @InputSystemFirstPersonControls m_Wrapper;
@@ -790,6 +823,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
         public InputAction @FirePrimary => m_Wrapper.m_FPSController_FirePrimary;
         public InputAction @FireSecondary => m_Wrapper.m_FPSController_FireSecondary;
         public InputAction @Interact => m_Wrapper.m_FPSController_Interact;
+        public InputAction @OpenInventory => m_Wrapper.m_FPSController_OpenInventory;
         public InputActionMap Get() { return m_Wrapper.m_FPSController; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -835,6 +869,9 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @OpenInventory.started += instance.OnOpenInventory;
+            @OpenInventory.performed += instance.OnOpenInventory;
+            @OpenInventory.canceled += instance.OnOpenInventory;
         }
 
         private void UnregisterCallbacks(IFPSControllerActions instance)
@@ -875,6 +912,9 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @OpenInventory.started -= instance.OnOpenInventory;
+            @OpenInventory.performed -= instance.OnOpenInventory;
+            @OpenInventory.canceled -= instance.OnOpenInventory;
         }
 
         public void RemoveCallbacks(IFPSControllerActions instance)
@@ -924,5 +964,6 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
         void OnFirePrimary(InputAction.CallbackContext context);
         void OnFireSecondary(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnOpenInventory(InputAction.CallbackContext context);
     }
 }
