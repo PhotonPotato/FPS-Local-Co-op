@@ -52,13 +52,14 @@ public class WeaponInventory : MonoBehaviour
 
             AddWeapon(tempWeapon);
             Controller.SetCurrentWeaponIndex(i);
+            
             Controller.EquipWeapon(tempWeapon);
             i++;
         }
     }
 
     // Example usage
-    void Awake()
+    public void Awake()
     {
         Controller = GetComponent<WeaponController>();
 

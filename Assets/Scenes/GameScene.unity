@@ -1133,7 +1133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PoolParent: {fileID: 347491080}
   ObjectPools:
-  - name: Heavy Bullet
+  - name: GL Bullet
     poolAmount: 20
     pooledObjects: []
     objectToPool:
@@ -1141,7 +1141,7 @@ MonoBehaviour:
       obj: {fileID: 1864614383133484428, guid: 444ea486332d14009a8cfbc8576b3fe0, type: 3}
     UseMinimumTimeRecyclying: 0
     minimumTimeBeforeRecycle: 0
-  - name: Light Bullet
+  - name: Lazer Bullet
     poolAmount: 50
     pooledObjects: []
     objectToPool:
@@ -1163,6 +1163,62 @@ MonoBehaviour:
     objectToPool:
       timeInit: -1000
       obj: {fileID: 785328906721749763, guid: fcd1c6f1a48abb64e849806fc2e22ce8, type: 3}
+    UseMinimumTimeRecyclying: 0
+    minimumTimeBeforeRecycle: 3
+  - name: GLExplosionVFX
+    poolAmount: 20
+    pooledObjects: []
+    objectToPool:
+      timeInit: -1000
+      obj: {fileID: 8950624839484268180, guid: cee14d4a24cb945c38ae89b8a23d934c, type: 3}
+    UseMinimumTimeRecyclying: 1
+    minimumTimeBeforeRecycle: 3
+  - name: Glock Bullet
+    poolAmount: 20
+    pooledObjects: []
+    objectToPool:
+      timeInit: -1000
+      obj: {fileID: 1697637429802948525, guid: 7bae380e82c6a4d0f8211d109cfb4ca4, type: 3}
+    UseMinimumTimeRecyclying: 0
+    minimumTimeBeforeRecycle: 0
+  - name: GlockImpactVFX
+    poolAmount: 20
+    pooledObjects: []
+    objectToPool:
+      timeInit: -1000
+      obj: {fileID: 8950624839484268180, guid: b8e70a673b1db4af38dc56422b761a92, type: 3}
+    UseMinimumTimeRecyclying: 1
+    minimumTimeBeforeRecycle: 3
+  - name: SniperRifleBullet
+    poolAmount: 40
+    pooledObjects: []
+    objectToPool:
+      timeInit: -1000
+      obj: {fileID: 785328906721749763, guid: 72865ff8210cd4206b5a31aadddec77b, type: 3}
+    UseMinimumTimeRecyclying: 0
+    minimumTimeBeforeRecycle: 3
+  - name: SniperImpactVFX
+    poolAmount: 20
+    pooledObjects: []
+    objectToPool:
+      timeInit: -1000
+      obj: {fileID: 8950624839484268180, guid: 928159e701691443d947d96c450d5d8a, type: 3}
+    UseMinimumTimeRecyclying: 1
+    minimumTimeBeforeRecycle: 3
+  - name: GrenadeExplosionVFX
+    poolAmount: 8
+    pooledObjects: []
+    objectToPool:
+      timeInit: -1000
+      obj: {fileID: 8950624839484268180, guid: 5347f08d9ca624683a95a20ef8d65e0a, type: 3}
+    UseMinimumTimeRecyclying: 1
+    minimumTimeBeforeRecycle: 3
+  - name: GrenadeProjectile
+    poolAmount: 8
+    pooledObjects: []
+    objectToPool:
+      timeInit: -1000
+      obj: {fileID: 5624080721077406144, guid: ab34c7d7fcab04075a91f06ae9389ed4, type: 3}
     UseMinimumTimeRecyclying: 0
     minimumTimeBeforeRecycle: 3
 --- !u!4 &1102822283

@@ -50,6 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   possibleChestDrops:
   - {fileID: 2919487788100483261, guid: feb347cff53c744b89803e0f94e62dac, type: 3}
+  - {fileID: 2919487788100483261, guid: dc6d043507c954e5282a415db25d9da0, type: 3}
   numberDrops: 1
   chestOpportunityParticles: {fileID: 5888600399914625151}
   opened: 0

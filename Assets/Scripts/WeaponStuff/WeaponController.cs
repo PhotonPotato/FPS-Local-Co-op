@@ -14,6 +14,7 @@ public class WeaponController : MonoBehaviour
     public PlayerCharacterController m_PlayerController;
     private InputSystemFirstPersonControls inputActions;
     private WeaponBobbing m_WeaponBobbingBehavior;
+    public PlayerManager m_PlayerManager;
 
     private PlayerInput m_PlayerInput;
     private InputAction m_ChangeWeaponInput;
@@ -51,6 +52,8 @@ public class WeaponController : MonoBehaviour
 
         m_WeaponBobbingBehavior = GetComponent<WeaponBobbing>();
 
+        m_PlayerManager = GetComponent<PlayerManager>();
+
         if (inventory.weapons.Count > 0)
         {
             EquipWeapon(inventory.weapons[currentWeaponIndex]);
@@ -80,12 +83,12 @@ public class WeaponController : MonoBehaviour
                 //Fire was initiated
                 m_MuzzleFlash.enabled = true;
 
-                if (muzzleFlashCoroutine == null) muzzleFlashCoroutine = StartCoroutine(InitiateMuzzleFlash(1f, .05f, Time.time));
+                if (muzzleFlashCoroutine == null) muzzleFlashCoroutine = StartCoroutine(InitiateMuzzleFlash(currentWeaponBehavior.muzzleFlashIntensity, .05f, Time.time));
 
                 //Send out a pulse
                 InitiateFireRumblePulse();
 
-                m_WeaponBobbingBehavior.OnWeaponFire(currentWeaponBehavior.kickbackAmount, currentWeaponBehavior.kickbackTime);
+                m_WeaponBobbingBehavior.OnWeaponFire(currentWeaponBehavior.kickbackAmount, currentWeaponBehavior.kickbackRotation, currentWeaponBehavior.kickbackTime);
             }
         }
 
@@ -100,6 +103,11 @@ public class WeaponController : MonoBehaviour
         if (m_Controller != null) HandleControllerRumble();
 
         if (muzzleFlashCoroutine == null) m_MuzzleFlash.enabled = false;
+
+        //Update the view of the sniper crosshair overlay so the alpha always fades towards a desired value
+        if (currentWeaponBehavior.type == WeaponType.Sniper) m_PlayerManager.SniperCrosshairImage.color += new Color(0, 0, 0,
+                (m_PlayerController.isADS ? 1 : 0 - m_PlayerManager.SniperCrosshairImage.color.a) / 5);
+        else m_PlayerManager.SniperCrosshairImage.color = new Color(0, 0, 0, 0);
     }
 
     private void ChangeWeapon(int direction)
@@ -147,8 +155,8 @@ public class WeaponController : MonoBehaviour
         currentWeaponBehavior = weapon;
 
         //Update the sender ID of the weapon
-        currentWeaponBehavior.SetSenderID(Generator.generator.activePlayers.IndexOf(this.transform));
-        Debug.Log($"instanceID {Generator.generator.activePlayers.IndexOf(this.transform)}");
+        currentWeaponBehavior.SetSenderID(m_PlayerManager.playerIndex);
+        Debug.Log($"weapon controller player instanceID {m_PlayerManager.playerIndex}");
 
         currentWeaponBehavior.operatingController = this;
     }

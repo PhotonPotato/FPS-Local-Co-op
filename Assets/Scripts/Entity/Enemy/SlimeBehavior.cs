@@ -9,6 +9,7 @@ public class SlimeBehavior : MonoBehaviour
     public Health m_Health;
     public Transform m_target;
     public ParticleSystem m_deathExplosion;
+    public ParticleSystem m_damageExplosion;
     public GameObject obj;
     BoxCollider m_collider;
 
@@ -233,6 +234,11 @@ public class SlimeBehavior : MonoBehaviour
 
         //Kill this object
         Destroy(this.gameObject, 1.5f);
+    }
+
+    public void OnThisTakeDamage()
+    {
+        m_damageExplosion?.Play();
     }
 
     public void OnCollisionEnter(Collision collision)

@@ -4,6 +4,7 @@ public class WeaponBehavior : MonoBehaviour
 {
     public string weaponName;
     public WeaponType type;
+    public DamageType damageType;
     public GameObject model;
     public int damage;
     public float range;
@@ -22,17 +23,19 @@ public class WeaponBehavior : MonoBehaviour
     public bool reloading = false;
     public float reloadTimer = 0; //Only updates when script is active!
 
+    public float muzzleFlashIntensity = 1f;
+
     public float rumbleFireDuration = .8f;
     public float rumbleIntensity = 1;
 
     public float kickbackAmount = .01f;
     public float kickbackTime = .05f;
+    public float kickbackRotation = 10f;
 
     public float bulletSpreadHip = .5f;
     public float bulletSpreadADS = .5f;
 
     public WeaponController operatingController;
-    public GameObject Makrer;
 
     private int senderID = -1; //Stores player index of owner
 
@@ -130,7 +133,7 @@ public class WeaponBehavior : MonoBehaviour
         if (bulletScript != null)
         {
             Debug.Log($"operating controller: {operatingController}");
-            bulletScript.Initialize(damage, operatingController.bulletLayers, GetBulletFireVector() + GetRandomSpreadVector(isADS), senderID);
+            bulletScript.Initialize(damage, operatingController.bulletLayers, type == WeaponType.Grenade ? operatingController.camPos.forward : GetBulletFireVector() + GetRandomSpreadVector(isADS), senderID, damageType);
         }
 
         TrailRenderer rend = bullet.GetComponentInChildren<TrailRenderer>();
@@ -177,5 +180,7 @@ public class WeaponBehavior : MonoBehaviour
 public enum WeaponType
 {
     Melee,
-    Ranged
+    Ranged,
+    Grenade,
+    Sniper
 }

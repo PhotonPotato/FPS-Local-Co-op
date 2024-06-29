@@ -58,30 +58,37 @@ public class WeaponBobbing : MonoBehaviour
         weaponTransform.localPosition = newPosition;
     }
 
-    public void OnWeaponFire(float kickbackAmount, float kickbackTime)
+    public void OnWeaponFire(float kickbackAmount, float rotAmount, float kickbackTime)
     {
         if (kickbackCoroutine != null)
         {
             StopCoroutine(kickbackCoroutine);
         }
-        kickbackCoroutine = StartCoroutine(KickbackCoroutine(kickbackAmount, kickbackTime));
+        kickbackCoroutine = StartCoroutine(KickbackCoroutine(kickbackAmount, rotAmount, kickbackTime));
     }
 
-    IEnumerator KickbackCoroutine(float amount, float kickbackTime)
+    IEnumerator KickbackCoroutine(float amount, float rotAmount, float kickbackTime)
     {
         float elapsedTime = 0.0f;
         Vector3 initialPosition = weaponModelTransform.localPosition;
-        Vector3 kickbackPosition = initialPosition - weaponModelTransform.up * amount;
+        Vector3 kickbackPosition = initialPosition + weaponModelTransform.up * amount;
+
+        Quaternion initialRot = weaponModelTransform.localRotation;
+
+        Quaternion kickbackRot = Quaternion.Euler(weaponModelTransform.localRotation.eulerAngles - new Vector3(30 * rotAmount, 0, 0));//weaponModelTransform.rotation.x + 30 * amount, weaponModelTransform.rotation.y + 0, weaponModelTransform.rotation.z + 0, weaponModelTransform.rotation.w);
 
         while (elapsedTime < kickbackTime)
         {
             weaponModelTransform.localPosition = Vector3.Lerp(initialPosition, kickbackPosition, elapsedTime / kickbackTime);
+            weaponModelTransform.localRotation = Quaternion.Slerp(initialRot, kickbackRot, 1 - Mathf.Pow(1 - elapsedTime / kickbackTime, 3));
+
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
         // Ensure the weapon returns to its original position
         weaponModelTransform.localPosition = initialPosition;
+        weaponModelTransform.localRotation = initialRot;
     }
 }
 

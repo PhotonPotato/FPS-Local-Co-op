@@ -111,6 +111,8 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void Update()
     {
+        DoMovement();
+
         //DEBUG>> FOR PC SO YOU CAN SEE THE MOUSE
         if (m_PlayerInventoryManager.inventoryPanelOpen || m_PlayerInventoryManager.sellPanelOpen)
         {
@@ -122,7 +124,6 @@ public class PlayerCharacterController : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            DoMovement();
             DoLooking();
             DoZoom();
             DoCrouch();

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3201827727877312810}
   - component: {fileID: 8800262985984870971}
   - component: {fileID: 897757466159169485}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BulletLite_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,8 +51,10 @@ MonoBehaviour:
   speed: 110
   damage: 10
   gravityAcceleration: 0
+  explosionRadius: 2
   impactEffect: {fileID: 7635230255058315795, guid: 7593818fba43c7f4c8372299ce5e893f,
     type: 3}
+  bulletImpactPoolID: 2
 --- !u!135 &897757466159169485
 SphereCollider:
   m_ObjectHideFlags: 0

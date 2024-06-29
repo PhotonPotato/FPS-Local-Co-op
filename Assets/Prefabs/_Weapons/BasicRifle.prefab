@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Basic Rifle
   type: 1
+  damageType: 1
   model: {fileID: 8169172231274113709}
   damage: 20
   range: 20
@@ -62,13 +63,15 @@ MonoBehaviour:
   fireDissabled: 0
   reloading: 0
   reloadTimer: 0
+  muzzleFlashIntensity: 1
   rumbleFireDuration: 0.08
   rumbleIntensity: 5
   kickbackAmount: 0.01
   kickbackTime: 0.05
+  kickbackRotation: 0.1
   bulletSpreadHip: 0.1
   bulletSpreadADS: 0.02
-  Makrer: {fileID: 0}
+  operatingController: {fileID: 0}
 --- !u!1 &6753579337595756220
 GameObject:
   m_ObjectHideFlags: 0

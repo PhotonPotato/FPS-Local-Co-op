@@ -381,6 +381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b84ea3d328db542b493f5cd3bb1e3876, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DEBUGMODE: 0
   PlayerSpawnPoint: {fileID: 558750410}
   spawnPodiumPositions:
   - {fileID: 1185255680}

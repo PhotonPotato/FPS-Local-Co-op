@@ -163,7 +163,7 @@ public class PlayerInventoryManager : MonoBehaviour
     /// </summary>
     public void OnCloseInventoryPanel()
     {
-        inventoryPanelOpen = !inventoryPanelOpen;
+        inventoryPanelOpen = false;
 
         //Play a sound or something
     }

@@ -19,6 +19,8 @@ public class PlayerManager : MonoBehaviour
 
     public TMP_Text accountBalanceText;
 
+    public Image SniperCrosshairImage;
+
     [Header("Settings")]
     public LayerMask interactionQueryLayers;
 

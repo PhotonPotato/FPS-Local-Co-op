@@ -294,6 +294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Rifle
   type: 1
+  damageType: 1
   model: {fileID: 4071620348346186588}
   damage: 10
   range: 300
@@ -308,13 +309,15 @@ MonoBehaviour:
   fireDissabled: 0
   reloading: 0
   reloadTimer: 0
+  muzzleFlashIntensity: 1
   rumbleFireDuration: 0.08
   rumbleIntensity: 1
   kickbackAmount: 0.01
   kickbackTime: 0.05
+  kickbackRotation: 0.1
   bulletSpreadHip: 0.1
   bulletSpreadADS: 0.02
-  Makrer: {fileID: 0}
+  operatingController: {fileID: 0}
 --- !u!1 &4071620348346186588
 GameObject:
   m_ObjectHideFlags: 0
@@ -1255,6 +1258,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 837661932798223804}
     m_Modifications:
+    - target: {fileID: 3535881425241086519, guid: 21c8bd050f24da54285f8a3987ee6253,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5338991494728519494, guid: 21c8bd050f24da54285f8a3987ee6253,
         type: 3}
       propertyPath: m_RootOrder
@@ -1319,6 +1327,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8455270613747015080, guid: 21c8bd050f24da54285f8a3987ee6253,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8455270613747015080, guid: 21c8bd050f24da54285f8a3987ee6253,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8455270613747015080, guid: 21c8bd050f24da54285f8a3987ee6253,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 0.11405122
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
