@@ -102,4 +102,17 @@ public class WeaponInventory : MonoBehaviour
         //Get rid of the pickup container
         Destroy(pickupParent);
     }
+
+    public void OnWeaponBuy(WeaponBehavior pickupWeapon)
+    {
+        //Pull the actual prefab object and spawn it in
+        GameObject weaponSpawn = Instantiate(pickupWeapon.gameObject);
+
+        WeaponBehavior tempWeapon = weaponSpawn.GetComponent<WeaponBehavior>();
+
+        AddWeapon(tempWeapon);
+
+        Controller.SetCurrentWeaponIndex(weapons.Count - 1);
+        Controller.EquipWeapon(tempWeapon);
+    }
 }

@@ -46,6 +46,8 @@ public class PlayerCharacterController : MonoBehaviour
     public float zoomSpeed = 9f;
     private float targetFOV;
 
+    public bool isInMenu = false;
+
     public bool isADS { get; private set; }
 
     private float baseFOV;
@@ -114,10 +116,12 @@ public class PlayerCharacterController : MonoBehaviour
         DoMovement();
 
         //DEBUG>> FOR PC SO YOU CAN SEE THE MOUSE
-        if (m_PlayerInventoryManager.inventoryPanelOpen || m_PlayerInventoryManager.sellPanelOpen)
+        if (m_PlayerInventoryManager.inventoryPanelOpen || m_PlayerInventoryManager.sellPanelOpen || m_PlayerInventoryManager.buyPanelOpen)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+
+            isInMenu = true;
         }
         else //Let the player move then
         {
@@ -127,6 +131,8 @@ public class PlayerCharacterController : MonoBehaviour
             DoLooking();
             DoZoom();
             DoCrouch();
+
+            isInMenu = false;
         }
     }
 

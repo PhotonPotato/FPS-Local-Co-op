@@ -1,23 +1,18 @@
 fileFormatVersion: 2
-guid: fdf00ae655c6f9d4abac02c38bd47b3e
+guid: e00b27b8d9c47264ab84203ddf941b2c
 AssetOrigin:
   serializedVersion: 1
   productId: 245929
   packageName: Low Poly FPS Weapons Lite
   packageVersion: 1.0
-  assetPath: Assets/LowPolyWeapons_LITE/Models/Weapon_01.fbx
+  assetPath: Assets/LowPolyWeapons_LITE/Models/Weapon_02.fbx
   uploadId: 560060
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Weapons_01
-    second: {fileID: 2100000, guid: 031a9cf47b1aa4dd3a97c76ea1c25e1a, type: 2}
+  externalObjects: {}
   materials:
-    materialImportMode: 1
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -45,7 +40,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 2
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -100,7 +95,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.02
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

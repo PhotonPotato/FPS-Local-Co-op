@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2631757587956459029}
   - component: {fileID: 3768213887522048054}
   m_Layer: 0
-  m_Name: BasicRifle
+  m_Name: QualityAssaultRifle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 322dd0f784b0a4f898bbc019d2476455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: Basic Rifle
+  weaponName: Quality Assault Rifle
   type: 1
   damageType: 1
   model: {fileID: 8169172231274113709}
@@ -161,11 +161,46 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -2.96
       objectReference: {fileID: 0}
+    - target: {fileID: -6660125383535661527, guid: e00b27b8d9c47264ab84203ddf941b2c,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0591a70589db0404696be4365b32cf8a, type: 2}
+    - target: {fileID: -4850122089891057187, guid: e00b27b8d9c47264ab84203ddf941b2c,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0591a70589db0404696be4365b32cf8a, type: 2}
+    - target: {fileID: -3430331823696184895, guid: e00b27b8d9c47264ab84203ddf941b2c,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0591a70589db0404696be4365b32cf8a, type: 2}
     - target: {fileID: 919132149155446097, guid: e00b27b8d9c47264ab84203ddf941b2c,
         type: 3}
       propertyPath: m_Name
       value: Model
       objectReference: {fileID: 0}
+    - target: {fileID: 2041246752065223422, guid: e00b27b8d9c47264ab84203ddf941b2c,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0591a70589db0404696be4365b32cf8a, type: 2}
+    - target: {fileID: 2416458536625421270, guid: e00b27b8d9c47264ab84203ddf941b2c,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0591a70589db0404696be4365b32cf8a, type: 2}
+    - target: {fileID: 4325758466790245302, guid: e00b27b8d9c47264ab84203ddf941b2c,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0591a70589db0404696be4365b32cf8a, type: 2}
+    - target: {fileID: 6542045106856308701, guid: e00b27b8d9c47264ab84203ddf941b2c,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0591a70589db0404696be4365b32cf8a, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

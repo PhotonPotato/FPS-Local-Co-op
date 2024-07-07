@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
@@ -21,6 +22,18 @@ public class PlayerInventoryManager : MonoBehaviour
     public Transform InventorySellPanel;
     public TMP_Text SellPanelReceiptText;
 
+    public Transform InventoryBuyPanel;
+
+    //The multiplayer eventsystem that the player uses
+    public MultiplayerEventSystem m_PlayerEventSystem;
+
+    [Tooltip("First UI Element to be selected when opening the sell panel")]
+    public GameObject m_SellPanelFirstSelectedButton;
+    [Tooltip("First UI Element to be selected when opening the buy panel")]
+    public GameObject m_BuyPanelFirstSelectedButton;
+    [Tooltip("First UI Element to be selected when opening the inventory panel")]
+    public GameObject m_InventoryPanelFirstSelectedButton;
+
     PlayerInput m_PlayerInput;
     InputAction openInventoryAction;
 
@@ -29,6 +42,7 @@ public class PlayerInventoryManager : MonoBehaviour
     public bool inventoryPanelOpen = false;
 
     public bool sellPanelOpen = false;
+    public bool buyPanelOpen = false;
 
     [Header("Settings")]
     private bool lastInventoryButtonState = false;
@@ -48,8 +62,11 @@ public class PlayerInventoryManager : MonoBehaviour
         {
             inventoryPanelOpen = !inventoryPanelOpen;
 
+            OnOpenInventoryPanel();
+
             //Close the other panel if we're trying to open this one
             if (sellPanelOpen) OnCloseItemSellPanel();
+            else if (buyPanelOpen) OnCloseBuyPanel();
         }
 
         //Update the sate of the inventory panel
@@ -136,12 +153,17 @@ public class PlayerInventoryManager : MonoBehaviour
     /// </summary>
     public void OnOpenItemSellPanel()
     {
+        Debug.Log("Open sell panel");
+
         InventorySellPanel.gameObject.SetActive(true);
+
+        //Update the first ui selection for the event system
+        m_PlayerEventSystem.SetSelectedGameObject(m_SellPanelFirstSelectedButton);
 
         sellPanelOpen = true;
 
-        if (inventoryPanelOpen == true) inventoryPanelOpen = false;
-
+        if (inventoryPanelOpen) inventoryPanelOpen = false;
+        else if (buyPanelOpen) OnCloseBuyPanel();
         //Add sounds or triggers below
     }
 
@@ -151,6 +173,8 @@ public class PlayerInventoryManager : MonoBehaviour
     /// </summary>
     public void OnCloseItemSellPanel()
     {
+        Debug.Log("Close sell panel");
+
         InventorySellPanel.gameObject.SetActive(false);
 
         sellPanelOpen = false;
@@ -158,11 +182,20 @@ public class PlayerInventoryManager : MonoBehaviour
         //Add sounds effects or triggers below
     }
 
+    public void OnOpenInventoryPanel()
+    {
+        //Update the first ui selection for the event system
+        m_PlayerEventSystem.SetSelectedGameObject(m_InventoryPanelFirstSelectedButton);
+
+    }
+
     /// <summary>
     /// Called by close button in top right of inventory panel
     /// </summary>
     public void OnCloseInventoryPanel()
     {
+        Debug.Log("Close inventory panel");
+
         inventoryPanelOpen = false;
 
         //Play a sound or something
@@ -176,6 +209,8 @@ public class PlayerInventoryManager : MonoBehaviour
     /// </summary>
     public void HandleItemSell()
     {
+        Debug.Log("Sell pressed");
+
         string receipt = "Receipt Will Print Below:\n";
 
         if (items.Count == 0)
@@ -222,5 +257,76 @@ public class PlayerInventoryManager : MonoBehaviour
 
         //Set the text field to display the receipt
         SellPanelReceiptText.text = receipt;
+    }
+
+    /// <summary>
+    /// Called by the player inventory manager when a buy panel is interacted with
+    /// </summary>
+    public void OnOpenBuyPanel()
+    {
+        Debug.Log("Open buy panel");
+
+        InventoryBuyPanel.gameObject.SetActive(true);
+
+        //Update the first ui selection for the event system
+        m_PlayerEventSystem.SetSelectedGameObject(m_BuyPanelFirstSelectedButton);
+
+        buyPanelOpen = true;
+
+        if (inventoryPanelOpen) inventoryPanelOpen = false;
+        else if (sellPanelOpen) OnCloseItemSellPanel();
+
+        //Add sounds or triggers below
+    }
+
+    /// <summary>
+    /// Called by close button on the buy panel
+    /// </summary>
+    public void OnCloseBuyPanel()
+    {
+        Debug.Log("Close buy panel");
+        InventoryBuyPanel.gameObject.SetActive(false);
+
+        buyPanelOpen = false;
+
+        //Add sound effects here
+    }
+
+    public void DropItem(int index, bool randomDropPosOffset = true, bool removeItemFromItemsList = true, bool updateDisplaySlots = true)
+    {
+        Vector3 dropPosition = transform.position - new Vector3(0, 1f, 0);
+
+        if (randomDropPosOffset) dropPosition += new Vector3(Random.Range(-.5f, .5f), 0, Random.Range(-.5f, .5f));
+
+        //Actually move the item out of the content bin
+        items[index].transform.SetParent(null);
+        items[index].transform.position = dropPosition;
+        items[index].transform.rotation = Quaternion.identity;
+
+        //Remove item from list if requested
+        //(if this argument is set to false, chances are the list will get cleared
+        //after shits done by whatevers calling this)
+        if (removeItemFromItemsList) items.RemoveAt(index);
+
+        //Sync the display slots with the items.
+        if (updateDisplaySlots) ForceUpdateInventoryDisplaySlots();
+    }
+
+    /// <summary>
+    /// Not only clears the item inventory/diplay slots
+    /// but drops the items around the player.
+    /// </summary>
+    public void DropAllItems()
+    {
+        for (int i = 0; i < items.Count; i++)
+        {
+            //Move drops to a randomly determined mosition
+            DropItem(i, true, false,false);
+        }
+
+        items.Clear();
+
+        //Sync the display slots with the items.
+        ForceUpdateInventoryDisplaySlots();
     }
 }

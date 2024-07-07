@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!181963792 &2655988077585873504
+Preset:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ItemIconGenerator
+  m_TargetType:
+    m_NativeTypeID: 114
+    m_ManagedTypePPtr: {fileID: 11500000, guid: 29f1eb0a15d104d71913aea6152f63d2,
+      type: 3}
+    m_ManagedTypeFallback: 
+  m_Properties:
+  - target: {fileID: 0}
+    propertyPath: m_Enabled
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorHideFlags
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorClassIdentifier
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: ItemsToRender.Array.size
+    value: 6
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: 'ItemsToRender.Array.data[0]'
+    value: 
+    objectReference: {fileID: 2393840154791591336, guid: 5a3619b7bfc2d45abb40dc32cc8cdf7f,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: 'ItemsToRender.Array.data[1]'
+    value: 
+    objectReference: {fileID: 8529977310937101095, guid: 4a4b9e4c82c5b495a97950ea17c3171a,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: 'ItemsToRender.Array.data[2]'
+    value: 
+    objectReference: {fileID: 4793596611373397198, guid: 5be6273e63c99431db885d4b65682e19,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: 'ItemsToRender.Array.data[3]'
+    value: 
+    objectReference: {fileID: 4183037193458319252, guid: 552349c08dc1849618b238348491632f,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: 'ItemsToRender.Array.data[4]'
+    value: 
+    objectReference: {fileID: 17547390774284230, guid: 8283f34ea6273422993817cf91e6fbfe,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: 'ItemsToRender.Array.data[5]'
+    value: 
+    objectReference: {fileID: 1393511435096274322, guid: 3f1d0a545a5ea47f1bab4f117d59e7fb,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: captureCam
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: itemType
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: savePath
+    value: 
+    objectReference: {fileID: 0}
+  m_ExcludedProperties: []
+  m_CoupledType:
+    m_NativeTypeID: 0
+    m_ManagedTypePPtr: {fileID: 0}
+    m_ManagedTypeFallback: 
+  m_CoupledProperties: []

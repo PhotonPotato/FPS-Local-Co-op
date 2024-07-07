@@ -7,6 +7,8 @@ public class ItemIconGenerator : MonoBehaviour
     public Camera captureCam;
 
     [Header("Settings")]
+    public ItemType itemType;
+
     public const int RESWIDTH = 256;
     public const int RESHEIGHT = 256;
 
@@ -28,7 +30,10 @@ public class ItemIconGenerator : MonoBehaviour
             GameObject currentInstance = Instantiate(obj, transform.position, transform.rotation);
 
             //Capture (pass in the item name)
-            SaveCapture(currentInstance.GetComponent<LootItem>().GetItemName());
+            string itemName = itemType == ItemType.Inventory ? currentInstance.GetComponent<LootItem>().GetItemName()
+                                                             : currentInstance.GetComponent<WeaponBehavior>().name;
+
+            SaveCapture(itemName);
 
             //Delete item immediately so it won;t be in other renders
             DestroyImmediate(currentInstance);
@@ -64,7 +69,9 @@ public class ItemIconGenerator : MonoBehaviour
         //Now feed this into a byte array that will be stored in the files
         byte[] bytes = screenshot.EncodeToPNG();
 
-        string filename = ScreenShotName(RESWIDTH, RESHEIGHT, itemName);//savePath + itemName + ".png";
+        string folderName = itemType == ItemType.Inventory ? "ItemIcons" : "WeaponIcons";
+
+        string filename = ScreenShotName(RESWIDTH, RESHEIGHT, itemName, folderName);//savePath + itemName + ".png";
 
         //Actually write to a file
         System.IO.File.WriteAllBytes(filename, bytes);
@@ -72,11 +79,18 @@ public class ItemIconGenerator : MonoBehaviour
         Debug.Log(string.Format("Took screenshot to: {0}", filename));
     }
 
-    public static string ScreenShotName(int width, int height, string itemName)
+    public static string ScreenShotName(int width, int height, string itemName, string folderName = "ItemIcons")
     {
-        return string.Format("{0}/Art/ItemIcons/{1}_Item_Icon_{2}x{3}.png",
+        return string.Format("{0}/_NewArt/{1}/{2}_Item_Icon_{3}x{4}.png",
                              Application.dataPath,
+                             folderName,
                              itemName,
                              width, height);
+    }
+
+    public enum ItemType
+    {
+        Inventory,
+        Weapon
     }
 }

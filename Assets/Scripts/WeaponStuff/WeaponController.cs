@@ -40,6 +40,9 @@ public class WeaponController : MonoBehaviour
     public XInputController m_Controller;
     private float timeOfLastRumble = Mathf.NegativeInfinity;
 
+    //Other
+    public bool FiringDisabled = false;
+
     private void Awake()
     {
         m_PlayerInput = GetComponent<PlayerInput>();
@@ -67,7 +70,11 @@ public class WeaponController : MonoBehaviour
         // Scroll through the inventory using the mouse scroll wheel
         float scrollWheelInput = m_ChangeWeaponInput.ReadValue<float>();
 
-        inputActions.FPSController.ChangeWeapon.Reset();
+        //WAS THROWING A NULL REF, MIGHT WANT TO UNCOMMENT LATER
+        //inputActions.FPSController.ChangeWeapon.Reset();
+
+        //Disable firing if the player is in a menu
+        FiringDisabled = m_PlayerController.isInMenu;
 
         if (scrollWheelInput != 0f && Time.time - timeOfLastWeaponChange >= minTimeBetweenWeaponChange)
         {
@@ -75,8 +82,8 @@ public class WeaponController : MonoBehaviour
         }
 
 
-        //Read fire input
-        if (m_FireWeaponPrimaryInput.ReadValue<float>() == 1)
+        //Read fire input (make sure shooting aint dissabled
+        if (m_FireWeaponPrimaryInput.ReadValue<float>() == 1 && !FiringDisabled)
         {
             if (currentWeaponBehavior.HandleFireCall(m_PlayerController.isADS))
             {
@@ -105,8 +112,15 @@ public class WeaponController : MonoBehaviour
         if (muzzleFlashCoroutine == null) m_MuzzleFlash.enabled = false;
 
         //Update the view of the sniper crosshair overlay so the alpha always fades towards a desired value
-        if (currentWeaponBehavior.type == WeaponType.Sniper) m_PlayerManager.SniperCrosshairImage.color += new Color(0, 0, 0,
+        if (currentWeaponBehavior.type == WeaponType.Sniper)
+        {
+            //Fades the scope in or out
+            m_PlayerManager.SniperCrosshairImage.color += new Color(0, 0, 0,
                 (m_PlayerController.isADS ? 1 : 0 - m_PlayerManager.SniperCrosshairImage.color.a) / 5);
+
+            //Hide the sniper model if the scope is in
+            currentWeaponBehavior.model.SetActive(!m_PlayerController.isADS);
+        }
         else m_PlayerManager.SniperCrosshairImage.color = new Color(0, 0, 0, 0);
     }
 

@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 322dd0f784b0a4f898bbc019d2476455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: Rifle
+  weaponName: Grenade Launcher
   type: 1
   damageType: 2
   model: {fileID: 4071620348346186588}

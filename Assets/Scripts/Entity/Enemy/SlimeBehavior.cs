@@ -222,7 +222,8 @@ public class SlimeBehavior : MonoBehaviour
         return closestPlayer;
     }
 
-    public void OnThisEnemyDeath()
+    //Broadcasted from health component on death
+    public void OnThisEntityDeath()
     {
         active = false;
         dead = true;

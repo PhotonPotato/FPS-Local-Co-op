@@ -42,7 +42,7 @@ public class Health : MonoBehaviour
             //Initiate death.
 
             //Send a message to other scripts on THIS object
-            if (broadcastDeathMessage) this.gameObject.BroadcastMessage("OnThisEnemyDeath", null, SendMessageOptions.DontRequireReceiver);
+            if (broadcastDeathMessage) this.gameObject.BroadcastMessage("OnThisEntityDeath", null, SendMessageOptions.DontRequireReceiver);
 
             canDie = false;
         }

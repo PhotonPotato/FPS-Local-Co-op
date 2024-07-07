@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
@@ -14,7 +15,9 @@ public class EventsManager : MonoBehaviour
     Scene ActiveGameScene;
     public Camera JoinSceneCamera;
     public GameObject JoinCanvas;
+    public PlayerInputManager m_PlayerInputManager;
     PlayerSpawnManager SpawnManager;
+    EventSystem PodiumEventSystem;
 
     //Janky way to run a function after it ran
     float frameWhenGameSceneLoaded = -100;
@@ -22,13 +25,27 @@ public class EventsManager : MonoBehaviour
     //Used to pass the active players list between the playerSpawnManager and the 
     List<Transform> tempSaveOfActivePlayers;
 
+    public bool gameStarted = false;
+    public InputActionAsset playerActions;
+    InputAction startGameAction;
+
     public void Start()
     {
         SpawnManager = FindAnyObjectByType<PlayerSpawnManager>();
+        PodiumEventSystem = FindAnyObjectByType<EventSystem>();
+
+        startGameAction = playerActions.FindAction("StartGame");
     }
 
     private void Update()
     {
+        if (!gameStarted && startGameAction.ReadValue<float>() > 0)
+        {
+            gameStarted = true;
+
+            OnGameInitiated();
+        }
+
         ///<summary>
         /// The following will run once and ONLY 1 frame after the game scene is loaded.
         /// This is because:
@@ -66,17 +83,20 @@ public class EventsManager : MonoBehaviour
 
     public void OnGameInitiated()
     {
+        Debug.Log("Start Game Clicked");
+
         var parameters = new LoadSceneParameters(LoadSceneMode.Additive);
 
         ActiveGameScene = SceneManager.LoadScene("GameScene", parameters);
-
-        Destroy(FindObjectsByType<EventSystem>(FindObjectsSortMode.None)[0].gameObject);
 
         //Hide the ready button
         JoinCanvas?.SetActive(false);
 
         //update the frame tracker
         frameWhenGameSceneLoaded = Time.frameCount;
+
+        //Disable player joining
+        m_PlayerInputManager.DisableJoining();
     }
 
     //Move the root player objects to the new scene
@@ -92,15 +112,24 @@ public class EventsManager : MonoBehaviour
         {
             SceneManager.MoveGameObjectToScene(player.gameObject, ActiveGameScene);
 
-            //Makes the player movement active again
-            player.GetComponent<PlayerCharacterController>().enabled = true;
-            player.GetComponent<PlayerInventoryManager>().enabled = true;
+            //Makes the player movement active again along with other functions
+            player.GetComponent<PlayerManager>().EnableAllMajorPlayerComponents(true);
 
-            player.GetComponent<WeaponController>().enabled = true;
-            player.GetComponent<PlayerManager>().enabled = true;
-            player.GetComponentInChildren<Camera>().enabled = true;
-
-            JoinSceneCamera.gameObject.SetActive(false);
         }
+
+        JoinSceneCamera.gameObject.SetActive(false);
+    }
+
+    //Called when players are being transported back from the market scene
+    public void OnPlayersReenteringPodiumScene()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        JoinSceneCamera.gameObject.SetActive(true);
+        JoinCanvas.SetActive(true);
+
+        //Enable player joining again
+        m_PlayerInputManager.EnableJoining();
     }
 }

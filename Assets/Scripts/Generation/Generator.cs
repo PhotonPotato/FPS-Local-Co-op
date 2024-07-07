@@ -542,7 +542,7 @@ public class Generator : MonoBehaviour
                         {
                             instYRot = 90;
                         }
-
+                        
                         GameObject instObj2 = Instantiate(HallwayPrefab, objPos2, Quaternion.Euler(0, instYRot, 0));
                         if (generateUnderParent) instObj2.transform.SetParent(levelParent[0].transform);
                         break;

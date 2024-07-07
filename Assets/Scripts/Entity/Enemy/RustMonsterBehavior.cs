@@ -92,7 +92,8 @@ public class RustMonsterBehavior : MonoBehaviour
         return closestPlayer;
     }
 
-    public void OnThisEnemyDeath()
+    //Broadcasted by health component on death
+    public void OnThisEntityDeath()
     {
         active = false;
         dead = true;
