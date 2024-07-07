@@ -39,7 +39,7 @@ public class EventsManager : MonoBehaviour
 
     private void Update()
     {
-        if (!gameStarted && startGameAction.ReadValue<float>() > 0)
+        if (!gameStarted && startGameAction.ReadValue<float>() > 0 && SpawnManager.GetNumPlayers > 0)
         {
             gameStarted = true;
 

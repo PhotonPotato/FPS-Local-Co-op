@@ -331,13 +331,16 @@ public class PlayerCharacterController : MonoBehaviour
 
     public bool GetPlayerJumpInputDown()
     {
+        //Don't let teh player jump if they are in a menu,
+        //the same binding is used to interact with menus (the "a" button)
+        if (isInMenu) return false;
+
         bool jumpRaw = m_JumpInput.ReadValue<float>() == 1;
         bool output = false;
 
         if (jumpRaw && !jumpWasPressed)
         {
             output = true;
-            //Debug.Log("JUMP NIGGA");
         }
         else
         {
