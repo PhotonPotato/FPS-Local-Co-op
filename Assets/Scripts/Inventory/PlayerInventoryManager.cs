@@ -36,6 +36,7 @@ public class PlayerInventoryManager : MonoBehaviour
 
     PlayerInput m_PlayerInput;
     InputAction openInventoryAction;
+    InputAction backButtonAction;
 
     [Header("Trackers")]
     [Tooltip("True if open, false if not")]
@@ -53,6 +54,7 @@ public class PlayerInventoryManager : MonoBehaviour
         m_PlayerInput = GetComponent<PlayerInput>();
 
         openInventoryAction = m_PlayerInput.actions.FindAction("OpenInventory");
+        backButtonAction = m_PlayerInput.actions.FindAction("Change Weapon");
     }
 
     public void Update()
@@ -62,11 +64,24 @@ public class PlayerInventoryManager : MonoBehaviour
         {
             inventoryPanelOpen = !inventoryPanelOpen;
 
-            OnOpenInventoryPanel();
+            if (inventoryPanelOpen) OnOpenInventoryPanel();
 
             //Close the other panel if we're trying to open this one
             if (sellPanelOpen) OnCloseItemSellPanel();
             else if (buyPanelOpen) OnCloseBuyPanel();
+        }
+
+        //If in a UI menu
+        if (inventoryPanelOpen || sellPanelOpen || buyPanelOpen)
+        {
+            //if back button pressed
+            if (backButtonAction.ReadValue<float>() > 0)
+            {
+                //Close all menus
+                if (inventoryPanelOpen) OnCloseInventoryPanel();
+                if (buyPanelOpen) OnCloseBuyPanel();
+                if (sellPanelOpen) OnCloseItemSellPanel();
+            }
         }
 
         //Update the sate of the inventory panel

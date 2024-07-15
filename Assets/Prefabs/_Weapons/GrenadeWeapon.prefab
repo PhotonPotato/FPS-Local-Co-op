@@ -91,11 +91,13 @@ MonoBehaviour:
   hitLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+  movementSpeedMultiplierOnADS: 1
+  lookSensitivityMultiplierOnADS: 0.8
   fireDissabled: 0
   reloading: 0
   reloadTimer: 0
   muzzleFlashIntensity: 0
-  rumbleFireDuration: 0.8
+  rumbleFireDuration: 0.3
   rumbleIntensity: 1
   kickbackAmount: 0.01
   kickbackTime: 0.05
@@ -129,17 +131,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: d41d5feae1fef4cde9d406da8173b933,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.134
+      value: 0.071
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d41d5feae1fef4cde9d406da8173b933,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.054
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d41d5feae1fef4cde9d406da8173b933,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.224
+      value: 0.331
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d41d5feae1fef4cde9d406da8173b933,
         type: 3}

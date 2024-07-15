@@ -306,6 +306,8 @@ MonoBehaviour:
   hitLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+  movementSpeedMultiplierOnADS: 0.8
+  lookSensitivityMultiplierOnADS: 0.8
   fireDissabled: 0
   reloading: 0
   reloadTimer: 0

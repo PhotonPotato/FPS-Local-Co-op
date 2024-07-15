@@ -22,7 +22,7 @@ public class ChestBehavior : MonoBehaviour
         //Spawn drops
         for (int i = 0; i < numberDrops; i++)
         {
-            Instantiate(GetRandomDrop(), transform.position + (transform.forward * 2), Quaternion.identity);
+            Instantiate(GetRandomDrop(), transform.position + (transform.forward * 2) + (transform.right * Random.Range(-.5f, .5f)), Quaternion.identity);
         }
 
         opened = true;

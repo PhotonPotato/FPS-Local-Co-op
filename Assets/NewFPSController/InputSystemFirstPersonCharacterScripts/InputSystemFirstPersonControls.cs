@@ -488,7 +488,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""name"": ""Change Weapon"",
                     ""type"": ""Button"",
                     ""id"": ""ac982cda-b787-4088-9dc0-4c7ccc0178f6"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false

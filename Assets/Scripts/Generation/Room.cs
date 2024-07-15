@@ -36,7 +36,8 @@ public enum RoomStatus
     EmptyRoom,
     Room,
     Corridor,
-    StaircaseRoom
+    StaircaseRoom,
+    Extract
 }
 
 public enum RoomType

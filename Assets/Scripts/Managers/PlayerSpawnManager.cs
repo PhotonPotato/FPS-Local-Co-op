@@ -22,6 +22,9 @@ public class PlayerSpawnManager : MonoBehaviour
     public Transform[] spawnPodiumPositions; //All locations to spawn a player upon joining
     public float spawnPodiumPlayerYOffset = 1.93f;
 
+    public float singlePlayerFOV = 70;
+    public float splitscreenFOV = 85;
+
     public void Start()
     {
         activePlayers = new List<Transform>();
@@ -70,17 +73,18 @@ public class PlayerSpawnManager : MonoBehaviour
             //Move the righthand position in for the 2 players if its splitscreen
             for (int i = 0; i < activePlayers.Count; i++)
             {
-                Transform rightHand = activePlayers[i].GetComponent<PlayerManager>().m_RightHandParent.transform;
-
-                rightHand.position -= new Vector3(.5f, 0, 0);
+                //Transform rightHand = activePlayers[i].GetComponent<PlayerManager>().m_RightHandParent.transform;
+                //rightHand.localPosition -= new Vector3(.5f, 0, 0);
+                //rightHand.GetComponent<WeaponBobbing>().SetOriginalPosition(rightHand.localPosition);
             }
         }
         else if (numPlayers > 1)
         {
             //Move the hand posistion in so it fits in the splitscreen
-            Transform rightHand = activePlayers[numPlayers].GetComponent<PlayerManager>().m_RightHandParent.transform;
+            //Transform rightHand = activePlayers[numPlayers].GetComponent<PlayerManager>().m_RightHandParent.transform;
 
-            rightHand.position -= new Vector3(.5f, 0, 0);
+            //rightHand.localPosition -= new Vector3(.5f, 0, 0);
+            //rightHand.GetComponent<WeaponBobbing>().SetOriginalPosition(rightHand.localPosition);
         }
 
         numPlayers++;
@@ -98,6 +102,9 @@ public class PlayerSpawnManager : MonoBehaviour
     {
         CharacterController playerController = input.GetComponent<CharacterController>();
 
+        //Reset the player velocity
+        playerController.SimpleMove(Vector3.zero);
+
         //Player movement can only happen when the character controller is disabled
         //(Because the character controller overrides the position)
         playerController.enabled = false;
@@ -106,11 +113,21 @@ public class PlayerSpawnManager : MonoBehaviour
         playerController.enabled = true;
     }
 
+    /// <summary>
+    /// Moves players to spawn location in dungeon
+    /// and also updates all players' fovs to work with splitscreen
+    /// </summary>
     public void MovePlayersToGameSpawnLocation()
     {
         //Find a spot in the main level to drop players
         foreach (Transform player in Generator.generator.activePlayers)
         {
+            //Update the players' fov for splitscreen
+            PlayerCharacterController playerCharacterController = player.GetComponent<PlayerCharacterController>();
+            playerCharacterController.SetFOVs(numPlayers == 1 ? singlePlayerFOV : splitscreenFOV);
+
+
+            //Actually move the players
             SetPlayerPositionAndRotation(player.GetComponent<PlayerInput>(),
                                          PlayerSpawnPoint.position + (Vector3.one * Random.Range(0, 3f)),
                                          Quaternion.identity);
@@ -134,10 +151,9 @@ public class PlayerSpawnManager : MonoBehaviour
                                      spawnPodiumPositions[playerIndex].rotation);
     }
 
-    public int GetNumAlivePlayers()
+    public int GetNumAlivePlayers() => numAlivePlayers;
+    public int ResetNumAlivePlayers()
     {
-        return numAlivePlayers;
-        /*
         numAlivePlayers = 0;
 
         foreach (Transform player in activePlayers)
@@ -145,8 +161,10 @@ public class PlayerSpawnManager : MonoBehaviour
             if (player.GetComponent<PlayerManager>().isAlive) numAlivePlayers++;
         }
 
-        return numAlivePlayers;*/
+        return numAlivePlayers;
     }
+
+
 
     public void OnPlayerDeath()
     {

@@ -49,7 +49,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 220
-  damage: 10
+  damage: 120
+  timedDetonation: 0
+  timeToDetonate: 4
+  usingRigidBody: 0
   gravityAcceleration: 0
   explosionRadius: 2
   impactEffect: {fileID: 7635230255058315795, guid: 7593818fba43c7f4c8372299ce5e893f,

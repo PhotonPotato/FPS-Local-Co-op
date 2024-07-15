@@ -27,6 +27,9 @@ public class WeaponController : MonoBehaviour
     public WeaponBehavior currentWeaponBehavior;
 
     public Transform camPos;
+
+    public Transform ADSWeaponPosTransform;
+
     public LayerMask bulletLayers;
 
     public float minTimeBetweenWeaponChange = .1f;
@@ -42,6 +45,8 @@ public class WeaponController : MonoBehaviour
 
     //Other
     public bool FiringDisabled = false;
+
+    private bool lastChangeWeaponState = false;
 
     private void Awake()
     {
@@ -76,9 +81,13 @@ public class WeaponController : MonoBehaviour
         //Disable firing if the player is in a menu
         FiringDisabled = m_PlayerController.isInMenu;
 
-        if (scrollWheelInput != 0f && Time.time - timeOfLastWeaponChange >= minTimeBetweenWeaponChange)
+        //Don't allow for weapon changes if a menu is open
+        if (!m_PlayerController.isInMenu && scrollWheelInput != 0f && !lastChangeWeaponState)
         {
             ChangeWeapon(Mathf.RoundToInt(scrollWheelInput));
+
+            //Update the weapon bobbing so that it can reset the weapons rotation
+            m_WeaponBobbingBehavior.OnWeaponChange();
         }
 
 
@@ -115,13 +124,14 @@ public class WeaponController : MonoBehaviour
         if (currentWeaponBehavior.type == WeaponType.Sniper)
         {
             //Fades the scope in or out
-            m_PlayerManager.SniperCrosshairImage.color += new Color(0, 0, 0,
-                (m_PlayerController.isADS ? 1 : 0 - m_PlayerManager.SniperCrosshairImage.color.a) / 5);
+            m_PlayerManager.FadeSniperCrosshairImagesAlphaToColor(m_PlayerController.isADS ? 1 : 0, 5);
 
             //Hide the sniper model if the scope is in
             currentWeaponBehavior.model.SetActive(!m_PlayerController.isADS);
         }
-        else m_PlayerManager.SniperCrosshairImage.color = new Color(0, 0, 0, 0);
+        else m_PlayerManager.SetSniperCrosshairImagesAlpha(0);
+
+        lastChangeWeaponState = scrollWheelInput > 0;
     }
 
     private void ChangeWeapon(int direction)
@@ -173,6 +183,8 @@ public class WeaponController : MonoBehaviour
         Debug.Log($"weapon controller player instanceID {m_PlayerManager.playerIndex}");
 
         currentWeaponBehavior.operatingController = this;
+
+        currentWeaponBehavior.SetSniperADSMuzzleTransform(ADSWeaponPosTransform);
     }
 
     public bool SetCurrentWeaponIndex(int index)

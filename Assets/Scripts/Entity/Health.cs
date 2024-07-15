@@ -54,7 +54,9 @@ public class Health : MonoBehaviour
     }
 
     public int GetHealth() => health;
+    public void SetHealth(int health) => this.health = health;
     public int GetMaxHealth() => maxHealth;
+    public void ResetToMaxHealth() { health = maxHealth; }
 
     public void SetPlayerID(int id) { thisPlayerID = id; }
 }

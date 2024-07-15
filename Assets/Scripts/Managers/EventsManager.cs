@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 
 public class EventsManager : MonoBehaviour
 {
+    public static EventsManager Instance;
     /// <summary>
     /// Runs when all players have joined.
     /// Loads the level scene and unloads the player joining screen.
@@ -16,11 +17,13 @@ public class EventsManager : MonoBehaviour
     public Camera JoinSceneCamera;
     public GameObject JoinCanvas;
     public PlayerInputManager m_PlayerInputManager;
+    public GameObject PodiumSceneParentObject;
+    public Light PodiumDirectionalLight;
     PlayerSpawnManager SpawnManager;
     EventSystem PodiumEventSystem;
 
     //Janky way to run a function after it ran
-    float frameWhenGameSceneLoaded = -100;
+    public float frameWhenGameSceneLoaded = -100;
 
     //Used to pass the active players list between the playerSpawnManager and the 
     List<Transform> tempSaveOfActivePlayers;
@@ -31,6 +34,8 @@ public class EventsManager : MonoBehaviour
 
     public void Start()
     {
+        Instance = this;
+
         SpawnManager = FindAnyObjectByType<PlayerSpawnManager>();
         PodiumEventSystem = FindAnyObjectByType<EventSystem>();
 
@@ -59,7 +64,7 @@ public class EventsManager : MonoBehaviour
         {
             //Update the spawn manager refernece
             SpawnManager = FindAnyObjectByType<PlayerSpawnManager>();
-            
+
             //Set the game scene to active
             SceneManager.SetActiveScene(ActiveGameScene);
 
@@ -79,11 +84,28 @@ public class EventsManager : MonoBehaviour
             //Show all rooms near players
             Generator.generator.ShowRoomsCloseToAllPlayerss();
         }
+        else if (Time.frameCount == frameWhenGameSceneLoaded + 18) //18 is arbitrary but it just works
+        {
+            Debug.Log("finding graveyards...");
+            //Open all graveyards
+            foreach (GraveyardBehavior GraveyardBehavior in FindObjectsByType<GraveyardBehavior>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                Debug.Log("found graveyard");
+
+                GraveyardBehavior.gameObject.SetActive(true);
+                GraveyardBehavior.transform.SetParent(null);
+            }
+        }
     }
 
     public void OnGameInitiated()
     {
         Debug.Log("Start Game Clicked");
+
+        PodiumDirectionalLight.gameObject.SetActive(false);
+        PodiumSceneParentObject.SetActive(false);
+
+        SpawnManager.ResetNumAlivePlayers();
 
         var parameters = new LoadSceneParameters(LoadSceneMode.Additive);
 
@@ -128,6 +150,9 @@ public class EventsManager : MonoBehaviour
 
         JoinSceneCamera.gameObject.SetActive(true);
         JoinCanvas.SetActive(true);
+
+        PodiumDirectionalLight.gameObject.SetActive(true);
+        PodiumSceneParentObject.SetActive(true);
 
         //Enable player joining again
         m_PlayerInputManager.EnableJoining();

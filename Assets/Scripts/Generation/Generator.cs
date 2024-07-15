@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class Generator : MonoBehaviour
 {
@@ -15,6 +17,14 @@ public class Generator : MonoBehaviour
     {
         public int rotation;
         public RoomType type;
+    }
+    
+    public struct EndOfBranchCoords
+    {
+        public Vector2Int roomCoord;
+        public int layer;
+        public int branchLength;
+        public float distToOrigin;
     }
 
     public static Generator generator;
@@ -70,6 +80,7 @@ public class Generator : MonoBehaviour
     public GameObject[] CrossRooms;
     public GameObject[] StraightRooms;
     public GameObject[] ThreeWayRooms;
+    public GameObject[] ExtractRooms;
 
     public GameObject[] Corridoors;
 
@@ -95,6 +106,8 @@ public class Generator : MonoBehaviour
     private List<Vector2Int> orderedSpawns;
 
     public List<StaircaseSpawnCoords> staircaseSpawnPoints;
+
+    public List<EndOfBranchCoords> possibleExtractSpawnPoints;
 
     [Header("Performance Optimization")]
 
@@ -130,8 +143,21 @@ public class Generator : MonoBehaviour
         //This marks the start of the Generation
         {
             InitBoard();
+            
+            //Gerenerate the origin room
             GenerateNewStartPoint();
+            
+            //run the main chunk of generating branches
             InitGeneration(0, startPlace, false);
+
+            //Before merging determine the extract room and any other rooms of importance
+            EndOfBranchCoords extractRoom = ChoseExtractRoom();
+
+            Debug.Log($"Extract Coord: {extractRoom.roomCoord}");
+
+            boards[extractRoom.layer][extractRoom.roomCoord.x, extractRoom.roomCoord.y].status = RoomStatus.Extract;
+
+            //Now attempt to merge the remaining branches (exclding the extract room)
             MergeBranches(0);
 
             Debug.Log("end first gen");
@@ -179,6 +205,7 @@ public class Generator : MonoBehaviour
     {
         boards = new List<Room[,]>();
         staircaseSpawnPoints = new List<StaircaseSpawnCoords>();
+        possibleExtractSpawnPoints = new List<EndOfBranchCoords>();
 
         CreateBoardLayer();
     }
@@ -296,34 +323,52 @@ public class Generator : MonoBehaviour
                     orderedSpawns.Add(new Vector2Int(curPos.x, curPos.y));
                 }
 
-                //Check for stairwell creation (after corridoors are generated bc this shit bouta get recursive)
-                if (generateStaircases && j == k - 1)
+                //If it is the last room in the branch
+                if (j == k-1)
                 {
-                    if (Random.Range(0, generateFloorProbability) == 0)
+                    // For some reason it sometimes chooses the start room to spawn the extract so for now just
+                    // don't let it set the start place to a possible extract room. :) cheeze fix
+                    if (curPos != startPlace)
                     {
-                        //Then make this a staircase area
-                        boards[layer][curPos.x, curPos.y].status = RoomStatus.StaircaseRoom;
-                        boards[layer][curPos.x, curPos.y].staircaseTop = false;
+                        //Log this room and how long this branch was for generating extracts and secrets
+                        EndOfBranchCoords thisRoomCoord = new EndOfBranchCoords();
+                        thisRoomCoord.roomCoord = curPos;
+                        thisRoomCoord.layer = layer;
+                        thisRoomCoord.branchLength = k;
+                        thisRoomCoord.distToOrigin = Vector2Int.Distance(curPos, startPlace);
+                        possibleExtractSpawnPoints.Add(thisRoomCoord);
+                    }
 
-                        if (boards.Count <= layer + 1)
+                    //Check for stairwell creation (after corridoors are generated bc this shit bouta get recursive)
+                    if (generateStaircases)
+                    {
+                        if (Random.Range(0, generateFloorProbability) == 0)
                         {
-                            CreateBoardLayer();
+                            //Then make this a staircase area
+                            boards[layer][curPos.x, curPos.y].status = RoomStatus.StaircaseRoom;
+                            boards[layer][curPos.x, curPos.y].staircaseTop = false;
+
+                            if (boards.Count <= layer + 1)
+                            {
+                                CreateBoardLayer();
+                            }
+
+                            StaircaseSpawnCoords temp = new()
+                            {
+                                pos = curPos,
+                                layer = layer + 1
+                            };
+
+                            staircaseSpawnPoints.Add(temp);
+
+                            Debug.Log($"new layer at {curPos} with a layer {layer} and branch {i}");
+
+                            //InitGeneration(layer + 1, curPos, true);
+                            //GenerateBranchFromPoint(layer + 1, curPos, new List<Vector2Int>(), new List<Vector2Int>(), branchLengthMax - 1, branchLengthMin - 1, 3);
                         }
-
-                        StaircaseSpawnCoords temp = new()
-                        {
-                            pos = curPos,
-                            layer = layer + 1
-                        };
-
-                        staircaseSpawnPoints.Add(temp);
-
-                        Debug.Log($"new layer at {curPos} with a layer {layer} and branch {i}");
-
-                        //InitGeneration(layer + 1, curPos, true);
-                        //GenerateBranchFromPoint(layer + 1, curPos, new List<Vector2Int>(), new List<Vector2Int>(), branchLengthMax - 1, branchLengthMin - 1, 3);
                     }
                 }
+                
 
                 usedDirs.Clear();
                 usedDirs.Add(lastDir * -1);
@@ -375,8 +420,10 @@ public class Generator : MonoBehaviour
 
     private bool BoardSpaceOccupied(int layer, Vector2Int pos)
     {
+        RoomStatus room = boards[layer][pos.x, pos.y].status;
+
         ///Check if the status of the desired board space is taken
-        if (boards[layer][pos.x, pos.y].status == RoomStatus.Room || boards[layer][pos.x, pos.y].status == RoomStatus.StaircaseRoom) return true;
+        if (room == RoomStatus.Room || room == RoomStatus.StaircaseRoom || room == RoomStatus.Extract) return true;
 
         return false;
     }
@@ -423,11 +470,12 @@ public class Generator : MonoBehaviour
         return currentDir;
     }
 
-    void MergeBranches(int layer)
+    private void MergeBranches(int layer)
     {
         foreach (Room room in boards[layer])
         {
-            if (room.status != RoomStatus.Room && Random.Range(0, mergeProbability) != Mathf.RoundToInt(mergeProbability / 2)) continue;
+            if ((room.status != RoomStatus.Room || room.status == RoomStatus.Extract) 
+                && Random.Range(0, mergeProbability) != Mathf.RoundToInt(mergeProbability / 2)) continue;
             
             //HEY FUTURE TY CAN U MAKE THESE VECTOR2INTS PLS THX
 
@@ -456,6 +504,10 @@ public class Generator : MonoBehaviour
                 {
                     if (BoardSpaceOccupied(layer, pos + mergeDir))
                     {
+                        //We want to keep extract rooms as singles so don't try to connect to it
+                        if (boards[layer][pos.x + mergeDir.x, pos.y + mergeDir.y].status == RoomStatus.Extract) break;
+                        if (boards[layer][pos.x + mergeDir.x, pos.y + mergeDir.y].status == RoomStatus.Extract) break;
+
                         //If the CORRIDOR between the rooms is empty, fill it
                         if (boards[layer][pos.x + mergeDir.x / 2, pos.y + mergeDir.y / 2].status == RoomStatus.EmptyRoom)
                         {
@@ -621,50 +673,69 @@ public class Generator : MonoBehaviour
 
                 GameObject obj;
 
-                if (room.status == RoomStatus.Room) //Then do default gen
+                switch (room.status)
                 {
-                    RoomOrientationData roomData = IdentifyRoomOrientation(i, new Vector2Int(room.x, room.y));
+                    case RoomStatus.Room:
+                        RoomOrientationData roomData = IdentifyRoomOrientation(i, new Vector2Int(room.x, room.y));
 
-                    switch (roomData.type)
-                    {
-                        case RoomType.Single:
-                            obj = Instantiate(SingleRooms[Random.Range(0, SingleRooms.Length)], levelParent[i].transform);
-                            break;
+                        switch (roomData.type)
+                        {
+                            //This will either be a normal single or 
+                            case RoomType.Single:
+                                obj = Instantiate(SingleRooms[Random.Range(0, SingleRooms.Length)], levelParent[i].transform);
+                                break;
 
-                        case RoomType.Elbow:
-                            obj = Instantiate(ElbowRooms[Random.Range(0, ElbowRooms.Length)], levelParent[i].transform);
-                            break;
+                            case RoomType.Elbow:
+                                obj = Instantiate(ElbowRooms[Random.Range(0, ElbowRooms.Length)], levelParent[i].transform);
+                                break;
 
-                        case RoomType.Straight:
-                            obj = Instantiate(StraightRooms[Random.Range(0, StraightRooms.Length)], levelParent[i].transform);
-                            break;
+                            case RoomType.Straight:
+                                obj = Instantiate(StraightRooms[Random.Range(0, StraightRooms.Length)], levelParent[i].transform);
+                                break;
 
-                        case RoomType.Threeway:
-                            obj = Instantiate(ThreeWayRooms[Random.Range(0, ThreeWayRooms.Length)], levelParent[i].transform);
-                            break;
+                            case RoomType.Threeway:
+                                obj = Instantiate(ThreeWayRooms[Random.Range(0, ThreeWayRooms.Length)], levelParent[i].transform);
+                                break;
 
-                        case RoomType.Cross:
-                            obj = Instantiate(CrossRooms[Random.Range(0, CrossRooms.Length)], levelParent[i].transform);
-                            break;
+                            case RoomType.Cross:
+                                obj = Instantiate(CrossRooms[Random.Range(0, CrossRooms.Length)], levelParent[i].transform);
+                                break;
 
-                        default: //Throwaway just to make the compiler happy (bc cannot add unassigned "obj")
-                            obj = new GameObject();
-                            break;
+                            default: //Throwaway just to make the compiler happy (bc cannot add unassigned "obj")
+                                obj = new GameObject();
+                                break;
 
-                    }
+                        }
 
-                    obj.transform.SetPositionAndRotation(new Vector3(room.x * boardScale, i * .75f * boardScale, room.y * boardScale), Quaternion.Euler(0, roomData.rotation, 0));
+                        obj.transform.SetPositionAndRotation(new Vector3(room.x * boardScale, i * .75f * boardScale, room.y * boardScale), Quaternion.Euler(0, roomData.rotation, 0));
 
-                }
-                else if (room.status == RoomStatus.StaircaseRoom)//Then its a staircase rooom, and do staircase gen
-                {
-                    obj = new GameObject();
-                }
-                else //Then it must be a corridoor
-                {
-                    obj = Instantiate(Corridoors[Random.Range(0, Corridoors.Length)], levelParent[i].transform);
+                        break;
 
-                    obj.transform.SetPositionAndRotation(new Vector3(room.x * boardScale, i * .75f * boardScale, room.y * boardScale), Quaternion.Euler(0, room.objDir.y == 0 ? 90 : 0, 0));
+                    //Extracts can only be singles
+                    case RoomStatus.Extract:
+                        RoomOrientationData roomOrientationData = IdentifyRoomOrientation(i, new Vector2Int(room.x, room.y));
+
+                        obj = Instantiate(ExtractRooms[Random.Range(0, ExtractRooms.Length)], levelParent[i].transform);
+
+                        obj.transform.SetPositionAndRotation(new Vector3(room.x * boardScale, i * .75f * boardScale, room.y * boardScale), Quaternion.Euler(0, roomOrientationData.rotation, 0));
+
+                        break;
+
+                    case RoomStatus.StaircaseRoom:
+                        obj = new GameObject();
+                        break;
+
+                    case RoomStatus.Corridor:
+                        obj = Instantiate(Corridoors[Random.Range(0, Corridoors.Length)], levelParent[i].transform);
+
+                        obj.transform.SetPositionAndRotation(new Vector3(room.x * boardScale, i * .75f * boardScale, room.y * boardScale), Quaternion.Euler(0, room.objDir.y == 0 ? 90 : 0, 0));
+                        break;
+
+                    // This is just to make the compiler happy, should never actually get tripped.
+                    // Compiler wanted to make sure that obj gets set no matter what.
+                    default:
+                        obj = new GameObject();
+                        break;
                 }
 
                 obj.SetActive(false);
@@ -966,5 +1037,35 @@ public class Generator : MonoBehaviour
                 room.roomObj?.SetActive(show);
             }
         }
+    }
+
+    /// <summary>
+    /// Returns the room at the end of the longest branch
+    /// </summary>
+    /// <returns>output</returns>
+    public EndOfBranchCoords ChoseExtractRoom()
+    {
+        EndOfBranchCoords output = new EndOfBranchCoords();
+        output.branchLength = -1;
+
+        for (int i = 0; i < possibleExtractSpawnPoints.Count; i++)
+        {
+            //Compare the branch lengths
+            if (possibleExtractSpawnPoints[i].branchLength > output.branchLength)
+            {
+                //If this possible extract is at the end of the longest branch, use it as the extract.
+                output = possibleExtractSpawnPoints[i];
+            }
+            else if (possibleExtractSpawnPoints[i].branchLength == output.branchLength)
+            {
+                //if they are equal, choose the farther away one
+                if (possibleExtractSpawnPoints[i].distToOrigin > output.distToOrigin)
+                {
+                    output = possibleExtractSpawnPoints[i];
+                }
+            }
+        }
+
+        return output;
     }
 }

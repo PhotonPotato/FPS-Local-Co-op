@@ -4,7 +4,7 @@ using UnityEngine;
 public class WeaponBobbing : MonoBehaviour
 {
     public Transform weaponTransform;
-    public Transform weaponModelTransform;
+    public Transform weaponKickbackParentTransform;
     public PlayerCharacterController m_CharacterController;
 
     public float frequency = 1.0f;
@@ -18,12 +18,19 @@ public class WeaponBobbing : MonoBehaviour
     private float timeElapsed = 0.0f;
     private Vector3 originalPosition;
 
+    private Vector3 originalKickbackParentLocalPosition;
+    private Quaternion originalKickbackParentLocalRotation;
+
     private Coroutine kickbackCoroutine;
 
     void Start()
     {
         // Store the original position of the weapon
         originalPosition = weaponTransform.localPosition;
+
+        originalKickbackParentLocalPosition = weaponKickbackParentTransform.localPosition;
+        originalKickbackParentLocalRotation = weaponKickbackParentTransform.localRotation;
+
         m_CharacterController = GetComponent<PlayerCharacterController>();
     }
 
@@ -67,28 +74,41 @@ public class WeaponBobbing : MonoBehaviour
         kickbackCoroutine = StartCoroutine(KickbackCoroutine(kickbackAmount, rotAmount, kickbackTime));
     }
 
+    /// <summary>
+    /// Called when weapon is changed
+    /// Resets the weapons position and rotation
+    /// </summary>
+    public void OnWeaponChange()
+    {
+        weaponKickbackParentTransform.localPosition = originalKickbackParentLocalPosition;
+        //Reset the kickback rotation of the weapon
+        weaponKickbackParentTransform.localRotation = originalKickbackParentLocalRotation;
+    }
+
     IEnumerator KickbackCoroutine(float amount, float rotAmount, float kickbackTime)
     {
         float elapsedTime = 0.0f;
-        Vector3 initialPosition = weaponModelTransform.localPosition;
-        Vector3 kickbackPosition = initialPosition + weaponModelTransform.up * amount;
+        Vector3 initialPosition = weaponKickbackParentTransform.localPosition;
+        Vector3 kickbackPosition = initialPosition + weaponKickbackParentTransform.up * amount;
 
-        Quaternion initialRot = weaponModelTransform.localRotation;
+        Quaternion initialRot = weaponKickbackParentTransform.localRotation;
 
-        Quaternion kickbackRot = Quaternion.Euler(weaponModelTransform.localRotation.eulerAngles - new Vector3(30 * rotAmount, 0, 0));//weaponModelTransform.rotation.x + 30 * amount, weaponModelTransform.rotation.y + 0, weaponModelTransform.rotation.z + 0, weaponModelTransform.rotation.w);
+        Quaternion kickbackRot = Quaternion.Euler(weaponKickbackParentTransform.localRotation.eulerAngles - new Vector3(30 * rotAmount, 0, 0));//weaponModelTransform.rotation.x + 30 * amount, weaponModelTransform.rotation.y + 0, weaponModelTransform.rotation.z + 0, weaponModelTransform.rotation.w);
 
         while (elapsedTime < kickbackTime)
         {
-            weaponModelTransform.localPosition = Vector3.Lerp(initialPosition, kickbackPosition, elapsedTime / kickbackTime);
-            weaponModelTransform.localRotation = Quaternion.Slerp(initialRot, kickbackRot, 1 - Mathf.Pow(1 - elapsedTime / kickbackTime, 3));
+            weaponKickbackParentTransform.localPosition = Vector3.Lerp(initialPosition, kickbackPosition, elapsedTime / kickbackTime);
+            weaponKickbackParentTransform.localRotation = Quaternion.Slerp(initialRot, kickbackRot, 1 - Mathf.Pow(1 - elapsedTime / kickbackTime, 3));
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
         // Ensure the weapon returns to its original position
-        weaponModelTransform.localPosition = initialPosition;
-        weaponModelTransform.localRotation = initialRot;
+        weaponKickbackParentTransform.localPosition = initialPosition;
+        weaponKickbackParentTransform.localRotation = initialRot;
     }
+
+    public void SetOriginalPosition(Vector3 pos) => originalPosition = pos;
 }
 

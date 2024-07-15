@@ -25,6 +25,8 @@ public class PlayerManager : MonoBehaviour
     public TMP_Text accountBalanceTextBuyPanel;
 
     public Image SniperCrosshairImage;
+    public Image SniperCrosshairBottomCover;
+    public Image SniperCrosshairTopCover;
 
     [Header("Settings")]
     public LayerMask interactionQueryLayers;
@@ -228,5 +230,25 @@ public class PlayerManager : MonoBehaviour
 
         //Disable the player manager as well (if its requested)
         if (enable || allowDisableOfThisPlayerManager) this.enabled = enable;
+    }
+
+    /// <summary>
+    /// Sets all 3 sniper crosshair images to a specified alpha while preserving color <param name="alpha"></param>
+    /// </summary>
+    public void SetSniperCrosshairImagesAlpha(float alpha)
+    {
+        SniperCrosshairImage.color =  new Color(SniperCrosshairImage.color.r, SniperCrosshairImage.color.g, SniperCrosshairImage.color.b, alpha);
+        SniperCrosshairTopCover.color = new Color(SniperCrosshairTopCover.color.r, SniperCrosshairTopCover.color.g, SniperCrosshairTopCover.color.b, alpha);
+        SniperCrosshairBottomCover.color = new Color(SniperCrosshairBottomCover.color.r, SniperCrosshairBottomCover.color.g, SniperCrosshairBottomCover.color.b, alpha);
+    }
+
+    /// <summary>
+    /// Fades all 3 sniper crosshair image panels towards a specified alpha <paramref name="alpha"/>
+    /// </summary>
+    public void FadeSniperCrosshairImagesAlphaToColor(float alpha, float speed)
+    {
+        SniperCrosshairImage.color += new Color(0, 0, 0, (alpha - SniperCrosshairImage.color.a) / speed);
+        SniperCrosshairTopCover.color += new Color(0, 0, 0, (alpha - SniperCrosshairTopCover.color.a) / speed);
+        SniperCrosshairBottomCover.color += new Color(0, 0, 0, (alpha - SniperCrosshairBottomCover.color.a) / speed);
     }
 }

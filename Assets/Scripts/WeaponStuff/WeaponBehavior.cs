@@ -11,10 +11,14 @@ public class WeaponBehavior : MonoBehaviour
 
     public int bulletPoolIndex;
     public Transform gunMuzzle;
+    private Transform sniperADSMuzzle;
     public float fireRate = 0.1f;
     public int magazineSize = 30;
     public float reloadTime = 1f;
     public LayerMask hitLayers;
+
+    public float movementSpeedMultiplierOnADS = .6f;
+    public float lookSensitivityMultiplierOnADS = .5f;
 
     private int currentAmmo;
     private float nextFireTime;
@@ -55,7 +59,7 @@ public class WeaponBehavior : MonoBehaviour
         }
     }
 
-    public Vector3 GetBulletFireVector()
+    public Vector3 GetBulletFireVector(bool isSniperADS = false)
     {
         Ray ray = new Ray(operatingController.camPos.position, operatingController.camPos.forward);
 
@@ -67,15 +71,15 @@ public class WeaponBehavior : MonoBehaviour
             if (hit.collider == null)
             {
                 //If nothing is in front of the player, just fire straight out of the gun
-                return gunMuzzle.forward;
+                return isSniperADS ? sniperADSMuzzle.forward : gunMuzzle.forward;
             }
             else
             {
-                return (hit.point - gunMuzzle.position).normalized;
+                return (hit.point - (isSniperADS ? sniperADSMuzzle.position : gunMuzzle.position)).normalized;
             }
         }
 
-        return gunMuzzle.forward;
+        return isSniperADS ? sniperADSMuzzle.forward : gunMuzzle.forward;
     }
 
     public Vector3 GetRandomSpreadVector(bool isADS)
@@ -87,7 +91,7 @@ public class WeaponBehavior : MonoBehaviour
         return output;
     }
 
-    public bool HandleFireCall(bool isADS = false)
+    public bool HandleFireCall(bool isADS = false, Transform scopePos = null)
     {
         //Make sure its not dissabled
         if (fireDissabled || reloading) return false;
@@ -126,6 +130,9 @@ public class WeaponBehavior : MonoBehaviour
         }
 
         bullet.transform.SetPositionAndRotation(gunMuzzle.position, gunMuzzle.rotation);
+
+        if (isADS && type == WeaponType.Sniper) bullet.transform.position = sniperADSMuzzle.position;
+
         bullet.SetActive(true);
 
         Bullet bulletScript = bullet.GetComponent<Bullet>();
@@ -133,7 +140,7 @@ public class WeaponBehavior : MonoBehaviour
         if (bulletScript != null)
         {
             Debug.Log($"operating controller: {operatingController}");
-            bulletScript.Initialize(damage, operatingController.bulletLayers, type == WeaponType.Grenade ? operatingController.camPos.forward : GetBulletFireVector() + GetRandomSpreadVector(isADS), senderID, damageType);
+            bulletScript.Initialize(damage, operatingController.bulletLayers, type == WeaponType.Grenade ? operatingController.camPos.forward : GetBulletFireVector(isADS && type == WeaponType.Sniper) + GetRandomSpreadVector(isADS), senderID, damageType);
         }
 
         TrailRenderer rend = bullet.GetComponentInChildren<TrailRenderer>();
@@ -175,6 +182,8 @@ public class WeaponBehavior : MonoBehaviour
     }
 
     public void SetSenderID(int id) => senderID = id;
+
+    public void SetSniperADSMuzzleTransform(Transform transform) => sniperADSMuzzle = transform;
 }
 
 public enum WeaponType

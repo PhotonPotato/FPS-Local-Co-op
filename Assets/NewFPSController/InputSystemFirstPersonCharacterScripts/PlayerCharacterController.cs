@@ -9,6 +9,7 @@ using UnityEngine.InputSystem.XInput;
 public class PlayerCharacterController : MonoBehaviour
 {
     [NonSerialized] public InputSystemFirstPersonControls inputActions;
+    [NonSerialized] public WeaponController m_weaponController;
 
     private CharacterController controller;
 
@@ -40,6 +41,9 @@ public class PlayerCharacterController : MonoBehaviour
     private bool isGrounded;
     private bool isCrouching;
     private bool isSprinting;
+
+    public float cayoteTime = .1f;
+    public float cayoteTimer = 0;
 
     // Zoom Vars - Zoom code adapted from @torahhorse's First Person Drifter scripts.
     public float zoomFOV = 35.0f;
@@ -86,6 +90,7 @@ public class PlayerCharacterController : MonoBehaviour
         m_CrouchInput = m_PlayerInput.actions["Crouch"];
 
         m_PlayerInventoryManager = GetComponent<PlayerInventoryManager>();
+        m_weaponController = GetComponent<WeaponController>();
 
         //Check the input type
         if (m_PlayerInput.devices[0] is XInputController)
@@ -102,8 +107,7 @@ public class PlayerCharacterController : MonoBehaviour
         Debug.Log("Startup");
         controller = GetComponent<CharacterController>();
         initHeight = controller.height;
-        SetBaseFOV(cam.fieldOfView);
-        SetSprintFov(baseFOV);
+        //SetFOVs(cam.fieldOfView);
     }
 
     private void OnEnable()
@@ -134,6 +138,8 @@ public class PlayerCharacterController : MonoBehaviour
 
             isInMenu = false;
         }
+
+        if (cayoteTimer >  0) cayoteTimer -= Time.deltaTime;
     }
 
     private void DoLooking()
@@ -141,6 +147,12 @@ public class PlayerCharacterController : MonoBehaviour
         Vector2 looking = GetPlayerLookInput();
         float lookX = looking.x * lookSensitivity * Time.deltaTime;
         float lookY = looking.y * lookSensitivity * Time.deltaTime;
+
+        if (isADS)
+        {
+            lookX *= m_weaponController.currentWeaponBehavior.lookSensitivityMultiplierOnADS;
+            lookY *= m_weaponController.currentWeaponBehavior.lookSensitivityMultiplierOnADS;
+        }
 
         xRotation -= lookY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
@@ -166,6 +178,9 @@ public class PlayerCharacterController : MonoBehaviour
         // handle grounded movement
         if (isGrounded)
         {
+            //Update the cayote time
+            cayoteTimer = cayoteTime;
+
             // calculate the desired velocity from inputs, max speed, and current slope
             Vector3 targetVelocity = worldspaceMoveInput * MaxSpeedOnGround * speedModifier;
             // reduce speed if crouching by crouch speed ratio
@@ -178,32 +193,6 @@ public class PlayerCharacterController : MonoBehaviour
             // smoothly interpolate between our current velocity and the target velocity based on acceleration speed
             CharacterVelocity = Vector3.Lerp(CharacterVelocity, targetVelocity,
                 MovementSharpnessOnGround * Time.deltaTime);
-
-            
-            // jumping
-            if (isGrounded && GetPlayerJumpInputDown())
-            {
-                // force the crouch state to false
-                if (SetCrouchingState(false, false))
-                {
-                    // start by canceling out the vertical component of our velocity
-                    CharacterVelocity = new Vector3(CharacterVelocity.x, 0f, CharacterVelocity.z);
-
-                    // then, add the jumpSpeed value upwards
-                    CharacterVelocity += Vector3.up * JumpForce;
-
-                    // play sound
-                    //AudioSource.PlayOneShot(JumpSfx);
-
-                    // remember last time we jumped because we need to prevent snapping to ground for a short time
-                    m_LastTimeJumped = Time.time;
-                    HasPressedJumpThisFrame = true;
-
-                    // Force grounding to false
-                    isGrounded = false;
-                    //m_GroundNormal = Vector3.up;
-                }
-            }
 
             /*
             // footsteps sound
@@ -232,6 +221,35 @@ public class PlayerCharacterController : MonoBehaviour
 
             // apply the gravity to the velocity
             CharacterVelocity += Vector3.down * gravity * Time.deltaTime;
+        }
+
+        // jumping
+        if (GetPlayerJumpInputDown() && (isGrounded || cayoteTimer > 0))
+        {
+            if (cayoteTimer > 0 && !isGrounded) Debug.Log("cayote");
+
+            // force the crouch state to false
+            if (SetCrouchingState(false, false))
+            {
+                // start by canceling out the vertical component of our velocity
+                CharacterVelocity = new Vector3(CharacterVelocity.x, 0f, CharacterVelocity.z);
+
+                // then, add the jumpSpeed value upwards
+                CharacterVelocity += Vector3.up * JumpForce;
+
+                // play sound
+                //AudioSource.PlayOneShot(JumpSfx);
+
+                // remember last time we jumped because we need to prevent snapping to ground for a short time
+                m_LastTimeJumped = Time.time;
+                HasPressedJumpThisFrame = true;
+
+                // Force grounding to false
+                isGrounded = false;
+                cayoteTimer = 0;
+
+                //m_GroundNormal = Vector3.up;
+            }
         }
 
         // apply the final calculated velocity value as a character movement
@@ -294,14 +312,20 @@ public class PlayerCharacterController : MonoBehaviour
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, targetFOV, zoomSpeed * Time.deltaTime);
     }
 
+    public void SetFOVs(float baseFOV, float overrideSprintFOV = -1)
+    {
+        SetBaseFOV(baseFOV);
+        SetSprintFov(overrideSprintFOV);
+    }
+
     public void SetBaseFOV(float fov)
     {
         baseFOV = fov;
     }
 
-    public void SetSprintFov(float fov)
+    public void SetSprintFov(float overrideFOV = -1)
     {
-        sprintFov = baseFOV + additionalFOVFromSprinting;
+        sprintFov = baseFOV + (overrideFOV == -1 ? additionalFOVFromSprinting : overrideFOV);
     }
 
     private void OnDisable()
@@ -316,6 +340,8 @@ public class PlayerCharacterController : MonoBehaviour
         //I think the laggy movement sometimes comes from input system sucking ass here
         //Debug.Log(rawInput.ToString()); 
 
+        if (isADS) rawInput *= m_weaponController.currentWeaponBehavior.movementSpeedMultiplierOnADS;
+
         return new Vector3(rawInput.x, 0f, rawInput.y);
     }
 
@@ -326,6 +352,9 @@ public class PlayerCharacterController : MonoBehaviour
 
     public bool GetPlayerSprintInput()
     {
+        //Dont allow sprinting if the gun has a scope
+        if (isADS && m_weaponController.currentWeaponBehavior.type == WeaponType.Sniper) return false;
+
         return m_SprintInput.ReadValue<float>() == 1;
     }
 

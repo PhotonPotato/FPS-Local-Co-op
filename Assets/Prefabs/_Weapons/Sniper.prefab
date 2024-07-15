@@ -81,7 +81,7 @@ MonoBehaviour:
   type: 3
   damageType: 1
   model: {fileID: 6278963244501135097}
-  damage: 100
+  damage: 120
   range: 100
   bulletPoolIndex: 7
   gunMuzzle: {fileID: 6485125077779175982}
@@ -91,12 +91,14 @@ MonoBehaviour:
   hitLayers:
     serializedVersion: 2
     m_Bits: 0
+  movementSpeedMultiplierOnADS: 0.2
+  lookSensitivityMultiplierOnADS: 0.3
   fireDissabled: 0
   reloading: 0
   reloadTimer: 0
   muzzleFlashIntensity: 4
-  rumbleFireDuration: 0.8
-  rumbleIntensity: 1
+  rumbleFireDuration: 0.5
+  rumbleIntensity: 4
   kickbackAmount: 0.1
   kickbackTime: 0.4
   kickbackRotation: 1
