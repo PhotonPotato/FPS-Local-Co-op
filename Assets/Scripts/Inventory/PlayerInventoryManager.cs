@@ -24,6 +24,14 @@ public class PlayerInventoryManager : MonoBehaviour
 
     public Transform InventoryBuyPanel;
 
+    //Settings
+    public Slider m_LookSensitivitySlider;
+    private TMP_Text m_LookSensitivityLabel;
+    public Slider m_ADSSensitivityMultiplierSlider;
+    private TMP_Text m_ADSSensitivityLabel;
+
+    public PlayerCharacterController m_CharacterController;
+
     //The multiplayer eventsystem that the player uses
     public MultiplayerEventSystem m_PlayerEventSystem;
 
@@ -52,6 +60,10 @@ public class PlayerInventoryManager : MonoBehaviour
     {
         m_PlayerManager = GetComponent<PlayerManager>();
         m_PlayerInput = GetComponent<PlayerInput>();
+        m_CharacterController = GetComponent<PlayerCharacterController>();
+
+        m_LookSensitivityLabel = m_LookSensitivitySlider.GetComponentInChildren<TMP_Text>();
+        m_ADSSensitivityLabel = m_ADSSensitivityMultiplierSlider.GetComponentInChildren<TMP_Text>();
 
         openInventoryAction = m_PlayerInput.actions.FindAction("OpenInventory");
         backButtonAction = m_PlayerInput.actions.FindAction("Change Weapon");
@@ -82,6 +94,13 @@ public class PlayerInventoryManager : MonoBehaviour
                 if (buyPanelOpen) OnCloseBuyPanel();
                 if (sellPanelOpen) OnCloseItemSellPanel();
             }
+        }
+
+        if (inventoryPanelOpen)
+        {
+            //Update the settings text
+            m_LookSensitivityLabel.text = "Look Sensistivity: " + m_LookSensitivitySlider.value;
+            m_ADSSensitivityLabel.text = "ADS Sensitivity Multiplier: " + m_ADSSensitivityMultiplierSlider.value;
         }
 
         //Update the sate of the inventory panel
@@ -202,6 +221,8 @@ public class PlayerInventoryManager : MonoBehaviour
         //Update the first ui selection for the event system
         m_PlayerEventSystem.SetSelectedGameObject(m_InventoryPanelFirstSelectedButton);
 
+        m_LookSensitivitySlider.value = m_CharacterController.lookSensitivity;
+        m_ADSSensitivityMultiplierSlider.value = m_CharacterController.adsSensitivityMultiplier;
     }
 
     /// <summary>
@@ -212,6 +233,10 @@ public class PlayerInventoryManager : MonoBehaviour
         Debug.Log("Close inventory panel");
 
         inventoryPanelOpen = false;
+
+        //Update the settings
+        m_CharacterController.lookSensitivity = m_LookSensitivitySlider.value;
+        m_CharacterController.adsSensitivityMultiplier = m_ADSSensitivityMultiplierSlider.value;
 
         //Play a sound or something
     }

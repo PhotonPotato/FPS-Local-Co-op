@@ -82,7 +82,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemID: 5
   itemName: GoldCoin
-  itemSellPrice: 40
+  itemSellPrice: 50
   itemModel: {fileID: 417336026151149148}
   displayTexture: {fileID: 2800000, guid: c59646da3ad9b4773985f90b10ef0fe5, type: 3}
 --- !u!135 &1159249437148555738
@@ -265,9 +265,9 @@ ParticleSystem:
     enabled: 1
     startLifetime:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 3
-      minScalar: 5
+      minScalar: 4
       maxCurve:
         serializedVersion: 2
         m_Curve:

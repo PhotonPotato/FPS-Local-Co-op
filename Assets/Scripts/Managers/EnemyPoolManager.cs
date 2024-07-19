@@ -9,6 +9,7 @@ public class EnemyPoolManager : MonoBehaviour
     public struct Pool
     {
         public string name;
+        public float enemyDifficulty;
         public int count;
         public GameObject ObjectToPool;
         public List<GameObject> PooledObjects;
@@ -24,7 +25,7 @@ public class EnemyPoolManager : MonoBehaviour
 
     private void Update()
     {
-        if (Time.frameCount == EventsManager.Instance.frameWhenGameSceneLoaded + 1)
+        if (Time.frameCount == EventsManager.SharedInstance.frameWhenGameSceneLoaded + 1)
         {
             SharedInstance = this;
 

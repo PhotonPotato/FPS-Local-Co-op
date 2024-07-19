@@ -82,7 +82,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemID: 3
   itemName: PrayerBook
-  itemSellPrice: 200
+  itemSellPrice: 175
   itemModel: {fileID: 1625056415242378044}
   displayTexture: {fileID: 2800000, guid: 533b01a5c5fd9419db540f67e8d2ab0c, type: 3}
 --- !u!135 &4510256180355405484
@@ -265,9 +265,9 @@ ParticleSystem:
     enabled: 1
     startLifetime:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 3
-      minScalar: 5
+      minScalar: 4
       maxCurve:
         serializedVersion: 2
         m_Curve:

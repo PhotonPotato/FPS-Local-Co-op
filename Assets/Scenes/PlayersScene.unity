@@ -844,7 +844,7 @@ Transform:
   m_GameObject: {fileID: 558750409}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 89.999, y: 1.91, z: 89.997}
+  m_LocalPosition: {x: 89.999, y: 1.53, z: 89.997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2270,10 +2270,18 @@ MonoBehaviour:
   m_PlayerInputManager: {fileID: 559891164}
   PodiumSceneParentObject: {fileID: 1622950455}
   PodiumDirectionalLight: {fileID: 410087040}
-  frameWhenGameSceneLoaded: -100
-  gameStarted: 0
   playerActions: {fileID: -944628639613478452, guid: 101a2fbc392ca45829e2f44d23d4fa11,
     type: 3}
+  EnemyDifficultyVsEnemyType:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  currentRoomDifficulty: 0
+  currentEnemyDifficulty: 0
+  gameStarted: 0
+  frameWhenGameSceneLoaded: -100
 --- !u!4 &1975918239
 Transform:
   m_ObjectHideFlags: 0

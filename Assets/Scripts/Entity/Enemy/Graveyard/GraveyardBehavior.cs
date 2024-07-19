@@ -5,6 +5,8 @@ public class GraveyardBehavior : MonoBehaviour
 {
     public Transform SpawnPoint;
 
+    public int EnemyPoolID = 1;
+
     public float maxTimeBetweenSpawns = 4;
     public float minTimeBetweenSpawns = 3;
     private float timeOfNextSpawn = 3;
@@ -34,7 +36,7 @@ public class GraveyardBehavior : MonoBehaviour
     {
         GameObject newZombieObj;
 
-        if (EnemyPoolManager.SharedInstance.GetPooledObject(0, out newZombieObj))
+        if (EnemyPoolManager.SharedInstance.GetPooledObject(EnemyPoolID, out newZombieObj))
         {
             newZombieObj.SetActive(false);
 

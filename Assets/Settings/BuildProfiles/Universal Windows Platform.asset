@@ -22,8 +22,6 @@ MonoBehaviour:
     m_path: Assets/Scenes/PlayersScene.unity
   - m_enabled: 1
     m_path: Assets/Scenes/MarketScene.unity
-  - m_enabled: 1
-    m_path: Assets/Scenes/GameScene.unity
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings:

@@ -16,6 +16,7 @@ public class PlayerCharacterController : MonoBehaviour
     [SerializeField] public Camera cam;
     [SerializeField] private float movementSpeed = 2.0f;
     [SerializeField] public float lookSensitivity = 1.0f;
+    [SerializeField] public float adsSensitivityMultiplier = 1.0f;
 
     private PlayerInput m_PlayerInput;
     private InputAction m_MoveInput;
@@ -150,8 +151,8 @@ public class PlayerCharacterController : MonoBehaviour
 
         if (isADS)
         {
-            lookX *= m_weaponController.currentWeaponBehavior.lookSensitivityMultiplierOnADS;
-            lookY *= m_weaponController.currentWeaponBehavior.lookSensitivityMultiplierOnADS;
+            lookX *= m_weaponController.currentWeaponBehavior.lookSensitivityMultiplierOnADS * adsSensitivityMultiplier;
+            lookY *= m_weaponController.currentWeaponBehavior.lookSensitivityMultiplierOnADS * adsSensitivityMultiplier;
         }
 
         xRotation -= lookY;

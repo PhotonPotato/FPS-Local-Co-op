@@ -1,10 +1,14 @@
 ﻿using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
+using JetBrains.Annotations;
+using Unity.VisualScripting;
+using static Generator;
 
 public class Generator : MonoBehaviour
 {
@@ -25,6 +29,17 @@ public class Generator : MonoBehaviour
         public int layer;
         public int branchLength;
         public float distToOrigin;
+    }
+
+    [System.Serializable]
+    public struct RoomPrefab
+    {
+        public RoomType type;
+        public GameObject prefab;
+        public float difficulty;
+
+        //Saved to track the difference between this difficulty and the level's
+        [System.NonSerialized] public float difficultyError;
     }
 
     public static Generator generator;
@@ -67,13 +82,12 @@ public class Generator : MonoBehaviour
     public int generateFloorProbability = 2;
     public int maximumNumFloors = 2;
 
+    [Tooltip("How close a room prefab's difficulty must be to the desired difficulty in order for it to be considered in generation")]
+    public float roomDifficultyErrorMargin = .4f;
 
     [Header("Refs")]
     public bool generateUnderParent;
     public GameObject[] levelParent;
-
-    public GameObject RoomPrefab;
-    public GameObject HallwayPrefab;
 
     public GameObject[] SingleRooms;
     public GameObject[] ElbowRooms;
@@ -82,12 +96,17 @@ public class Generator : MonoBehaviour
     public GameObject[] ThreeWayRooms;
     public GameObject[] ExtractRooms;
 
+    public RoomPrefab[] AllRoomPrefabs;
+
     public GameObject[] Corridoors;
 
     public NavMeshSurface surface;
 
 
     [Header("Trackers")]
+    public float currentRoomDifficulty;
+    public float currentEnemyDifficulty;
+
     public float timer = 30;
 
     public int numberBranches = 0;
@@ -173,6 +192,8 @@ public class Generator : MonoBehaviour
             staircaseSpawnPoints.Clear();
 
             Debug.Log("end board gen, onto object gen");
+
+            CalculateAllRoomPrefabsDifficultyError();
 
             PrepRoomGeneration();
 
@@ -552,6 +573,7 @@ public class Generator : MonoBehaviour
         Debug.Log($"Start pos {startPlace}");
     }
 
+    /*
     public void GenerateObjects()
     {
         if (boards == null)
@@ -602,7 +624,7 @@ public class Generator : MonoBehaviour
 
             }
         }
-    }
+    }*/
 
     private void OnDrawGizmos()
     {
@@ -677,7 +699,7 @@ public class Generator : MonoBehaviour
                 {
                     case RoomStatus.Room:
                         RoomOrientationData roomData = IdentifyRoomOrientation(i, new Vector2Int(room.x, room.y));
-
+                        /*
                         switch (roomData.type)
                         {
                             //This will either be a normal single or 
@@ -706,6 +728,9 @@ public class Generator : MonoBehaviour
                                 break;
 
                         }
+                        */
+
+                        obj = Instantiate(GetRoomPrefabByDifficulty(roomData.type, roomDifficultyErrorMargin), levelParent[i].transform);
 
                         obj.transform.SetPositionAndRotation(new Vector3(room.x * boardScale, i * .75f * boardScale, room.y * boardScale), Quaternion.Euler(0, roomData.rotation, 0));
 
@@ -1026,7 +1051,7 @@ public class Generator : MonoBehaviour
             return numToRound + multiple - remainder;
     }
 
-    private void ShowAllRooms(bool show)
+    public void ShowAllRooms(bool show)
     {
         //Iterate layer by layer
         for (int i = 0; i < boards.Count; i++)
@@ -1067,5 +1092,138 @@ public class Generator : MonoBehaviour
         }
 
         return output;
+    }
+
+    /// <summary>
+    /// Reads from level difficulty file to determine the current generation and enemy difficulty
+    /// </summary>
+    public void GetDifficultySettings()
+    {
+        // ALL of the integer values for generation will be stored as floats so that they can be increased incrementally
+        // Since the actual variables are integers, we will just round down
+        // TBH the implementation using a temp float IS NOT ELEGANT :( but performance here doesn't matter
+        // Still room for improvement here though.
+        float tmpFloat;
+
+        //The 2nd line holds the overall room difficulty
+        float.TryParse(GetSaveDataLine(2), out tmpFloat);
+
+
+        //4th and 5th lines contain the min and max branch lengths
+        float.TryParse(GetSaveDataLine(4), out tmpFloat);
+        branchLengthMax = Mathf.FloorToInt(tmpFloat);
+
+        float.TryParse(GetSaveDataLine(5), out tmpFloat);
+        branchLengthMin = Mathf.FloorToInt(tmpFloat);
+
+        //Line 7 and 8 represent the branch off and merge probability of the generation
+        float.TryParse(GetSaveDataLine(7), out tmpFloat);
+        branchOffProbability = Mathf.FloorToInt(tmpFloat);
+
+        float.TryParse(GetSaveDataLine(8), out tmpFloat);
+        mergeProbability = Mathf.FloorToInt(tmpFloat);
+
+        //Lines 10 and 11 contain the maximum number of branches and floors
+        float.TryParse(GetSaveDataLine(10), out tmpFloat);
+        maximumNumBranches = Mathf.FloorToInt(tmpFloat);
+
+        //THIS IS WHERE I START TO OVRELOAD THIS SCRIPT LOL, RLY SHOULD PUT ENEMY STUFF ELSEWHERE
+
+        //Line 13 represents the current overall enemy spawn difficulty
+        //This will get sent to the EventsManager which will release it to the graveyards and other
+        float.TryParse(GetSaveDataLine(13), out tmpFloat);
+        currentEnemyDifficulty = Mathf.FloorToInt(tmpFloat);
+
+        EventsManager.SharedInstance.currentRoomDifficulty = currentRoomDifficulty;
+        EventsManager.SharedInstance.currentEnemyDifficulty = currentEnemyDifficulty;
+    }
+
+    /// <summary>
+    /// Gets a specific line of the desired text file.
+    /// Getting used so much that it might as well just cache the whole file and then read from the cache instead of reading the file so much.
+    /// </summary>
+    /// <param name="fileName"></param>
+    /// <param name="line"></param>
+    /// <returns></returns>
+    string GetSaveDataLine(int line, string fileName = "Assets/Settings/SaveData/LevelDifficulty.txt")
+    {
+        using (var sr = new StreamReader(fileName))
+        {
+            for (int i = 1; i < line; i++)
+                sr.ReadLine();
+            return sr.ReadLine();
+        }
+    }
+
+    /// <summary>
+    /// A quick once over of the AllRoomPrefabs list to determine each room's error to the current room difficulty.
+    /// Should only be run after getting the current room difficulty and before running any room prefab gen.
+    /// </summary>
+    public void CalculateAllRoomPrefabsDifficultyError()
+    {
+        for (int i = 0; i < AllRoomPrefabs.Length; i++)
+        {
+            AllRoomPrefabs[i].difficultyError = Mathf.Abs(currentRoomDifficulty - AllRoomPrefabs[i].difficulty);
+        }
+    }
+
+    /// <summary>
+    /// Somehow determines a good room based on the desired difficulty
+    /// </summary>
+    /// <param name="difficulty"></param>
+    /// <returns></returns>
+    public GameObject GetRoomPrefabByDifficulty(RoomType type, float errorMargin)
+    {
+        List<RoomPrefab> viableRoomPrefabs = new List<RoomPrefab>();
+        List<RoomPrefab> viableRoomPrefabsByType = new List<RoomPrefab>();
+
+        //Keep in mind that the actual room difficulty error should have been calculated prior to this.
+
+        //Start by filtering for all rooms of the right type
+        foreach (RoomPrefab roomPrefab in AllRoomPrefabs)
+        {
+            if (roomPrefab.type == type)
+            {
+                //Now filter for difficulty by an error margin
+                if (roomPrefab.difficultyError <= errorMargin)
+                {
+                    //Then the room is a viable candidate
+                    viableRoomPrefabs.Add(roomPrefab);
+                }
+                
+                //Put the room into a bin of rooms that passed the type filter
+                viableRoomPrefabsByType.Add(roomPrefab);
+            }
+        }
+
+        //A quick check to make sure that there IS a room of such type even
+        if (viableRoomPrefabsByType.Count == 0) return null;
+
+        //A quick check to make sure that we even have a viable candidate
+        if (viableRoomPrefabs.Count > 0)
+        {
+            //Return one of the room prefabs thats within the error margin.
+            RoomPrefab roomPrefab = viableRoomPrefabs[Random.Range(0, viableRoomPrefabs.Count)];
+
+            Debug.Log($"Rand. D: {currentRoomDifficulty}, Room D: {roomPrefab.difficulty}, Error: {roomPrefab.difficultyError}, Name: {roomPrefab.prefab.name}");
+
+            return roomPrefab.prefab;
+        }
+        else
+        {
+            //Oop looks like there's no truly viable room.
+            //Sooo we're just gonna choose the next best thing
+            RoomPrefab bestRoomPrefabSoFar = viableRoomPrefabsByType[0];
+
+            for (int i = 1; i < viableRoomPrefabsByType.Count; i++)
+            {
+                if (viableRoomPrefabsByType[i].difficultyError < bestRoomPrefabSoFar.difficultyError) bestRoomPrefabSoFar = viableRoomPrefabsByType[i];
+            }
+
+            Debug.Log($"Best. D: {currentRoomDifficulty}, Room D: {bestRoomPrefabSoFar.difficulty}, Error: {bestRoomPrefabSoFar.difficultyError}, Name: {bestRoomPrefabSoFar.prefab.name}");
+
+            //Send it out baby
+            return bestRoomPrefabSoFar.prefab;
+        }
     }
 }

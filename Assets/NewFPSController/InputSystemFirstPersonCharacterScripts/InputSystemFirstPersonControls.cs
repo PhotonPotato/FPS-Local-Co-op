@@ -957,17 +957,6 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""785e9668-c4f8-4cd9-83c0-b62f80446c7b"",
-                    ""path"": ""<XInputController>/buttonEast"",
-                    ""interactions"": ""Press"",
-                    ""processors"": """",
-                    ""groups"": ""Xbox"",
-                    ""action"": ""Change Weapon"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
                     ""name"": ""Trackpad"",
                     ""id"": ""81f05241-113d-407a-a132-30e71f459f6e"",
                     ""path"": ""1DAxis"",
@@ -996,6 +985,39 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""FPSControllerInputs"",
+                    ""action"": ""Change Weapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""XBox Bumpers"",
+                    ""id"": ""33b25d09-90fc-42da-b4bb-a86ff7912cbc"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": ""Press(pressPoint=0.5)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Change Weapon"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""d921be8f-80cd-4d20-b510-ebd67ea3ea1e"",
+                    ""path"": ""<XInputController>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Xbox"",
+                    ""action"": ""Change Weapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""36931376-e6cf-4d7f-bca3-6a5dde7e0c18"",
+                    ""path"": ""<XInputController>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Xbox"",
                     ""action"": ""Change Weapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true

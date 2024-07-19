@@ -7,12 +7,13 @@ using UnityEngine.InputSystem;
 
 public class EventsManager : MonoBehaviour
 {
-    public static EventsManager Instance;
+    public static EventsManager SharedInstance;
     /// <summary>
     /// Runs when all players have joined.
     /// Loads the level scene and unloads the player joining screen.
     /// </summary>
 
+    [Header("Refs")]
     Scene ActiveGameScene;
     public Camera JoinSceneCamera;
     public GameObject JoinCanvas;
@@ -22,19 +23,28 @@ public class EventsManager : MonoBehaviour
     PlayerSpawnManager SpawnManager;
     EventSystem PodiumEventSystem;
 
+    public InputActionAsset playerActions;
+    InputAction startGameAction;
+
+    [Header("Settings")]
+    public AnimationCurve EnemyDifficultyVsEnemyType;
+
+    [Header("Trackers")]
+    public float currentRoomDifficulty;
+    public float currentEnemyDifficulty;
+
+    public bool gameStarted = false;
+
     //Janky way to run a function after it ran
     public float frameWhenGameSceneLoaded = -100;
 
     //Used to pass the active players list between the playerSpawnManager and the 
     List<Transform> tempSaveOfActivePlayers;
 
-    public bool gameStarted = false;
-    public InputActionAsset playerActions;
-    InputAction startGameAction;
 
     public void Start()
     {
-        Instance = this;
+        SharedInstance = this;
 
         SpawnManager = FindAnyObjectByType<PlayerSpawnManager>();
         PodiumEventSystem = FindAnyObjectByType<EventSystem>();

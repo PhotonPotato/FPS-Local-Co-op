@@ -131,7 +131,7 @@ public class WeaponController : MonoBehaviour
         }
         else m_PlayerManager.SetSniperCrosshairImagesAlpha(0);
 
-        lastChangeWeaponState = scrollWheelInput > 0;
+        lastChangeWeaponState = scrollWheelInput != 0;
     }
 
     private void ChangeWeapon(int direction)
