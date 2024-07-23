@@ -86,6 +86,9 @@ public class EventsManager : MonoBehaviour
             for (int i = 0; i < Generator.generator.activePlayers.Count; i++)
             {
                 Generator.generator.AllCurrentActiveObjects.Add(new List<GameObject>());
+
+                //Update the minimaps tracked players
+                MinimapManager.SharedInstance.AddTrackedObject(Generator.generator.activePlayers[i], Color.green);
             }
 
             //Move the players using the spawn manager's function
@@ -105,6 +108,8 @@ public class EventsManager : MonoBehaviour
                 GraveyardBehavior.gameObject.SetActive(true);
                 GraveyardBehavior.transform.SetParent(null);
             }
+
+            LevelExtractManager.SharedInstance.transform.SetParent(null);
         }
     }
 

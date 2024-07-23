@@ -197,7 +197,7 @@ public class PlayerManager : MonoBehaviour
         //Update the extract zones player count if the players inside one upon death
         if (isInExtractZone) FindAnyObjectByType<LevelExtractManager>().PlayerDiedWithinExtractZone();
 
-        PlayerSpawnManager.SceneSpawnManager?.OnPlayerDeath();
+        PlayerSpawnManager.SceneSpawnManager.OnPlayerDeath();
 
         //Hide the players
         m_DisplayObject.SetActive(false);

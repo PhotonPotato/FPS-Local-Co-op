@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class LevelExtractManager : MonoBehaviour
 {
+    public static LevelExtractManager SharedInstance;
     public ExtractionType extractionType;
 
     public PlayerSpawnManager SpawnManager;
@@ -30,6 +31,8 @@ public class LevelExtractManager : MonoBehaviour
     {
         SpawnManager = FindAnyObjectByType<PlayerSpawnManager>();
         MarketEventSystem = FindAnyObjectByType<EventSystem>();
+
+        SharedInstance = this;
     }
 
     void Update()
@@ -38,6 +41,8 @@ public class LevelExtractManager : MonoBehaviour
         // bc the scene gets loaded a frame after it is called to be loaded
         if (Time.frameCount - DestinationSceneLoadedFrameStamp == 1)
         {
+            Debug.Log("loading plauer shit");
+
             //Move spawn manager and player spawn point (bc it holds the splitscreen player input tech)
 
             SceneManager.MoveGameObjectToScene(SpawnManager.gameObject, ExtractDestinationScene);
@@ -184,6 +189,9 @@ public class LevelExtractManager : MonoBehaviour
 
     public void AllPlayersDead()
     {
+        gameObject.transform.SetParent(null);
+        gameObject.SetActive(true);
+
         //Send people straight to the menu
         extractionType = ExtractionType.MarketScene;
 

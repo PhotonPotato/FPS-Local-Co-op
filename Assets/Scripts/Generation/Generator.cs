@@ -199,7 +199,6 @@ public class Generator : MonoBehaviour
 
             ShowAllRooms(true);
             surface?.BuildNavMesh();
-            ShowAllRooms(false);
 
             Debug.Log("End of loop");
         }
@@ -573,59 +572,6 @@ public class Generator : MonoBehaviour
         Debug.Log($"Start pos {startPlace}");
     }
 
-    /*
-    public void GenerateObjects()
-    {
-        if (boards == null)
-        {
-            return;
-        }
-
-        //Draw little spheres at the room places (just for testing).
-        foreach (Room[,] layer in boards)
-        {
-            foreach (Room room in layer)
-            {
-                switch (room.status)
-                {
-                    case RoomStatus.Room:
-                        Vector3 objPos;
-
-                        objPos.x = room.x * boardScale;
-                        objPos.y = 0;
-                        objPos.z = room.y * boardScale;
-
-                        GameObject instObj = Instantiate(RoomPrefab, objPos, Quaternion.identity);
-                        if (generateUnderParent) instObj.transform.SetParent(levelParent[0].transform);
-                        break;
-
-                    case RoomStatus.Corridor:
-                        Vector3 objPos2;
-
-                        objPos2.x = room.x * boardScale;
-                        objPos2.y = 0;
-                        objPos2.z = room.y * boardScale;
-
-                        //Determine the object direction.
-                        float instYRot = 0;
-
-                        //Check for a vertical hallway.
-                        print(Mathf.Abs(room.objDir.y));
-
-                        if (room.objDir.y != 0)
-                        {
-                            instYRot = 90;
-                        }
-                        
-                        GameObject instObj2 = Instantiate(HallwayPrefab, objPos2, Quaternion.Euler(0, instYRot, 0));
-                        if (generateUnderParent) instObj2.transform.SetParent(levelParent[0].transform);
-                        break;
-                }
-
-            }
-        }
-    }*/
-
     private void OnDrawGizmos()
     {
         if (boards == null)
@@ -699,36 +645,6 @@ public class Generator : MonoBehaviour
                 {
                     case RoomStatus.Room:
                         RoomOrientationData roomData = IdentifyRoomOrientation(i, new Vector2Int(room.x, room.y));
-                        /*
-                        switch (roomData.type)
-                        {
-                            //This will either be a normal single or 
-                            case RoomType.Single:
-                                obj = Instantiate(SingleRooms[Random.Range(0, SingleRooms.Length)], levelParent[i].transform);
-                                break;
-
-                            case RoomType.Elbow:
-                                obj = Instantiate(ElbowRooms[Random.Range(0, ElbowRooms.Length)], levelParent[i].transform);
-                                break;
-
-                            case RoomType.Straight:
-                                obj = Instantiate(StraightRooms[Random.Range(0, StraightRooms.Length)], levelParent[i].transform);
-                                break;
-
-                            case RoomType.Threeway:
-                                obj = Instantiate(ThreeWayRooms[Random.Range(0, ThreeWayRooms.Length)], levelParent[i].transform);
-                                break;
-
-                            case RoomType.Cross:
-                                obj = Instantiate(CrossRooms[Random.Range(0, CrossRooms.Length)], levelParent[i].transform);
-                                break;
-
-                            default: //Throwaway just to make the compiler happy (bc cannot add unassigned "obj")
-                                obj = new GameObject();
-                                break;
-
-                        }
-                        */
 
                         obj = Instantiate(GetRoomPrefabByDifficulty(roomData.type, roomDifficultyErrorMargin), levelParent[i].transform);
 
