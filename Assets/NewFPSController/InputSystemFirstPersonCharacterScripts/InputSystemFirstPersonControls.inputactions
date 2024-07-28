@@ -94,6 +94,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "MenuBack",
+                    "type": "Button",
+                    "id": "39cda3be-aa67-4a6f-a364-7b9bc32f79f2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -382,6 +391,28 @@
                     "action": "Submit",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "767ab403-1137-4541-a195-ffc62e258d3b",
+                    "path": "<XInputController>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "MenuBack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4b55c22c-3086-47ac-8982-f4792fed8dc0",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";FPSControllerInputs",
+                    "action": "MenuBack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -435,7 +466,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Pause Menu",
+                    "name": "PauseMenu",
                     "type": "Button",
                     "id": "a5ad4849-694e-45e5-818f-a2eb7914c14d",
                     "expectedControlType": "",
@@ -519,6 +550,15 @@
                     "name": "StartGame",
                     "type": "Button",
                     "id": "648414de-dc72-46b2-b03e-a5d87e7d3e02",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ResetSaveFile",
+                    "type": "Button",
+                    "id": "ecfd67ab-60fd-46e0-8726-5ba9e2fc1722",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -819,7 +859,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "FPSControllerInputs",
-                    "action": "Pause Menu",
+                    "action": "PauseMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -830,7 +870,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Xbox",
-                    "action": "Pause Menu",
+                    "action": "PauseMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1095,6 +1135,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "StartGame",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a9743ebf-e41a-42f6-bbdb-4aca1c654950",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ResetSaveFile",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

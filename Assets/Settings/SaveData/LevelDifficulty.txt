@@ -1,13 +1,13 @@
 //Current Generation Difficulty
-0.4
+0.7
 Len
-2.0
-1.0
+3
+1.8
 Prob
-4.0
-3.0
+4.6
+3.6
 Max
-1.0
+2.0
 1.0
 //Current Enemy Difficulty
 0.0

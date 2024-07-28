@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using System.IO;
 
 public class EventsManager : MonoBehaviour
 {
@@ -27,6 +27,8 @@ public class EventsManager : MonoBehaviour
     InputAction startGameAction;
 
     [Header("Settings")]
+    public bool resetDifficultyOnStart = true;
+
     public AnimationCurve EnemyDifficultyVsEnemyType;
 
     [Header("Trackers")]
@@ -41,6 +43,8 @@ public class EventsManager : MonoBehaviour
     //Used to pass the active players list between the playerSpawnManager and the 
     List<Transform> tempSaveOfActivePlayers;
 
+    public float roomDifficultyPunishmentFromLoss = .2f;
+    public float roomDifficultyRewardFromSuccess = .3f;
 
     public void Start()
     {
@@ -50,6 +54,9 @@ public class EventsManager : MonoBehaviour
         PodiumEventSystem = FindAnyObjectByType<EventSystem>();
 
         startGameAction = playerActions.FindAction("StartGame");
+
+        //pretty much if there are no players, then it will be the first lobby opened in the game.
+        if (resetDifficultyOnStart && SpawnManager.GetNumPlayers == 0) ResetDifficultyToDefault();
     }
 
     private void Update()
@@ -93,7 +100,9 @@ public class EventsManager : MonoBehaviour
 
             //Move the players using the spawn manager's function
             SpawnManager.MovePlayersToGameSpawnLocation();
-
+        }
+        else if (Time.frameCount == frameWhenGameSceneLoaded + 6)
+        {
             //Show all rooms near players
             Generator.generator.ShowRoomsCloseToAllPlayerss();
         }
@@ -110,6 +119,8 @@ public class EventsManager : MonoBehaviour
             }
 
             LevelExtractManager.SharedInstance.transform.SetParent(null);
+
+            Generator.generator.ShowRoomsCloseToAllPlayerss();
         }
     }
 
@@ -171,5 +182,21 @@ public class EventsManager : MonoBehaviour
 
         //Enable player joining again
         m_PlayerInputManager.EnableJoining();
+    }
+    
+    public void EnactDifficultyReward() => Generator.generator.UpdateDifficultySettingsForExtract(roomDifficultyRewardFromSuccess, .2f, -.2f);
+
+    public void EnactDifficultyPunishment()
+    {
+        Generator.generator.UpdateDifficultySettingsForExtract(roomDifficultyPunishmentFromLoss * -1, -.1f, .1f);
+    }
+
+    public void ResetDifficultyToDefault()
+    {
+        //Read the default to a array
+        var lines = File.ReadAllLines("Assets/Settings/SaveData/LevelDifficultyDefault.txt");
+
+        //Write the array to the actual save file
+        File.WriteAllLines("Assets/Settings/SaveData/LevelDifficulty.txt", lines);
     }
 }

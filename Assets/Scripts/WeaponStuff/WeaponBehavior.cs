@@ -6,6 +6,7 @@ public class WeaponBehavior : MonoBehaviour
     public WeaponType type;
     public DamageType damageType;
     public GameObject model;
+    public Sprite Icon;
     public int damage;
     public float range;
 

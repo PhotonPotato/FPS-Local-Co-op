@@ -82,7 +82,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemID: 8
   itemName: Bucket
-  itemSellPrice: 15
+  itemSellPrice: 45
   itemModel: {fileID: 3475599608064633880}
   displayTexture: {fileID: 2800000, guid: e12e30192243044a4ab7b87c68f8bb45, type: 3}
 --- !u!135 &6433695568351435691

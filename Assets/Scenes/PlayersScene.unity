@@ -1027,7 +1027,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Start Game (Y)
+  m_text: Player 1 - Start Game (Y)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2272,6 +2272,7 @@ MonoBehaviour:
   PodiumDirectionalLight: {fileID: 410087040}
   playerActions: {fileID: -944628639613478452, guid: 101a2fbc392ca45829e2f44d23d4fa11,
     type: 3}
+  resetDifficultyOnStart: 1
   EnemyDifficultyVsEnemyType:
     serializedVersion: 2
     m_Curve: []
@@ -2282,6 +2283,8 @@ MonoBehaviour:
   currentEnemyDifficulty: 0
   gameStarted: 0
   frameWhenGameSceneLoaded: -100
+  roomDifficultyPunishmentFromLoss: 0.3
+  roomDifficultyRewardFromSuccess: 0.3
 --- !u!4 &1975918239
 Transform:
   m_ObjectHideFlags: 0

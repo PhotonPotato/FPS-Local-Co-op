@@ -65,8 +65,8 @@ public class PlayerInventoryManager : MonoBehaviour
         m_LookSensitivityLabel = m_LookSensitivitySlider.GetComponentInChildren<TMP_Text>();
         m_ADSSensitivityLabel = m_ADSSensitivityMultiplierSlider.GetComponentInChildren<TMP_Text>();
 
-        openInventoryAction = m_PlayerInput.actions.FindAction("OpenInventory");
-        backButtonAction = m_PlayerInput.actions.FindAction("Change Weapon");
+        openInventoryAction = m_PlayerInput.actions.FindAction("PauseMenu");
+        backButtonAction = m_PlayerInput.actions.FindAction("MenuBack");
     }
 
     public void Update()

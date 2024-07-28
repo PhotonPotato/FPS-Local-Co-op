@@ -82,7 +82,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemID: 1
   itemName: Fine Wine
-  itemSellPrice: 125
+  itemSellPrice: 175
   itemModel: {fileID: 2056710755024107687}
   displayTexture: {fileID: 2800000, guid: 33a8e9146684449578384e3d268e8569, type: 3}
 --- !u!135 &6839837994742938278

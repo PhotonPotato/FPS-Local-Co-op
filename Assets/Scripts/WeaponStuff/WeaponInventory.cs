@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WeaponInventory : MonoBehaviour
 {
@@ -10,16 +11,16 @@ public class WeaponInventory : MonoBehaviour
 
     public List<WeaponBehavior> startingWeapons;
 
-    public Transform AmmoSliderDisplayGroup;
+    public Slider AmmoSlider;
+    public Image StatusImage;
+
+    public Sprite reloadingStatusIcon;
 
     public GameObject AmmoSliderPrefab;
 
     // Add a new weapon to the inventory
     public void AddWeapon(WeaponBehavior newWeapon)
     {
-        //Create a new visualization of the weapon
-        Instantiate(AmmoSliderPrefab, AmmoSliderDisplayGroup);
-
         weapons.Add(newWeapon);
     }
 
@@ -28,7 +29,6 @@ public class WeaponInventory : MonoBehaviour
     {
         //Destroy the visualization of the object as well
         int index = weapons.IndexOf(weaponToRemove);
-        Destroy(AmmoSliderDisplayGroup.GetChild(index));
 
         weapons.Remove(weaponToRemove);
         Destroy(weaponToRemove.gameObject);

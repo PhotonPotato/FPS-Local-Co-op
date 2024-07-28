@@ -82,7 +82,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemID: 4
   itemName: Chalice
-  itemSellPrice: 300
+  itemSellPrice: 500
   itemModel: {fileID: 5788462677495403467}
   displayTexture: {fileID: 2800000, guid: 292e701f94a664f54b8da327ad4f8409, type: 3}
 --- !u!135 &3620662246742166909

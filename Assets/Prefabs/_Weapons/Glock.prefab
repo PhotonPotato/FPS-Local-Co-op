@@ -81,6 +81,7 @@ MonoBehaviour:
   type: 1
   damageType: 1
   model: {fileID: 8135943334109384800}
+  Icon: {fileID: 21300000, guid: c598e5d00e18d4379bccdd96b81754c0, type: 3}
   damage: 30
   range: 20
   bulletPoolIndex: 5

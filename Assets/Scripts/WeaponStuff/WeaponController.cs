@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using UnityEngine.InputSystem.XInput;
 using Unity.VisualScripting;
+using UnityEngine.UIElements;
 
 public class WeaponController : MonoBehaviour
 {
@@ -196,8 +197,9 @@ public class WeaponController : MonoBehaviour
 
     private void UpdateWeaponAmmoUI()
     {
+        //DEPRICATED, used to be for multiple ammo bars
         //Run through and update each slider for each weapon
-        Slider slider = inventory.AmmoSliderDisplayGroup.GetChild(currentWeaponIndex).GetComponentInChildren<Slider>();
+        /*Slider slider = inventory.AmmoSliderDisplayGroup.GetChild(currentWeaponIndex).GetComponentInChildren<Slider>();
 
         if (slider != null)
         {
@@ -214,6 +216,30 @@ public class WeaponController : MonoBehaviour
                 slider.maxValue = currentWeaponBehavior.magazineSize;
 
                 slider.value = currentWeaponBehavior.GetCurrentAmmo();
+            }
+        }*/
+
+        if (inventory.AmmoSlider != null)
+        {
+            if (currentWeaponBehavior.reloading)
+            {
+                //Update the status icon
+                inventory.StatusImage.sprite = inventory.reloadingStatusIcon;
+
+                //Make the "ammo" slider into a display of the reload time
+                inventory.AmmoSlider.maxValue = currentWeaponBehavior.reloadTime;
+
+                inventory.AmmoSlider.value = currentWeaponBehavior.reloadTimer;
+            }
+            else
+            {
+                //Update the status icon to the icon of the current weapon
+                inventory.StatusImage.sprite = currentWeaponBehavior.Icon;
+
+                //Just use it as a normal ammo slider
+                inventory.AmmoSlider.maxValue = currentWeaponBehavior.magazineSize;
+
+                inventory.AmmoSlider.value = currentWeaponBehavior.GetCurrentAmmo();
             }
         }
     }

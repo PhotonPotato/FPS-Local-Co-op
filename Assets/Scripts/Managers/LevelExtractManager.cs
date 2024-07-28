@@ -68,6 +68,9 @@ public class LevelExtractManager : MonoBehaviour
 
                 if (extractionType == ExtractionType.GameScene)
                 {
+                    //Raise the difficulty because of a successful extract
+                    EventsManager.SharedInstance.EnactDifficultyReward();
+
                     //Move player to where the market is in world space
                     SpawnManager.MovePlayerToMarketSceneSpawnLocation(player);
                 }
@@ -194,6 +197,9 @@ public class LevelExtractManager : MonoBehaviour
 
         //Send people straight to the menu
         extractionType = ExtractionType.MarketScene;
+
+        //Lower the room difficulty
+        EventsManager.SharedInstance.EnactDifficultyPunishment();
 
         LoadDestinationScene();
 

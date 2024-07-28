@@ -82,7 +82,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemID: 2
   itemName: Gears
-  itemSellPrice: 25
+  itemSellPrice: 60
   itemModel: {fileID: 746427639201839939}
   displayTexture: {fileID: 2800000, guid: 5a04a93cf959542c9a780c25c0310108, type: 3}
 --- !u!135 &2389147668821940151

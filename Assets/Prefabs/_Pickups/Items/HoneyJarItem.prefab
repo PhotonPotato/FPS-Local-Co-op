@@ -50,7 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemID: 6
   itemName: Honey Jar
-  itemSellPrice: 75
+  itemSellPrice: 35
   itemModel: {fileID: 6910957385878031326}
   displayTexture: {fileID: 2800000, guid: e8ed9166be2a7493ba01f70576e0fb98, type: 3}
 --- !u!135 &7161755499410915927

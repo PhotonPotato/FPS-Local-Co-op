@@ -4100,3 +4100,9 @@ UWPBuild/Il2CppOutputProject/Source/il2cppOutput/UnityEngine.XRModule.cpp
 UWPBuild/Il2CppOutputProject/Source/il2cppOutput/UnityEngine.XRModule_CodeGen.c
 UWPBuild/Il2CppOutputProject/Source/il2cppOutput/UnityEngine_CodeGen.c
 UWPBuild/UnityCommon.props
+Delete on git commit/.DS_Store
+Delete on git commit/Assets/.DS_Store
+Delete on git commit/Assets/Settings/.DS_Store
+Delete on git commit/Assets/Settings/SaveData/.DS_Store
+Delete on git commit/Assets/Settings/SaveData/LevelDifficulty.txt
+Delete on git commit/.DS_Store

@@ -117,6 +117,15 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MenuBack"",
+                    ""type"": ""Button"",
+                    ""id"": ""39cda3be-aa67-4a6f-a364-7b9bc32f79f2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -405,6 +414,28 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""action"": ""Submit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""767ab403-1137-4541-a195-ffc62e258d3b"",
+                    ""path"": ""<XInputController>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Xbox"",
+                    ""action"": ""MenuBack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4b55c22c-3086-47ac-8982-f4792fed8dc0"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";FPSControllerInputs"",
+                    ""action"": ""MenuBack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -458,7 +489,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Pause Menu"",
+                    ""name"": ""PauseMenu"",
                     ""type"": ""Button"",
                     ""id"": ""a5ad4849-694e-45e5-818f-a2eb7914c14d"",
                     ""expectedControlType"": """",
@@ -542,6 +573,15 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""name"": ""StartGame"",
                     ""type"": ""Button"",
                     ""id"": ""648414de-dc72-46b2-b03e-a5d87e7d3e02"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ResetSaveFile"",
+                    ""type"": ""Button"",
+                    ""id"": ""ecfd67ab-60fd-46e0-8726-5ba9e2fc1722"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -842,7 +882,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""FPSControllerInputs"",
-                    ""action"": ""Pause Menu"",
+                    ""action"": ""PauseMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -853,7 +893,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Xbox"",
-                    ""action"": ""Pause Menu"",
+                    ""action"": ""PauseMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1120,6 +1160,17 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
                     ""action"": ""StartGame"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a9743ebf-e41a-42f6-bbdb-4aca1c654950"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ResetSaveFile"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1171,6 +1222,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
         m_UI_ScrollWheel = m_UI.FindAction("ScrollWheel", throwIfNotFound: true);
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
+        m_UI_MenuBack = m_UI.FindAction("MenuBack", throwIfNotFound: true);
         // FPSController
         m_FPSController = asset.FindActionMap("FPSController", throwIfNotFound: true);
         m_FPSController_Move = m_FPSController.FindAction("Move", throwIfNotFound: true);
@@ -1178,7 +1230,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
         m_FPSController_Jump = m_FPSController.FindAction("Jump", throwIfNotFound: true);
         m_FPSController_Zoom = m_FPSController.FindAction("Zoom", throwIfNotFound: true);
         m_FPSController_Crouch = m_FPSController.FindAction("Crouch", throwIfNotFound: true);
-        m_FPSController_PauseMenu = m_FPSController.FindAction("Pause Menu", throwIfNotFound: true);
+        m_FPSController_PauseMenu = m_FPSController.FindAction("PauseMenu", throwIfNotFound: true);
         m_FPSController_Sprint = m_FPSController.FindAction("Sprint", throwIfNotFound: true);
         m_FPSController_Reload = m_FPSController.FindAction("Reload", throwIfNotFound: true);
         m_FPSController_ChangeWeapon = m_FPSController.FindAction("Change Weapon", throwIfNotFound: true);
@@ -1188,6 +1240,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
         m_FPSController_OpenInventory = m_FPSController.FindAction("OpenInventory", throwIfNotFound: true);
         m_FPSController_MenuSelect = m_FPSController.FindAction("MenuSelect", throwIfNotFound: true);
         m_FPSController_StartGame = m_FPSController.FindAction("StartGame", throwIfNotFound: true);
+        m_FPSController_ResetSaveFile = m_FPSController.FindAction("ResetSaveFile", throwIfNotFound: true);
     }
 
     ~@InputSystemFirstPersonControls()
@@ -1265,6 +1318,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
     private readonly InputAction m_UI_ScrollWheel;
     private readonly InputAction m_UI_TrackedDevicePosition;
     private readonly InputAction m_UI_TrackedDeviceOrientation;
+    private readonly InputAction m_UI_MenuBack;
     public struct UIActions
     {
         private @InputSystemFirstPersonControls m_Wrapper;
@@ -1279,6 +1333,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
         public InputAction @ScrollWheel => m_Wrapper.m_UI_ScrollWheel;
         public InputAction @TrackedDevicePosition => m_Wrapper.m_UI_TrackedDevicePosition;
         public InputAction @TrackedDeviceOrientation => m_Wrapper.m_UI_TrackedDeviceOrientation;
+        public InputAction @MenuBack => m_Wrapper.m_UI_MenuBack;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1318,6 +1373,9 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
             @TrackedDeviceOrientation.started += instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.performed += instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.canceled += instance.OnTrackedDeviceOrientation;
+            @MenuBack.started += instance.OnMenuBack;
+            @MenuBack.performed += instance.OnMenuBack;
+            @MenuBack.canceled += instance.OnMenuBack;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1352,6 +1410,9 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
             @TrackedDeviceOrientation.started -= instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.performed -= instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.canceled -= instance.OnTrackedDeviceOrientation;
+            @MenuBack.started -= instance.OnMenuBack;
+            @MenuBack.performed -= instance.OnMenuBack;
+            @MenuBack.canceled -= instance.OnMenuBack;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1388,6 +1449,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
     private readonly InputAction m_FPSController_OpenInventory;
     private readonly InputAction m_FPSController_MenuSelect;
     private readonly InputAction m_FPSController_StartGame;
+    private readonly InputAction m_FPSController_ResetSaveFile;
     public struct FPSControllerActions
     {
         private @InputSystemFirstPersonControls m_Wrapper;
@@ -1407,6 +1469,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
         public InputAction @OpenInventory => m_Wrapper.m_FPSController_OpenInventory;
         public InputAction @MenuSelect => m_Wrapper.m_FPSController_MenuSelect;
         public InputAction @StartGame => m_Wrapper.m_FPSController_StartGame;
+        public InputAction @ResetSaveFile => m_Wrapper.m_FPSController_ResetSaveFile;
         public InputActionMap Get() { return m_Wrapper.m_FPSController; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1461,6 +1524,9 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
             @StartGame.started += instance.OnStartGame;
             @StartGame.performed += instance.OnStartGame;
             @StartGame.canceled += instance.OnStartGame;
+            @ResetSaveFile.started += instance.OnResetSaveFile;
+            @ResetSaveFile.performed += instance.OnResetSaveFile;
+            @ResetSaveFile.canceled += instance.OnResetSaveFile;
         }
 
         private void UnregisterCallbacks(IFPSControllerActions instance)
@@ -1510,6 +1576,9 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
             @StartGame.started -= instance.OnStartGame;
             @StartGame.performed -= instance.OnStartGame;
             @StartGame.canceled -= instance.OnStartGame;
+            @ResetSaveFile.started -= instance.OnResetSaveFile;
+            @ResetSaveFile.performed -= instance.OnResetSaveFile;
+            @ResetSaveFile.canceled -= instance.OnResetSaveFile;
         }
 
         public void RemoveCallbacks(IFPSControllerActions instance)
@@ -1557,6 +1626,7 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
         void OnScrollWheel(InputAction.CallbackContext context);
         void OnTrackedDevicePosition(InputAction.CallbackContext context);
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
+        void OnMenuBack(InputAction.CallbackContext context);
     }
     public interface IFPSControllerActions
     {
@@ -1575,5 +1645,6 @@ public partial class @InputSystemFirstPersonControls: IInputActionCollection2, I
         void OnOpenInventory(InputAction.CallbackContext context);
         void OnMenuSelect(InputAction.CallbackContext context);
         void OnStartGame(InputAction.CallbackContext context);
+        void OnResetSaveFile(InputAction.CallbackContext context);
     }
 }

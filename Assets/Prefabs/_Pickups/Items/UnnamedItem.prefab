@@ -50,7 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemID: 0
   itemName: UnnamedObj
-  itemSellPrice: 1000
+  itemSellPrice: 3000
   itemModel: {fileID: 6568749935991330135}
   displayTexture: {fileID: 2800000, guid: 2c2abe7f6608241a88db5d5859d80ceb, type: 3}
 --- !u!135 &4355695861005716305

@@ -51,7 +51,7 @@ public class MinimapManager : MonoBehaviour
 
             minimapImage.sprite = minimapSprite;
 
-            Generator.generator.ShowRoomsCloseToAllPlayerss();
+            Generator.generator.ShowAllRooms(false);
 
             //playerTransforms = Generator.generator.activePlayers.ToArray();
         }
@@ -61,7 +61,6 @@ public class MinimapManager : MonoBehaviour
         {
             for (int i = 0; i < trackedTransforms.Count; i++)
             {
-                Debug.Log(WorldToMinimapCoord(trackedTransforms[i].position));
                 trackedMinimapMarkerTransforms[i].localPosition = WorldToMinimapCoord(trackedTransforms[i].position);
             }
 

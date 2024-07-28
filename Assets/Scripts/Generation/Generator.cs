@@ -161,6 +161,8 @@ public class Generator : MonoBehaviour
 
         //This marks the start of the Generation
         {
+            GetDifficultySettings();
+
             InitBoard();
             
             //Gerenerate the origin room
@@ -1023,7 +1025,7 @@ public class Generator : MonoBehaviour
 
         //The 2nd line holds the overall room difficulty
         float.TryParse(GetSaveDataLine(2), out tmpFloat);
-
+        currentRoomDifficulty = tmpFloat;
 
         //4th and 5th lines contain the min and max branch lengths
         float.TryParse(GetSaveDataLine(4), out tmpFloat);
@@ -1052,6 +1054,28 @@ public class Generator : MonoBehaviour
 
         EventsManager.SharedInstance.currentRoomDifficulty = currentRoomDifficulty;
         EventsManager.SharedInstance.currentEnemyDifficulty = currentEnemyDifficulty;
+    }
+
+    public void UpdateDifficultySettingsForExtract(float overallDiffIncrement, float branchLengthIncrement, float probabilityIncrement)
+    {
+        //Write to file
+        var lines = File.ReadAllLines("Assets/Settings/SaveData/LevelDifficulty.txt");
+
+        //Update the room difficulty
+        lines[1] = Mathf.Clamp(currentRoomDifficulty + overallDiffIncrement, .3f, 1.5f).ToString();
+
+        //Update the branch length max and min
+        lines[3] = Mathf.Clamp(float.Parse(lines[3]) + branchLengthIncrement, 1.0f, 3.0f).ToString();
+        //lines[4] = (float.Parse(lines[4]) + branchLengthIncrement).ToString();
+
+        //Upfate the branch and merge probability
+        lines[6] = Mathf.Clamp(float.Parse(lines[6]) + probabilityIncrement, 2.5f, 5.5f).ToString();
+        lines[7] = Mathf.Clamp(float.Parse(lines[7]) + probabilityIncrement, 1.5f, 4.5f).ToString();
+
+        //Update the max number of branches and floors
+        //FUTURE TY CAN DEAL WITH THIS LOL
+
+        File.WriteAllLines("Assets/Settings/SaveData/LevelDifficulty.txt", lines);
     }
 
     /// <summary>
