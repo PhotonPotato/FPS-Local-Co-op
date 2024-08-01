@@ -1,11 +1,11 @@
 //Current Generation Difficulty
-1.2
+0.9
 Len
-3
+2.4
 1.8
 Prob
-4.4
-3.4
+5.2
+4.2
 Max
 2.0
 1.0

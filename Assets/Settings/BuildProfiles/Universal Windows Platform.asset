@@ -21,6 +21,8 @@ MonoBehaviour:
   - m_enabled: 1
     m_path: Assets/Scenes/PlayersScene.unity
   - m_enabled: 1
+    m_path: Assets/Scenes/GameScene.unity
+  - m_enabled: 1
     m_path: Assets/Scenes/MarketScene.unity
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
@@ -169,6 +171,8 @@ MonoBehaviour:
     - line: '|   preloadedAssets:'
     - line: '|   - {fileID: 11400000, guid: b477e8e275caf49f48fdd3081ba1402d, type:
         2}'
+    - line: '|   - {fileID: -944628639613478452, guid: 101a2fbc392ca45829e2f44d23d4fa11,
+        type: 3}'
     - line: '|   metroInputSource: 0'
     - line: '|   wsaTransparentSwapchain: 0'
     - line: '|   m_HolographicPauseOnTrackingLoss: 1'

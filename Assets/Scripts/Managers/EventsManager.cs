@@ -194,9 +194,14 @@ public class EventsManager : MonoBehaviour
     public void ResetDifficultyToDefault()
     {
         //Read the default to a array
-        var lines = File.ReadAllLines("Assets/Settings/SaveData/LevelDifficultyDefault.txt");
+        var lines = File.ReadAllLines(GetFilePath("LevelDifficultyDefault.txt"));
 
         //Write the array to the actual save file
-        File.WriteAllLines("Assets/Settings/SaveData/LevelDifficulty.txt", lines);
+        File.WriteAllLines(GetFilePath("LevelDifficulty.txt"), lines);
+    }
+
+    string GetFilePath(string fileName)
+    {
+        return Path.Combine(Application.streamingAssetsPath, fileName);
     }
 }

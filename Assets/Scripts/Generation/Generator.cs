@@ -1059,7 +1059,7 @@ public class Generator : MonoBehaviour
     public void UpdateDifficultySettingsForExtract(float overallDiffIncrement, float branchLengthIncrement, float probabilityIncrement)
     {
         //Write to file
-        var lines = File.ReadAllLines("Assets/Settings/SaveData/LevelDifficulty.txt");
+        var lines = File.ReadAllLines(GetFilePath("LevelDifficulty.txt"));
 
         //Update the room difficulty
         lines[1] = Mathf.Clamp(currentRoomDifficulty + overallDiffIncrement, .3f, 1.5f).ToString();
@@ -1075,7 +1075,7 @@ public class Generator : MonoBehaviour
         //Update the max number of branches and floors
         //FUTURE TY CAN DEAL WITH THIS LOL
 
-        File.WriteAllLines("Assets/Settings/SaveData/LevelDifficulty.txt", lines);
+        File.WriteAllLines(GetFilePath("LevelDifficulty.txt"), lines);
     }
 
     /// <summary>
@@ -1165,5 +1165,10 @@ public class Generator : MonoBehaviour
             //Send it out baby
             return bestRoomPrefabSoFar.prefab;
         }
+    }
+
+    string GetFilePath(string fileName)
+    {
+        return Path.Combine(Application.streamingAssetsPath, fileName);
     }
 }
